@@ -540,6 +540,39 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
   .demo .prog button .d{display:none}
   .demo .prog{grid-template-columns:repeat(5,minmax(110px,1fr))}
 }
+
+/* ===== v3: dark closing band (same island as the hero) ===== */
+.band{position:relative;width:100vw;margin-left:calc(50% - 50vw);margin-top:112px;
+  --bg:#070B12; --surface:#0E1521; --surface-2:#141D2B; --ink:#E9EEF5; --ink-2:#C3CDDB; --muted:#8D99AC; --line:#1E2938; --grid:#0F1722;
+  --blue:#6A93FF; --blue-hover:#86A8FF; --blue-ink:#06101F; --blue-soft:#14213D; --amber:#F0B444; --amber-soft:#2A2010;
+  --verified:#4CC79A; --verified-soft:#0F241C; --gen:#93A5BD; --warn:#F0955A; --warn-soft:#2B1A10; --danger:#F07B70;
+  background:var(--bg);color:var(--ink);color-scheme:dark;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:80px 80px}
+.band-inner{max-width:1296px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-bottom:env(safe-area-inset-bottom,0px)}
+.band .sec{padding-top:96px}
+.band .eyebrow{color:var(--amber)}
+.band .howgrid{background:var(--surface);border-color:var(--line)}
+.band .howgrid>div{border-color:var(--line)}
+.band .howgrid .num{color:var(--amber)}
+.howwrap{position:relative;padding-top:18px}
+.howthread{position:absolute;left:0;right:0;top:0;height:2px;background:rgba(240,180,68,.22)}
+.howthread i{position:absolute;top:-4px;width:10px;height:10px;margin-left:-5px;border-radius:50%;background:var(--bg);border:2px solid rgba(240,180,68,.45)}
+.howthread i:last-of-type{margin-left:-10px}
+.howthread i:first-child{margin-left:0}
+.howthread b{position:absolute;top:0;left:0;width:84px;height:2px;background:var(--amber);opacity:0}
+.howwrap.in .howthread b{animation:travel 2.6s var(--ease-std) .2s both}
+@keyframes travel{0%{opacity:1;left:0}88%{opacity:1}100%{opacity:0;left:calc(100% - 84px)}}
+.howwrap.in .howthread i{animation:knot 320ms var(--ease-spring) both}
+.howwrap.in .howthread i:nth-child(1){animation-delay:.2s}.howwrap.in .howthread i:nth-child(2){animation-delay:.8s}.howwrap.in .howthread i:nth-child(3){animation-delay:1.4s}.howwrap.in .howthread i:nth-child(4){animation-delay:2s}.howwrap.in .howthread i:nth-child(5){animation-delay:2.6s}
+@keyframes knot{from{transform:scale(.6)}to{transform:none;background:var(--amber);border-color:var(--amber)}}
+.howgrid svg .scan{animation:none}
+.howgrid svg .tick2{animation:none;stroke-dashoffset:0}
+.howwrap.in .howgrid svg .scan{animation:scan 2.4s var(--ease-std) .5s 1 both}
+.howwrap.in .howgrid svg .tick2{animation:tickd 1.6s var(--ease-std) 2s 1 both}
+.closer{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin-top:88px;padding:40px 0;border-top:1px solid var(--line)}
+.closer h2{font-family:var(--f-display);font-weight:800;font-size:clamp(1.9rem,3.4vw,2.8rem);letter-spacing:-.04em;line-height:1.05;margin:0 0 8px}
+.closer p{margin:0;color:var(--ink-2);max-width:52ch}
+.band footer{margin-top:0}
 </style>
 
 <div class="wrap">
@@ -643,16 +676,19 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
     </div>
   </section>
 
+  <div class="band" id="band"><div class="band-inner">
   <section class="sec" id="how">
     <p class="eyebrow">How answers are checked</p>
     <h2 class="big">Four steps between your question and a cited line.</h2>
     <p class="sublede">A sentence is shown as fact only if it cites a passage, every number in it appears in that passage, and enough of its wording matches. Everything else is labeled as explanation.</p>
-    <div class="howgrid">
+    <div class="howwrap" id="howwrap">
+      <div class="howthread" aria-hidden="true"><i style="left:0"></i><i style="left:25%"></i><i style="left:50%"></i><i style="left:75%"></i><i style="left:100%"></i><b></b></div>
+      <div class="howgrid">
       <div><span class="num">01</span>
         <svg viewBox="0 0 220 84" aria-hidden="true"><rect class="hl" x="10" y="14" width="200" height="12" rx="3"/><rect class="hl" x="10" y="36" width="160" height="12" rx="3"/><rect class="hl" x="10" y="58" width="180" height="12" rx="3"/><rect class="scan" x="10" y="10" width="64" height="64" rx="4" fill="none" stroke="var(--blue)" stroke-width="1.8"/></svg>
         <h3>Search</h3><p>Keyword ranking over every passage, with Zcash terms expanded (UA, ZEC, zats).</p></div>
       <div><span class="num">02</span>
-        <svg viewBox="0 0 220 84" aria-hidden="true"><rect class="hl" x="10" y="12" width="56" height="60" rx="4"/><rect class="hg" x="82" y="12" width="56" height="60" rx="4"/><rect class="hl" x="154" y="12" width="56" height="60" rx="4"/><text x="110" y="47" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--verified)">c12</text></svg>
+        <svg viewBox="0 0 220 84" aria-hidden="true"><rect class="hl" x="10" y="12" width="56" height="60" rx="4"/><rect class="hg" x="82" y="12" width="56" height="60" rx="4"/><rect class="hl" x="154" y="12" width="56" height="60" rx="4"/><text x="110" y="47" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="11" fill="var(--verified)">c12</text></svg>
         <h3>Select</h3><p>The top six passages go to the writer, each tagged with its source tier.</p></div>
       <div><span class="num">03</span>
         <svg viewBox="0 0 220 84" aria-hidden="true"><rect class="hg" x="10" y="10" width="200" height="26" rx="4"/><rect class="hd" x="10" y="46" width="200" height="28" rx="4"/><circle class="hb" cx="196" cy="23" r="4"/></svg>
@@ -661,12 +697,19 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
         <svg viewBox="0 0 220 84" aria-hidden="true"><circle cx="42" cy="42" r="26" fill="var(--verified-soft)" stroke="var(--verified)" stroke-width="1.6"/><path class="tick2" d="M30 43l8 8 15-17" fill="none" stroke="var(--verified)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect class="hl" x="86" y="24" width="124" height="10" rx="3"/><rect class="hl" x="86" y="46" width="90" height="10" rx="3"/></svg>
         <h3>Check</h3><p>Each sentence is matched to its passage. Any that fail move to explanation.</p></div>
     </div>
+    </div>
   </section>
+  <section class="closer" aria-label="Get started">
+    <div><h2>Ask your first question.</h2><p>Every answer comes from a corpus captured on 27 Oct 2026, with the source one click away.</p></div>
+    <a class="btn primary lg" href="#ask">Ask a question</a>
+  </section>
+
 
   <footer>
     <span id="footLine"></span>
     <span>Values are shown as the sources state them. Verify against the linked source before shipping.</span>
   </footer>
+</div></div>
 </div>
 
 <script>
@@ -1597,6 +1640,7 @@ if(!motionOn()){ setPlaying(false); $("#hxPlay").hidden=true } else setPlaying(t
 requestAnimationFrame(frame);
 })();
 </script>
+<script>(function(){var w=document.getElementById("howwrap");if(!w)return;try{new IntersectionObserver(function(es,o){if(es[0].isIntersecting){w.classList.add("in");o.disconnect()}},{threshold:.35}).observe(w)}catch(e){w.classList.add("in")}})();</script>
 
 </body>
 </html>
