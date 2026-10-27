@@ -602,6 +602,11 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
 .vk{width:18px;height:18px;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px;margin-right:6px;animation:popIn 380ms var(--ease-spring) both}
 .vk.y{stroke:var(--verified)}.vk.n{stroke:var(--danger)}
 @media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.lrow{grid-template-columns:84px minmax(0,1fr)}.sglabel{width:100%}}
+
+/* ===== v5: low confidence + payments ===== */
+.loose h3{color:var(--muted)}
+.loose .claims li{border-left-color:var(--line);color:var(--ink-2)}
+.uri{padding:10px 12px;border:1px dashed var(--line);border-radius:6px;background:var(--surface);overflow-x:auto;white-space:nowrap;font-size:.8rem}
 </style>
 
 <div class="wrap">
@@ -826,6 +831,21 @@ C.push(
  {id:"b17",s:"zechubZip",sec:"What is a ZIP",x:"A Zcash Improvement Proposal (ZIP) is a design document that describes a new feature or process for Zcash, with its technical specification and rationale. ZIPs are the main way to propose features and record design decisions, and ZIP editors review each one."},
  {id:"b18",s:"zececo",sec:"Units",x:"One ZEC equals 100,000,000 zatoshis, the smallest unit of ZEC. 10,000 zatoshis equals 0.0001 ZEC."}
 );
+/* ---------- Payments: sources + passages (captured 27 Oct 2026) ---------- */
+Object.assign(S,{
+  zip321kt:{t:"zcash-kotlin-payment-uri (ZIP 321 prototype)",u:"https://github.com/pacu/zcash-kotlin-payment-uri",tier:"Implementation"},
+  zip321rs:{t:"zip321 Rust crate documentation",u:"https://docs.rs/zip321",tier:"Implementation"},
+  zodlSpend:{t:"Zodl Support: When are funds spendable?",u:"https://support.zodl.com/article/35-when-are-funds-spendable",tier:"Official"},
+  zechubPay:{t:"ZecHub: Payment processors",u:"https://zechub.wiki/payment-processors",tier:"Secondary"},
+  zechubBtcpay:{t:"ZecHub: BTCPay Server with Zcash support",u:"https://zechub.wiki/guides/btcpayserver-zcash-plugin",tier:"Secondary"}
+});
+C.push(
+ {id:"p1",s:"zip321kt",sec:"ZIP 321 payment URIs",x:"ZIP 321 is a standard format for Zcash payment request URIs using the zcash: scheme. A request carries an address and an amount, and can add a memo or a message. One request can ask for several payments: the first uses plain names such as address and amount, and later ones use numbered names such as address.1 and amount.1. Memo values are written in base64 form."},
+ {id:"p2",s:"zip321rs",sec:"Crate overview",x:"The zip321 Rust crate is a reference implementation of ZIP 321. It provides data structures, parsing and rendering for payment request URIs, with a Payment type for one requested payment, a TransactionRequest type for a full request, and helpers that convert memos to and from the base64 form ZIP 321 uses."},
+ {id:"p3",s:"zodlSpend",sec:"Confirmations",x:"In the Zodl wallet, received funds become spendable after 10 confirmations, about 12.5 minutes at 75 seconds per block. Change from your own spends needs 3 confirmations. Only shielded ZEC counts as spendable; transparent ZEC must be shielded first."},
+ {id:"p4",s:"zechubPay",sec:"Processor list",x:"Payment processors for Zcash include CipherPay, a non-custodial gateway that uses unified addresses; BTCPay Server, self-hosted and shielded only; and ZGo, which sends funds directly from customer to merchant. NOWPayments and Binance Pay support transparent ZEC only, and Binance Pay rejects shielded deposits. Flexa lets shoppers spend shielded ZEC at retail locations."},
+ {id:"p5",s:"zechubBtcpay",sec:"Summary",x:"BTCPay Server lets online businesses accept crypto payments directly, without intermediaries or custodians, and a Zcash plugin adds ZEC support."}
+);
 const CI = Object.fromEntries(C.map(c=>[c.id,c]));
 window.UNRAVEL_CORPUS={S:S,C:C,TIER_LABEL:{Spec:"Spec",Implementation:"Implementation",Official:"Official docs",Proposal:"Proposal",Secondary:"Secondary"}};
 
@@ -939,7 +959,7 @@ Object.assign(TOPICS,{
   visual:"snark",
   explain:"Imagine proving to a bouncer that you are over 18 without showing your name, address or birthday, only a stamp that cannot be faked. The bouncer learns one thing: you may enter. A zk-SNARK does the same for a payment. Every node checks the proof and learns only that the transaction follows the rules: no coins created from nothing, no double spending. It never learns who paid whom or how much.",
   sources:["b3","b9","b10"]},
- shielded:{q:"What is the difference between shielded and transparent?",level:"Start here",kw:["shielded","transparent","private","privacy","public","hidden","hide","anonymous","visible","address","addresses","taddr","zaddr","t-addr","z-addr","memo","memos","deshield","deshielding","difference","encrypted"],
+ shielded:{q:"What is the difference between shielded and transparent?",level:"Start here",kw:["shielded","transparent","private","privacy","public","hidden","hide","anonymous","visible","address","addresses","taddr","zaddr","t-addr","z-addr","memo","memos","deshield","deshielding","difference","encrypted","see","sent","send","visible","amount","balance","track","trace","traceable","onchain","explorer"],
   coverage:"full",
   claims:[
    ["A transparent address puts the address and the amount on the public blockchain.",["b4","b5"]],
@@ -1032,6 +1052,45 @@ function visViewing(){
     </tbody></table></div>
    <p class="cap">Dashed cells are Unravel's explanation; the corpus does not state them directly.</p></section>`;
 }
+
+/* ---------- Payments topic ---------- */
+TOPICS.payments={q:"How do I accept ZEC payments in my online shop?",level:"For builders",kw:["accept","accepting","payment","payments","pay","shop","store","merchant","merchants","checkout","ecommerce","invoice","invoices","order","orders","processor","btcpay","cipherpay","zgo","nowpayments","qr","zip321","uri","receive","receiving","sell","selling","business","link","request","requests"],
+  coverage:"full",
+  claims:[
+   ["Ask for payment with a ZIP 321 payment request: a <code>zcash:</code> link (often shown as a QR code) carrying your address, the amount, and an optional memo or message.",["p1"]],
+   ["One request can ask for several payments, using numbered fields such as <code>address.1</code> and <code>amount.1</code>. Libraries exist to build and parse these, including the Rust <code>zip321</code> crate.",["p1","p2"]],
+   ["Payment processors can do this for you. BTCPay Server (self-hosted), CipherPay and ZGo support shielded ZEC; NOWPayments and Binance Pay support transparent ZEC only.",["p4","p5"]],
+   ["Put the order number in the memo so you can match payments to orders. Memos only work with shielded payments.",["b8","p1"]],
+   ["Wait for confirmations before shipping. For comparison, the Zodl wallet treats received funds as spendable after 10 confirmations, about 12.5 minutes.",["p3"]],
+   ["An incoming viewing key lets a server or bookkeeper watch incoming payments without being able to spend them.",["b6"]]
+  ],
+  callout:{h:"Check Ironwood support before going live",p:()=>"Processor listings describe Orchard and unified address support. Since NU6.3, Orchard no longer accepts new funds and shielded activity moves to Ironwood, so confirm your processor or wallet supports NU6.3 and v6 transactions.",cites:["c12","c13","p4"]},
+  visual:"payments",
+  explain:"You have three routes. The quickest is a hosted shielded processor. The most private and independent is self-hosting BTCPay Server. The most flexible is building it yourself: generate a unified address per order, create a ZIP 321 request with the order number in the memo, and watch for the payment with an incoming viewing key. Whatever you choose, test the full flow on testnet with TAZ first.",
+  sources:["p1","p2","p3","p4","p5","b6","b8"]};
+TOPIC_ORDER.push("payments");
+HASH.payments="accept-payments"; UNHASH["accept-payments"]="payments";
+
+function visPayments(){
+  const steps=[["Shop",["creates a","payment request"],"p1"],["zcash: link / QR",["address, amount,","memo: order #"],"p1"],["Customer wallet",["pays from","shielded ZEC"],"b8"],["Merchant wallet",["sees it with an","incoming view key"],"b6"],["Confirmations",["wait, then mark","the order paid"],"p3"]];
+  const W=640, gap=W/steps.length;
+  return `<section class="block visual"><h3>How a shielded checkout flows</h3>
+   <div class="svgbox"><svg viewBox="0 0 640 196" role="img" aria-label="Shop creates a ZIP 321 request, the customer pays shielded, the merchant sees it with a viewing key, then waits for confirmations">
+    <path class="flow draw" d="M${gap/2} 74 H ${W-gap/2}" style="stroke:var(--amber)"/>
+    ${steps.map(([t,[a,b],c],i)=>{const x=gap/2+i*gap;return `<g class="pop" style="animation-delay:${200+i*180}ms">
+      <circle cx="${x}" cy="74" r="22" fill="var(--surface)" stroke="${i===4?"var(--verified)":"var(--amber)"}" stroke-width="2"/>
+      <text x="${x}" y="79" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="13" font-weight="600" fill="var(--ink)">${i+1}</text>
+      <text class="lbl" x="${x}" y="120" text-anchor="middle" style="font-size:12px">${t}</text>
+      <text class="sub" x="${x}" y="138" text-anchor="middle" style="font-size:9.5px">${a}</text>
+      <text class="sub" x="${x}" y="151" text-anchor="middle" style="font-size:9.5px">${b}</text>
+      <text class="citetag" data-cite="${c}" x="${x}" y="172" text-anchor="middle">[${citeNum(c)}]</text></g>`}).join("")}
+    <g><rect x="-30" y="-11" width="60" height="22" rx="4" fill="var(--amber)"/><text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#0E1626">0.5 ZEC</text><animateMotion dur="4.2s" repeatCount="indefinite" path="M${gap/2} 34 H ${W-gap/2}"/></g>
+   </svg></div>
+   <div class="uri"><span class="mono">zcash:?address=&lt;your unified address&gt;&amp;amount=0.5&amp;memo=&lt;base64 of "Order 1042"&gt;</span></div>
+   <p class="cap">Example request shape from ZIP 321 ${citeBtns(["p1"])}. The amount and order number are examples.</p></section>`;
+}
+VIS.payments=visPayments;
+
 Object.assign(VIS,{basics:visBasics,snark:visSnark,shielded:visShielded,viewing:visViewing});
 Object.assign(BIND,{shielded:bindShielded});
 
@@ -1314,7 +1373,7 @@ const SYN={ua:["unified","address"],uas:["unified","address"],zats:["zatoshis"],
 const NORM={zksnark:["zk","snark"],zksnarks:["zk","snark"],zkp:["zero","knowledge","proof"],zkps:["zero","knowledge","proof"],halo2:["halo"],taddr:["transparent","address"],zaddr:["shielded","address"],zaddrs:["shielded","address"],taddrs:["transparent","address"],ivk:["incoming","viewing","key"],fvk:["viewing","key"],ufvk:["unified","viewing","key"],uivk:["unified","incoming","viewing","key"],zcashd:["zcashd"],nu5:["nu5"]};
 function stem(t){if(t.length<=4||/\d/.test(t))return t;if(t.endsWith("sses"))return t.slice(0,-2);if(t.endsWith("ies"))return t.slice(0,-3)+"y";if(/(xes|ches|shes|sses)$/.test(t))return t.slice(0,-2);if(t.endsWith("s")&&!/(ss|us|is)$/.test(t))return t.slice(0,-1);return t}
 function toks(s){return s.toLowerCase().replace(/[^a-z0-9_.]+/g," ").split(" ").map(t=>t.replace(/^\.+|\.+$/g,"")).flatMap(t=>NORM[t]||[t]).filter(t=>t&&!STOP.has(t)).map(stem)}
-Object.assign(SYN,{private:["shielded","privacy"],privacy:["shielded","private"],hidden:["shielded","encrypted"],hide:["shielded","encrypted"],anonymous:["shielded","privacy"],coin:["zec"],token:["zec"],money:["zec"],supply:["supply","million"],mining:["mining","equihash","block"],miner:["mining","equihash"],mine:["mining","equihash"],halving:["halving","reward"],reward:["reward","halving"],key:["key","viewing"],audit:["viewing","key"],auditor:["viewing","key"],accountant:["viewing","key"],message:["memo"],note:["memo"],test:["testnet","taz"],faucet:["faucet","testnet","taz"],free:["faucet","testnet"],launch:["launched","sprout","2016"],history:["launched","sprout","2016"],started:["launched","sprout"],proof:["proof","zk","snark"],zero:["zero","knowledge"],trusted:["trusted","setup","halo"],wallet:["zallet","wallet","zodl"],node:["zebra","node","z3"],light:["zaino","light"],mobile:["zaino","light","zodl"],unit:["zatoshis"],smallest:["zatoshis"],zip:["zip","proposal"],proposal:["zip","proposal"],upgrade:["upgrade","activated","network"],zashi:["zodl","zashi"],snark:["snark","zk","proof"]});
+Object.assign(SYN,{private:["shielded","privacy"],privacy:["shielded","private"],hidden:["shielded","encrypted"],hide:["shielded","encrypted"],anonymous:["shielded","privacy"],coin:["zec"],token:["zec"],money:["zec"],supply:["supply","million"],mining:["mining","equihash","block"],miner:["mining","equihash"],mine:["mining","equihash"],halving:["halving","reward"],reward:["reward","halving"],key:["key","viewing"],audit:["viewing","key"],auditor:["viewing","key"],accountant:["viewing","key"],message:["memo"],note:["memo"],test:["testnet","taz"],faucet:["faucet","testnet","taz"],free:["faucet","testnet"],launch:["launched","sprout","2016"],history:["launched","sprout","2016"],started:["launched","sprout"],proof:["proof","zk","snark"],zero:["zero","knowledge"],trusted:["trusted","setup","halo"],wallet:["zallet","wallet","zodl"],node:["zebra","node","z3"],light:["zaino","light"],mobile:["zaino","light","zodl"],unit:["zatoshis"],smallest:["zatoshis"],zip:["zip","proposal"],proposal:["zip","proposal"],upgrade:["upgrade","activated","network"],zashi:["zodl","zashi"],shop:["merchant","payment","processor"],exist:["supply"],max:["supply"],maximum:["supply"],cap:["supply"],store:["merchant","payment","processor"],merchant:["merchant","processor","payment"],checkout:["payment","request","processor"],ecommerce:["merchant","payment","processor"],accept:["receive","payment","request"],receive:["receive","payment","request"],payment:["payment","request"],pay:["payment","request"],invoice:["payment","request","uri"],qr:["uri","payment","request"],order:["memo","payment"],business:["merchant","payment"],snark:["snark","zk","proof"]});
 for(const k of Object.keys(SYN)){SYN[k]=SYN[k].map(v=>stem(v))}
 const DOCS=C.map(c=>({id:c.id,t:toks(c.x+" "+S[c.s].t+" "+c.sec)}));
 const DF={};DOCS.forEach(d=>new Set(d.t).forEach(t=>DF[t]=(DF[t]||0)+1));
@@ -1324,7 +1383,31 @@ function search(q){
   const N=DOCS.length;
   return DOCS.map(d=>{let sc=0;for(const t of new Set(qt)){const tf=d.t.filter(x=>x===t||(t.length>4&&x.startsWith(t))).length;if(!tf)continue;const idf=Math.log(1+(N-(DF[t]||0)+.5)/((DF[t]||0)+.5));sc+=idf*tf*2.2/(tf+1.2*(.25+.75*d.t.length/AVG))}return {id:d.id,sc}}).filter(r=>r.sc>0).sort((a,b)=>b.sc-a.sc);
 }
-function topicFor(q){const qt=toks(q);let best=null,bs=0;for(const k of TOPIC_ORDER){const kw=TOPICS[k].kw.map(stem);const s=qt.filter(t=>kw.includes(t)).length;if(s>bs){bs=s;best=k}}return bs>=1?best:null}
+function topicScore(q,k){const G=typeof GENERIC!=="undefined"?GENERIC:new Set();const qt=toks(q).filter(t=>!G.has(t));const kw=TOPICS[k].kw.map(stem);return qt.filter(t=>kw.includes(t)).length}
+function topicFor(q){const G=typeof GENERIC!=="undefined"?GENERIC:new Set();const qt=toks(q).filter(t=>!G.has(t));if(!qt.length)return "basics";let best=null,bs=0;for(const k of TOPIC_ORDER){const s=topicScore(q,k);if(s>bs){bs=s;best=k}}return bs>=1?best:null}
+
+const GENERIC=new Set(["zcash","zec","ever","exist","will","total","there","what","work","explain","tell","mean","way","best","thing","doe","happen","online","good","right","now","today","please","can","could","would","someone","people","anyone","much","many","really"].map(stem));
+function coverage(q,ids){
+  const qt=[...new Set(toks(q))].filter(t=>!GENERIC.has(t)&&!/^\d+$/.test(t));
+  if(!qt.length||!ids.length) return {score:ids.length?1:0,missing:qt};
+  const flat=new Set(ids.slice(0,3).flatMap(id=>DOCS.find(d=>d.id===id).t));
+  const arr=[...flat];
+  const has=t=>flat.has(t)||arr.some(x=>(t.length>4&&x.startsWith(t))||(x.length>4&&t.startsWith(x)))||(SYN[t]||[]).some(v=>flat.has(v));
+  const missing=qt.filter(t=>!has(t));
+  return {score:1-missing.length/qt.length,missing};
+}
+function renderLowConfidence(q,ids,missing){
+  citeOrder=[];
+  const words=missing.slice(0,4).map(w=>`"${esc(w)}"`).join(", ");
+  const loose=ids.slice(0,3).map(id=>`<li>${esc(CI[id].x)}${citeBtns([id])}</li>`).join("");
+  $("#main").innerHTML=`<article class="answer"><h2 class="q">${esc(q)}</h2>
+   <div class="meta"><span class="badge none">Not covered yet</span><span>Snapshot ${SNAP}</span></div>
+   <section class="block explain"><h3>Explanation · written by Unravel</h3><p>The corpus doesn't cover ${words||"this topic"} yet, so Unravel won't guess an answer. Try rephrasing, or start with one of these:</p></section>
+   <div class="block"><div class="suggest">${TOPIC_ORDER.filter(k=>TOPICS[k].level==="Start here").map(k=>`<button type="button" data-topic="${k}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div></div>
+   ${loose?`<section class="block loose"><h3>Loosely related, may not answer your question</h3><ol class="claims">${loose}</ol></section>`:""}
+   <section class="block" id="srcBlock"></section></article>`;
+  const b=$("#srcBlock"); if(b) b.innerHTML=`<h3 style="color:var(--muted)">Sources shown</h3>${sourcesList()}`;
+}
 
 /* ---------- Claim check ---------- */
 function norm(s){return s.toLowerCase().replace(/,/g,"")}
@@ -1366,7 +1449,9 @@ async function ask(q){
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(1,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
   await new Promise(r=>setTimeout(r,motionOn?350:0));
   if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
-  if(!sampleFn){ if(topic){ const T=TOPICS[topic]; const tc=new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[])]); if(tc.has(ids[0])){ renderTopic(topic,q); return } } renderPassagesOnly(q,ids,topic,"Unravel can't draft a new answer in this view yet. These are the passages that best match your question."); return }
+  { const cv=coverage(q,ids); if(cv.score<0.5){ renderLowConfidence(q,ids,cv.missing); return } }
+  if(topic&&!sampleFn){ const T=TOPICS[topic]; const tc=new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[]),...(T.sources||[])]); const strong=tc.has(ids[0])||(topicScore(q,topic)>=2&&ids.slice(0,3).some(i=>tc.has(i)))||toks(q).every(t=>GENERIC.has(t)); if(strong){ renderTopic(topic,q); return } }
+  if(!sampleFn){ renderPassagesOnly(q,ids,topic,"Unravel can't draft a new answer in this view yet. These are the passages that best match your question."); return }
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(2,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
   const ctl=new AbortController(); inflight=ctl;
   $("#stopBtn").addEventListener("click",()=>ctl.abort());
