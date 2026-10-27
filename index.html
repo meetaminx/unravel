@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Unravel answers Zcash developer questions from ZIPs, Zebra and Zallet docs, with every fact linked to its source.">
+<meta name="description" content="Unravel answers Zcash questions, from beginner basics to Zebra and Zallet internals, with every fact linked to its source.">
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -573,6 +573,35 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
 .closer h2{font-family:var(--f-display);font-weight:800;font-size:clamp(1.9rem,3.4vw,2.8rem);letter-spacing:-.04em;line-height:1.05;margin:0 0 8px}
 .closer p{margin:0;color:var(--ink-2);max-width:52ch}
 .band footer{margin-top:0}
+
+/* ===== v4: beginner visuals ===== */
+.sgroup{display:flex;flex-wrap:wrap;gap:8px;align-items:center;width:100%}
+.sgroup+.sgroup{margin-top:4px}
+.sglabel{font-family:var(--f-mono);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);min-width:100px}
+.asked{margin:-8px 0 0;font-size:.9rem;color:var(--muted)}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.tile{display:grid;gap:2px;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);animation:rise var(--t-slow) var(--ease-in) both}
+.tile b{font-family:var(--f-display);font-size:1.5rem;letter-spacing:-.02em;line-height:1.1}
+.tile span{font-size:.8rem;color:var(--muted)}
+.tile .cite{justify-self:start;margin:4px 0 0}
+.ledger{display:grid;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
+.lrow{display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:.9rem;animation:rise var(--t-mid) var(--ease-in) both}
+.lrow.lhead{font-family:var(--f-mono);font-size:.7rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);animation:none}
+.lrow span:first-child{color:var(--muted)}
+.lrow .open{font-family:var(--f-mono);font-size:.84rem;color:var(--danger)}
+.lrow .enc{font-family:var(--f-mono);font-size:.84rem;color:var(--verified);display:flex;align-items:center;gap:10px}
+.lrow .na{color:var(--muted);font-size:.86rem}
+.bars{display:inline-block;width:64px;height:10px;border-radius:2px;background:repeating-linear-gradient(90deg,var(--verified) 0 6px,transparent 6px 9px);opacity:.55}
+.lnote{padding:10px 14px;font-size:.84rem;color:var(--muted);background:var(--bg)}
+.vtable{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+.vtable th,.vtable td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+.vtable thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.vtable tbody th{font-weight:500}
+.vtable td{white-space:nowrap}
+.vtable td.gen{outline:1.5px dashed var(--gen);outline-offset:-5px;color:var(--gen)}
+.vk{width:18px;height:18px;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;vertical-align:-4px;margin-right:6px;animation:popIn 380ms var(--ease-spring) both}
+.vk.y{stroke:var(--verified)}.vk.n{stroke:var(--danger)}
+@media (max-width:640px){.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.lrow{grid-template-columns:84px minmax(0,1fr)}.sglabel{width:100%}}
 </style>
 
 <div class="wrap">
@@ -762,6 +791,41 @@ const C = [
  {id:"c20",s:"coinstats",sec:"What are unified addresses",x:"A sending wallet must use the most preferred receiver it supports, in the order Orchard, then Sapling, then transparent. Unrecognized items are ignored, which keeps unified addresses usable as the protocol grows."},
  {id:"c21",s:"coindesk",sec:"Protocol overview",x:"Zcash targets a block interval of roughly 75 seconds. NU6 activated at block height 2,726,400 around November 23, 2024, sending 8% of the block subsidy to Zcash Community Grants and 12% to an in-protocol lockbox defined by ZIP 1015. NU6.1 activated at block height 3,146,400 on November 24, 2025."}
 ];
+/* ---------- Zcash basics: sources + passages (captured 27 Oct 2026) ---------- */
+Object.assign(S,{
+  rtdGloss:{t:"Zcash Documentation: Glossary",u:"https://zcash.readthedocs.io/en/latest/rtd_pages/glossary.html",tier:"Official"},
+  rtdUx:{t:"Zcash Documentation: Wallet UX Checklist",u:"https://zcash.readthedocs.io/en/latest/rtd_pages/ux_wallet_checklist.html",tier:"Official"},
+  rtdTest:{t:"Zcash Documentation: Testnet Guide",u:"https://zcash.readthedocs.io/en/latest/rtd_pages/testnet_guide.html",tier:"Official"},
+  zodlMemo:{t:"Zodl Support: Using the Zcash memo field",u:"https://support.zodl.com/article/41-using-the-zcash-memo-field",tier:"Official"},
+  zero:{t:"Shielded Labs: zero repository README",u:"https://github.com/ShieldedLabs/zero",tier:"Implementation"},
+  zechubHalo:{t:"ZecHub: Halo",u:"https://zechub.wiki/zcash-tech/halo",tier:"Secondary"},
+  zechubZip:{t:"ZecHub: Zcash Improvement Proposals",u:"https://zechub.wiki/guides/zcash-improvement-proposals",tier:"Secondary"},
+  zechubMig:{t:"ZecHub: Migrating from zcashd to Zebra and Zallet",u:"https://zechub.wiki/guides/migration-guide-zcashd-to-zebrad-zallet",tier:"Secondary"},
+  decrypt:{t:"Decrypt: Zcash removes the trusted setup with NU5",u:"https://decrypt.co/101762/zcash-nixes-trusted-setup-enters-new-era-with-major-network-update",tier:"Secondary"},
+  gemini:{t:"Gemini: Zcash halving and NU6",u:"https://support.gemini.com/hc/en-us/articles/31178576402971-Zcash-Halving-NU6-Network-Upgrade",tier:"Secondary"},
+  forklog:{t:"ForkLog: ZODL and the Zodl wallet",u:"https://forklog.com/en/news/zcash-developers-establish-new-entity-and-rebrand-wallet",tier:"Secondary"},
+  zececo:{t:"zec.eco: Zcash transaction fees explained",u:"https://zec.eco/guides/zcash-transaction-fees/",tier:"Secondary"}
+});
+C.push(
+ {id:"b1",s:"rtdGloss",sec:"Sprout, Zerocash, ZEC, Sapling",x:"Sprout is the first version of Zcash, launched on October 28, 2016. Zcash builds on the Zerocash protocol, which improved on the earlier Zerocoin protocol. ZEC is the currency code for Zcash. The Sapling network upgrade, which made shielded transactions more efficient, activated at block height 419,200."},
+ {id:"b2",s:"coindesk",sec:"Protocol overview",x:"ZEC is the native coin of the Zcash blockchain, a proof-of-work network using the Equihash algorithm, with supply capped at 21 million ZEC. Zcash keeps a transparent pool, which is public, and shielded pools, which are encrypted."},
+ {id:"b3",s:"rtdGloss",sec:"zk-SNARK",x:"A zk-SNARK is the zero-knowledge proof Zcash uses so that a shielded transaction can prove it is valid without revealing the addresses or the value involved. The name stands for zero-knowledge Succinct Non-interactive ARgument of Knowledge."},
+ {id:"b4",s:"rtdGloss",sec:"Shielded, transparent, address",x:"A transparent address (t-addr, starts with t) records its address and value publicly on the blockchain. A shielded address (z-addr) keeps the address, the value and an encrypted memo off the public record. An address is the information someone needs to send you ZEC."},
+ {id:"b5",s:"rtdUx",sec:"Privacy guidance",x:"Transactions involving transparent addresses publicly post the address and amount. Shielded-to-shielded transactions do not reveal the sender, receiver or amount on the blockchain, and shielded addresses are Zcash's main privacy feature. Wallets should warn before deshielding, sending from a shielded to a transparent address, because it reveals information. Using a new transparent address for each payment gives only a false sense of privacy."},
+ {id:"b6",s:"rtdGloss",sec:"Private key, viewing key",x:"A private key is secret data that grants the ability to spend a balance; spending keys and viewing keys are both kinds of private key. A viewing key lets its holder see the balance and transaction data of the matching shielded address. An incoming viewing key shows incoming transactions but not outgoing ones."},
+ {id:"b7",s:"rtdUx",sec:"Memo field",x:"Every shielded transaction carries a memo field that is always exactly 512 bytes, so writing a memo adds no fee and observers cannot tell whether a memo was used."},
+ {id:"b8",s:"zodlMemo",sec:"Using the memo field",x:"Memos are encrypted messages that travel with shielded transactions. The sender writes the memo and only the recipient can read it. Memos work only with shielded recipients; they cannot be sent to or from transparent addresses."},
+ {id:"b9",s:"zechubHalo",sec:"Halo",x:"Halo is a trustless, recursive zero-knowledge proof system discovered by Sean Bowe at Electric Coin Co. It removes the need for a trusted setup."},
+ {id:"b10",s:"decrypt",sec:"NU5",x:"Network Upgrade 5 went live on mainnet on May 31, 2022. It moved Zcash to the Halo proving system with the Orchard protocol, removing reliance on the trusted setup ceremonies used since the 2016 launch. NU5 also introduced unified addresses, a single address format that routes funds to the latest shielded pool."},
+ {id:"b11",s:"gemini",sec:"Halving and NU6",x:"The Zcash halving happened at block height 2,726,400, around November 23, 2024, cutting the block reward from 3.125 ZEC to 1.5625 ZEC. NU6 activated at the same height."},
+ {id:"b12",s:"zero",sec:"Z3 stack",x:"The long-term Zcash node stack is Zebra, Zaino and Zallet, called Z3: Zebra validates the chain, Zaino serves light clients such as mobile wallets, and Zallet is the zcashd-compatible full node wallet."},
+ {id:"b13",s:"zechubMig",sec:"Overview",x:"Zebra is a Rust implementation of the Zcash protocol developed by the Zcash Foundation. Zallet is intended to succeed the wallet component of zcashd and connects to a Zebra node."},
+ {id:"b14",s:"forklog",sec:"Report",x:"In February 2026 the former Electric Coin Company team formed the Zcash Open Development Lab (ZODL) and renamed the Zashi wallet to Zodl. Users keep the same app and seed phrase and do not need to move funds."},
+ {id:"b15",s:"rtdTest",sec:"Testnet",x:"Testnet is a separate blockchain that imitates Zcash mainnet for experiments and for testing network upgrades. Testnet coins, called TAZ, have no value. You can get TAZ from the faucet at faucet.zecpages.com or by asking in the Zcash Discord support channel."},
+ {id:"b16",s:"rtdGloss",sec:"Network upgrade, mining, Equihash",x:"A network upgrade is a software release that every node must install; nodes on incompatible older versions are forked off the main chain. Mining is nodes competing to add the next block, earning fees and the block reward. Equihash is the memory-oriented proof-of-work algorithm Zcash uses."},
+ {id:"b17",s:"zechubZip",sec:"What is a ZIP",x:"A Zcash Improvement Proposal (ZIP) is a design document that describes a new feature or process for Zcash, with its technical specification and rationale. ZIPs are the main way to propose features and record design decisions, and ZIP editors review each one."},
+ {id:"b18",s:"zececo",sec:"Units",x:"One ZEC equals 100,000,000 zatoshis, the smallest unit of ZEC. 10,000 zatoshis equals 0.0001 ZEC."}
+);
 const CI = Object.fromEntries(C.map(c=>[c.id,c]));
 window.UNRAVEL_CORPUS={S:S,C:C,TIER_LABEL:{Spec:"Spec",Implementation:"Implementation",Official:"Official docs",Proposal:"Proposal",Secondary:"Secondary"}};
 
@@ -842,6 +906,134 @@ const TOPICS = {
 const TOPIC_ORDER=["fees","ironwood","ua","migrate"];
 const HASH={fees:"fees",ironwood:"ironwood",ua:"unified-addresses",migrate:"migration"};
 const UNHASH=Object.fromEntries(Object.entries(HASH).map(([k,v])=>[v,k]));
+const VIS={fee:visFee,ironwood:visIronwood,ua:visUA,migrate:visMigrate};
+const BIND={fee:()=>bindFee(),ua:()=>bindUA(),migrate:()=>bindMig()};
+function bindVis(v){BIND[v]&&BIND[v]()}
+
+/* ---------- Beginner topics ---------- */
+Object.assign(TOPICS,{
+ basics:{q:"What is Zcash?",level:"Start here",kw:["zcash","zec","what","about","privacy","coin","crypto","cryptocurrency","history","launch","launched","supply","started","sprout","zerocash","beginner","overview","intro","introduction"],
+  coverage:"full",
+  claims:[
+   ["Zcash is a proof-of-work blockchain whose coin is ZEC. Supply is capped at 21 million ZEC.",["b2"]],
+   ["Its first version, Sprout, launched on October 28, 2016. It builds on the Zerocash protocol.",["b1"]],
+   ["Zcash has a public, transparent pool and encrypted, shielded pools. Shielded transactions hide the sender, receiver and amount.",["b2","b5"]],
+   ["Blocks arrive roughly every 75 seconds, and miners compete using the Equihash algorithm.",["c21","b16"]],
+   ["The smallest unit is the zatoshi: 1 ZEC is 100,000,000 zatoshis.",["b18"]],
+   ["The rules change through network upgrades that every node must install, proposed and specified in ZIPs.",["b16","b17"]]
+  ],
+  callout:{h:"Changed in 2026",p:()=>"The Ironwood upgrade (NU6.3) added a new shielded pool on July 28, 2026, and the older Orchard pool now only allows withdrawals. Older guides that say \"use Orchard\" are out of date.",cites:["c13","c12"]},
+  visual:"basics",
+  explain:"Think of Zcash as a public ledger with a private wing. Anything sent to a transparent address is visible to everyone, like Bitcoin. Anything kept in a shielded pool is encrypted on the chain, yet everyone can still verify the totals add up, because each shielded transaction carries a zero-knowledge proof. If you are new, start with a wallet that uses shielded addresses by default, and try things on testnet first, where coins have no value.",
+  sources:["b1","b2","b5"]},
+ zksnark:{q:"What are zk-SNARKs, in plain words?",level:"Start here",kw:["zk","snark","snarks","zksnark","zksnarks","zero","knowledge","proof","proofs","zkp","halo","halo2","trusted","setup","prove","verify","cryptography"],
+  coverage:"full",
+  claims:[
+   ["A zk-SNARK is the proof that lets a shielded transaction show it is valid without revealing the addresses or the amount.",["b3"]],
+   ["The name stands for zero-knowledge Succinct Non-interactive ARgument of Knowledge.",["b3"]],
+   ["Zcash's current proofs use Halo, a recursive proof system that needs no trusted setup.",["b9"]],
+   ["Before NU5 (May 31, 2022), Zcash relied on trusted setup ceremonies dating back to the 2016 launch; NU5 removed that reliance.",["b10"]],
+   ["Ironwood still uses the Halo 2 proving system.",["c13"]]
+  ],
+  callout:{h:"Why the trusted setup mattered",p:()=>"Older proof systems needed secret setup values to be created and then destroyed in a ceremony. If anyone had kept them, they could have forged proofs. Halo removed that risk.",cites:["b9","b10"]},
+  visual:"snark",
+  explain:"Imagine proving to a bouncer that you are over 18 without showing your name, address or birthday, only a stamp that cannot be faked. The bouncer learns one thing: you may enter. A zk-SNARK does the same for a payment. Every node checks the proof and learns only that the transaction follows the rules: no coins created from nothing, no double spending. It never learns who paid whom or how much.",
+  sources:["b3","b9","b10"]},
+ shielded:{q:"What is the difference between shielded and transparent?",level:"Start here",kw:["shielded","transparent","private","privacy","public","hidden","hide","anonymous","visible","address","addresses","taddr","zaddr","t-addr","z-addr","memo","memos","deshield","deshielding","difference","encrypted"],
+  coverage:"full",
+  claims:[
+   ["A transparent address puts the address and the amount on the public blockchain.",["b4","b5"]],
+   ["Shielded-to-shielded transactions hide the sender, the receiver and the amount. Shielded addresses are Zcash's main privacy feature.",["b5"]],
+   ["Shielded transactions carry an encrypted memo of exactly 512 bytes that only the recipient can read. Memos do not work with transparent addresses.",["b7","b8"]],
+   ["Sending from a shielded address to a transparent one (deshielding) reveals information, and wallets should warn you first.",["b5"]],
+   ["Using a fresh transparent address for every payment gives only a false sense of privacy.",["b5"]]
+  ],
+  callout:{h:"Watch out when deshielding",p:()=>"Moving ZEC from shielded to transparent puts the amount and the receiving address in public view. Exchanges that only accept transparent deposits cause most accidental deshielding.",cites:["b5"]},
+  visual:"shielded",
+  explain:"Transparent Zcash works like a glass envelope: anyone can read the sender, the receiver and the amount. Shielded Zcash is a sealed envelope that everyone can still confirm is properly stamped. Keep funds shielded where you can, and only deshield when you have to.",
+  sources:["b4","b5","b7","b8"]},
+ viewing:{q:"What is a viewing key, and when would I share one?",level:"Start here",kw:["viewing","view","key","keys","ivk","fvk","ufvk","uivk","audit","auditor","accountant","tax","compliance","share","spending","read-only","watch"],
+  coverage:"partial",
+  claims:[
+   ["A viewing key lets someone see the balance and transactions of a shielded address.",["b6"]],
+   ["Spending keys and viewing keys are both private keys, but only a spending key can move funds.",["b6"]],
+   ["An incoming viewing key shows incoming transactions but not outgoing ones.",["b6"]],
+   ["Unified viewing keys bundle the per-pool viewing keys into one encoding, from which unified addresses can be derived.",["c17"]]
+  ],
+  callout:{h:"Partly covered",p:()=>"The corpus does not describe exactly what a full viewing key reveals beyond incoming transactions. The table marks that cell as explanation, not fact.",cites:["b6"]},
+  visual:"viewing",
+  explain:"A viewing key is a read-only window into a shielded address. You might give one to an accountant at tax time, an auditor, or a business partner, so they can confirm payments without any power to move money. Treat it as sensitive anyway: whoever holds it can see your activity until you move to a new address.",
+  sources:["b6","c17"]}
+});
+TOPIC_ORDER.splice(0,TOPIC_ORDER.length,"basics","zksnark","shielded","viewing","fees","ironwood","ua","migrate");
+Object.assign(HASH,{basics:"what-is-zcash",zksnark:"zk-snarks",shielded:"shielded-vs-transparent",viewing:"viewing-keys"});
+Object.keys(HASH).forEach(k=>{UNHASH[HASH[k]]=k});
+["fees","ironwood","ua","migrate"].forEach(k=>{TOPICS[k].level="For builders"});
+
+/* ---------- Beginner visuals ---------- */
+function visBasics(){
+  const yr=y=>40+(y-2016)/10.8*560;
+  const ev=[[2016.82,"Sprout launch","Oct 28, 2016","b1",0],[2018.82,"Sapling","block 419,200","b1",1],[2022.41,"NU5: Halo + Orchard","May 31, 2022","b10",0],[2024.9,"Halving + NU6","Nov 2024","b11",1],[2026.57,"NU6.3 Ironwood","Jul 28, 2026","c13",0]];
+  const tiles=[["21M","ZEC supply cap","b2"],["~75 s","per block","c21"],["Equihash","proof of work","b16"],["10^8","zatoshis per ZEC","b18"]];
+  return `<section class="block visual"><h3>Zcash at a glance</h3>
+   <div class="tiles">${tiles.map(([v,l,c],i)=>`<div class="tile" style="animation-delay:${i*80}ms"><b>${v==="10^8"?"10<sup>8</sup>":v}</b><span>${l}</span>${citeBtns([c])}</div>`).join("")}</div>
+   <div class="svgbox"><svg viewBox="0 0 640 132" role="img" aria-label="Timeline from the 2016 launch to Ironwood in 2026">
+    <line class="axis" x1="30" y1="66" x2="612" y2="66"/>
+    <path class="flow draw" d="M${yr(2016.82)} 66 H ${yr(2026.57)}" style="stroke:var(--amber)"/>
+    ${[2016,2018,2020,2022,2024,2026].map(y=>`<text class="sub" x="${yr(y)}" y="128" text-anchor="middle">${y}</text>`).join("")}
+    ${ev.map(([y,l,d,c,up],i)=>{const X=yr(y).toFixed(1);return `<g class="pop" style="animation-delay:${300+i*160}ms"><circle cx="${X}" cy="66" r="6" fill="var(--surface)" stroke="var(--amber)" stroke-width="2"/><text class="lbl" x="${X}" y="${up?96:40}" text-anchor="${i===0?"start":i===ev.length-1?"end":"middle"}" style="font-size:12px">${l}</text><text class="sub" x="${X}" y="${up?110:26}" text-anchor="${i===0?"start":i===ev.length-1?"end":"middle"}">${d} <tspan class="citetag" data-cite="${c}">[${citeNum(c)}]</tspan></text></g>`}).join("")}
+   </svg></div>
+   <p class="cap">Milestones from cited sources. Orchard is now withdrawals only; new shielded activity uses Ironwood.</p></section>`;
+}
+function visSnark(){
+  const lock='<path d="M-5 -1 v-3 a5 5 0 0 1 10 0 v3" fill="none" stroke="var(--muted)" stroke-width="1.6"/><rect x="-7" y="-1" width="14" height="10" rx="2" fill="var(--muted)"/>';
+  return `<section class="block visual"><h3>What a zk-SNARK shares, and what it keeps</h3>
+   <div class="svgbox"><svg viewBox="0 0 640 230" role="img" aria-label="Your wallet keeps sender, receiver and amount private and sends only a proof; nodes verify the proof">
+    <rect class="node" x="14" y="28" width="200" height="176" rx="8"/><text class="lbl" x="30" y="54">Your wallet</text><text class="sub" x="30" y="70">makes the proof</text>
+    ${["sender","receiver","amount"].map((t,i)=>`<g class="pop" style="animation-delay:${150+i*120}ms"><rect x="30" y="${88+i*36}" width="168" height="28" rx="4" fill="var(--surface-2)"/><g transform="translate(48 ${100+i*36})">${lock}</g><text class="sub" x="66" y="${106+i*36}" style="font-size:11px">${t}: kept private</text></g>`).join("")}
+    <path id="snarkPath" class="flow draw" d="M216 116 C 300 116, 340 116, 424 116" style="stroke:var(--amber)"/>
+    <text class="sub" x="320" y="104" text-anchor="middle">only the proof travels</text>
+    <g><rect x="-26" y="-12" width="52" height="24" rx="4" fill="var(--amber)"/><text x="0" y="4" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="10" font-weight="600" fill="#0E1626">proof</text><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#snarkPath"/></animateMotion></g>
+    <rect class="node acc" x="426" y="28" width="200" height="176" rx="8"/><text class="lbl" x="442" y="54">Every node</text><text class="sub" x="442" y="70">checks the proof</text>
+    <g class="pop" style="animation-delay:900ms"><circle cx="526" cy="124" r="30" fill="var(--verified-soft)" stroke="var(--verified)" stroke-width="2"/><path d="M512 125l9 9 17-19" fill="none" stroke="var(--verified)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <text class="sub" x="526" y="178" text-anchor="middle">valid, nothing else learned</text>
+    <text class="citetag" data-cite="b3" x="320" y="146" text-anchor="middle">[${citeNum("b3")}]</text>
+   </svg></div>
+   <p class="cap">Solid parts come from the cited glossary entry. The wallet and node framing is a simplification.</p></section>`;
+}
+let shState="shielded";
+function visShielded(){
+  return `<section class="block visual" id="shDemo"><h3>What a stranger sees on the blockchain</h3>
+   <div class="seg" role="group" aria-label="Transaction type"><button type="button" data-sh="transparent">Transparent</button><button type="button" data-sh="shielded">Shielded</button></div>
+   <div class="ledger" id="shLedger"></div>
+   <p class="cap">Switch between the two. Example transaction. Rows come from ${citeBtns(["b5"])} ${citeBtns(["b7","b8"])}.</p></section>`;
+}
+function bindShielded(){
+  const r=$("#shDemo"); if(!r) return;
+  r.querySelectorAll("[data-sh]").forEach(b=>b.addEventListener("click",()=>{shState=b.dataset.sh;updShielded()}));
+  updShielded();
+}
+function updShielded(){
+  const r=$("#shDemo"); r.querySelectorAll("[data-sh]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.sh===shState));
+  const T=shState==="transparent";
+  const rows=[["From",T?"t1 address, public":"encrypted",T],["To",T?"t1 address, public":"encrypted",T],["Amount",T?"0.5 ZEC, public":"encrypted",T],["Memo",T?"not available on transparent":"encrypted, 512 bytes, recipient only",false]];
+  $("#shLedger").innerHTML=`<div class="lrow lhead"><span>Field</span><span>Public record</span></div>`+rows.map(([k,v,open],i)=>`<div class="lrow" style="animation-delay:${i*70}ms"><span>${k}</span><span class="${open?"open":v.startsWith("encrypted")?"enc":"na"}">${open?"":v.startsWith("encrypted")?'<i class="bars" aria-hidden="true"></i>':""}${esc(v)}</span></div>`).join("")+`<div class="lnote">${T?"Anyone can read this, forever.":"The network still verifies it with a zero-knowledge proof."}</div>`;
+}
+function visViewing(){
+  const Y='<svg viewBox="0 0 24 24" class="vk y"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>', N='<svg viewBox="0 0 24 24" class="vk n"><path d="M7 7l10 10M17 7L7 17"/></svg>';
+  const cell=(v,c,gen)=>gen?`<td class="gen" title="Explanation, not in the corpus">${v?Y:N}<span class="mono" style="font-size:.7rem">explanation</span></td>`:`<td>${v?Y:N}${c?citeBtns([c]):""}</td>`;
+  return `<section class="block visual"><h3>Who can do what</h3>
+   <div class="tablebox" style="max-height:none"><table class="vtable">
+    <thead><tr><th></th><th>Spending key</th><th>Viewing key</th><th>Incoming viewing key</th></tr></thead>
+    <tbody>
+     <tr><th>Move funds</th>${cell(1,"b6")}${cell(0,"b6")}${cell(0,"b6")}</tr>
+     <tr><th>See incoming payments</th>${cell(1,null,1)}${cell(1,"b6")}${cell(1,"b6")}</tr>
+     <tr><th>See outgoing payments</th>${cell(1,null,1)}${cell(1,null,1)}${cell(0,"b6")}</tr>
+    </tbody></table></div>
+   <p class="cap">Dashed cells are Unravel's explanation; the corpus does not state them directly.</p></section>`;
+}
+Object.assign(VIS,{basics:visBasics,snark:visSnark,shielded:visShielded,viewing:visViewing});
+Object.assign(BIND,{shielded:bindShielded});
 
 /* ---------- Rail ---------- */
 function renderRail(){
@@ -856,8 +1048,11 @@ function renderRail(){
 
 /* ---------- Suggestions ---------- */
 function renderSuggest(active){
-  $("#suggest").innerHTML=TOPIC_ORDER.map(k=>`<button type="button" data-topic="${k}" aria-current="${k===active}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("");
+  const groups=["Start here","For builders"];
+  $("#suggest").innerHTML=groups.map(g=>`<div class="sgroup"><span class="sglabel">${g}</span>${TOPIC_ORDER.filter(k=>TOPICS[k].level===g).map(k=>`<button type="button" data-topic="${k}" aria-current="${k===active}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div>`).join("");
 }
+let EMPTY_DRAWER=null;
+function resetDrawer(){ if(EMPTY_DRAWER===null) return; $("#drawerBody").innerHTML=EMPTY_DRAWER; $("#drawer").dataset.open="false"; }
 
 /* ---------- Drawer ---------- */
 let lastTerms=[];
@@ -1084,14 +1279,15 @@ function bindMig(){
 }
 
 /* ---------- Render curated answer ---------- */
-function renderTopic(key){
-  const T=TOPICS[key]; citeOrder=[]; lastTerms=T.kw;
+function renderTopic(key,asked){
+  const T=TOPICS[key]; citeOrder=[]; lastTerms=T.kw; resetDrawer();
   const claims=T.claims.map(([h,ids])=>`<li>${h}${citeBtns(ids)}</li>`).join("");
   const callout=T.callout?`<section class="block callout"><h3>${T.callout.h}</h3><p>${T.callout.p()} ${citeBtns(T.callout.cites)}</p></section>`:"";
-  const vis={fee:visFee,ironwood:visIronwood,ua:visUA,migrate:visMigrate}[T.visual]();
+  const vis=VIS[T.visual]();
   const srcs=sourcesList();
   $("#main").innerHTML=`<article class="answer">
     <h2 class="q">${esc(T.q)}</h2>
+    ${asked?`<p class="asked">You asked "${esc(asked)}". This is the closest curated answer.</p>`:""}
     <div class="meta"><span class="badge ${T.coverage}">${T.coverage==="full"?"Covered by corpus":"Partly covered"}</span><span>Snapshot ${SNAP}</span><span>Curated answer, no Claude usage</span></div>
     <section class="block verified"><h3>From the docs</h3><ol class="claims">${claims}</ol></section>
     ${callout}
@@ -1100,7 +1296,7 @@ function renderTopic(key){
     <section class="block"><h3 style="color:var(--muted)">Sources in this answer</h3>${sourcesList()}</section>
   </article>`;
   renderSuggest(key);
-  if(T.visual==="fee") bindFee(); if(T.visual==="ua") bindUA(); if(T.visual==="migrate") bindMig();
+  bindVis(T.visual);
   // the sources list must include cites added by visuals; rerender it
   const lists=document.querySelectorAll(".answer .block:last-child");
   lists[lists.length-1].innerHTML=`<h3 style="color:var(--muted)">Sources in this answer</h3>${sourcesList()}`;
@@ -1113,18 +1309,22 @@ function sourcesList(){
 }
 
 /* ---------- Retrieval ---------- */
-const STOP=new Set("a an the of to in on for and or is are be by with what which how do does i my can it this that from at as was were will should when where why who any all into use using vs about zcash new without get need want make there their than then also just only".split(" "));
+const STOP=new Set("a an the of to in on for and or is are be by with what which how do does i my can it this that from at as was were will should when where why who any all into use using vs about new without get need want make there their than then also just only".split(" "));
 const SYN={ua:["unified","address"],uas:["unified","address"],zats:["zatoshis"],zat:["zatoshis"],zatoshi:["zatoshis"],fee:["fee","marginal"],fees:["fee","marginal"],nu63:["ironwood","nu6.3"],"nu6.3":["ironwood"],rpc:["methods","rpc"],wallet:["zallet","wallet"],node:["zebra","node"],zmq:["zmq","indexer"],shield:["shield","shielded"],receivers:["receiver","receivers"],branch:["branch","consensus"],upgrade:["upgrade","activated"]};
-function toks(s){return s.toLowerCase().replace(/[^a-z0-9_.]+/g," ").split(" ").map(t=>t.replace(/^\.+|\.+$/g,"")).filter(t=>t&&!STOP.has(t))}
+const NORM={zksnark:["zk","snark"],zksnarks:["zk","snark"],zkp:["zero","knowledge","proof"],zkps:["zero","knowledge","proof"],halo2:["halo"],taddr:["transparent","address"],zaddr:["shielded","address"],zaddrs:["shielded","address"],taddrs:["transparent","address"],ivk:["incoming","viewing","key"],fvk:["viewing","key"],ufvk:["unified","viewing","key"],uivk:["unified","incoming","viewing","key"],zcashd:["zcashd"],nu5:["nu5"]};
+function stem(t){if(t.length<=4||/\d/.test(t))return t;if(t.endsWith("sses"))return t.slice(0,-2);if(t.endsWith("ies"))return t.slice(0,-3)+"y";if(/(xes|ches|shes|sses)$/.test(t))return t.slice(0,-2);if(t.endsWith("s")&&!/(ss|us|is)$/.test(t))return t.slice(0,-1);return t}
+function toks(s){return s.toLowerCase().replace(/[^a-z0-9_.]+/g," ").split(" ").map(t=>t.replace(/^\.+|\.+$/g,"")).flatMap(t=>NORM[t]||[t]).filter(t=>t&&!STOP.has(t)).map(stem)}
+Object.assign(SYN,{private:["shielded","privacy"],privacy:["shielded","private"],hidden:["shielded","encrypted"],hide:["shielded","encrypted"],anonymous:["shielded","privacy"],coin:["zec"],token:["zec"],money:["zec"],supply:["supply","million"],mining:["mining","equihash","block"],miner:["mining","equihash"],mine:["mining","equihash"],halving:["halving","reward"],reward:["reward","halving"],key:["key","viewing"],audit:["viewing","key"],auditor:["viewing","key"],accountant:["viewing","key"],message:["memo"],note:["memo"],test:["testnet","taz"],faucet:["faucet","testnet","taz"],free:["faucet","testnet"],launch:["launched","sprout","2016"],history:["launched","sprout","2016"],started:["launched","sprout"],proof:["proof","zk","snark"],zero:["zero","knowledge"],trusted:["trusted","setup","halo"],wallet:["zallet","wallet","zodl"],node:["zebra","node","z3"],light:["zaino","light"],mobile:["zaino","light","zodl"],unit:["zatoshis"],smallest:["zatoshis"],zip:["zip","proposal"],proposal:["zip","proposal"],upgrade:["upgrade","activated","network"],zashi:["zodl","zashi"],snark:["snark","zk","proof"]});
+for(const k of Object.keys(SYN)){SYN[k]=SYN[k].map(v=>stem(v))}
 const DOCS=C.map(c=>({id:c.id,t:toks(c.x+" "+S[c.s].t+" "+c.sec)}));
 const DF={};DOCS.forEach(d=>new Set(d.t).forEach(t=>DF[t]=(DF[t]||0)+1));
 const AVG=DOCS.reduce((a,d)=>a+d.t.length,0)/DOCS.length;
 function search(q){
-  let qt=toks(q); qt=qt.concat(...qt.map(t=>SYN[t]||[]));
+  let qt=toks(q); if(!qt.length) qt=["zcash"]; qt=qt.concat(...qt.map(t=>SYN[t]||[]));
   const N=DOCS.length;
   return DOCS.map(d=>{let sc=0;for(const t of new Set(qt)){const tf=d.t.filter(x=>x===t||(t.length>4&&x.startsWith(t))).length;if(!tf)continue;const idf=Math.log(1+(N-(DF[t]||0)+.5)/((DF[t]||0)+.5));sc+=idf*tf*2.2/(tf+1.2*(.25+.75*d.t.length/AVG))}return {id:d.id,sc}}).filter(r=>r.sc>0).sort((a,b)=>b.sc-a.sc);
 }
-function topicFor(q){const qt=toks(q);let best=null,bs=0;for(const k of TOPIC_ORDER){const s=qt.filter(t=>TOPICS[k].kw.includes(t)).length;if(s>bs){bs=s;best=k}}return bs>=1?best:null}
+function topicFor(q){const qt=toks(q);let best=null,bs=0;for(const k of TOPIC_ORDER){const kw=TOPICS[k].kw.map(stem);const s=qt.filter(t=>kw.includes(t)).length;if(s>bs){bs=s;best=k}}return bs>=1?best:null}
 
 /* ---------- Claim check ---------- */
 function norm(s){return s.toLowerCase().replace(/,/g,"")}
@@ -1152,25 +1352,26 @@ function pipelineHTML(stage,ids){
 async function ask(q){
   q=q.trim(); if(!q) return;
   if(inflight) inflight.abort();
-  citeOrder=[]; lastTerms=toks(q);
+  citeOrder=[]; lastTerms=toks(q); resetDrawer();
   const all=search(q); const hits=all.filter(h=>h.sc>=all[0]?.sc*0.35).slice(0,6); const ids=hits.map(h=>h.id);
   const topic=topicFor(q);
   renderSuggest(null);
   const shell=(inner)=>`<article class="answer"><h2 class="q">${esc(q)}</h2>${inner}</article>`;
   if(!hits.length){
     $("#main").innerHTML=shell(`<div class="meta"><span class="badge none">Not covered</span><span>Snapshot ${SNAP}</span></div>
-     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question. The corpus covers fees, unified addresses, the Ironwood upgrade and the zcashd to Zebra and Zallet migration. Try one of the curated questions, or rephrase with protocol terms.</p></section>`);
+     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, unified addresses, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words, or start with one of these:</p></section>
+     <div class="block"><div class="suggest">${TOPIC_ORDER.filter(k=>TOPICS[k].level==="Start here").map(k=>`<button type="button" data-topic="${k}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div></div>`);
     return;
   }
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(1,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
   await new Promise(r=>setTimeout(r,motionOn?350:0));
   if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
-  if(!sampleFn){ renderPassagesOnly(q,ids,topic,"Claude isn't available in this view, so Unravel can't draft an answer. These are the passages that best match your question."); return }
+  if(!sampleFn){ if(topic){ const T=TOPICS[topic]; const tc=new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[])]); if(tc.has(ids[0])){ renderTopic(topic,q); return } } renderPassagesOnly(q,ids,topic,"Unravel can't draft a new answer in this view yet. These are the passages that best match your question."); return }
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(2,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
   const ctl=new AbortController(); inflight=ctl;
   $("#stopBtn").addEventListener("click",()=>ctl.abort());
   const passages=ids.map(id=>{const c=CI[id],s=S[c.s];return `[${id}] (${s.tier.toUpperCase()}) ${s.t} / ${c.sec}: ${c.x}`}).join("\n\n");
-  const prompt=`You are Unravel, a documentation assistant for Zcash developers. Answer the question using ONLY the passages below.
+  const prompt=`You are Unravel, a documentation assistant for Zcash developers and newcomers. Answer the question using ONLY the passages below. Write plainly and explain any jargon in a few words.
 
 Rules:
 - Put a sentence in "verified" only if a cited passage directly supports it. Cite passage ids such as "c4".
@@ -1215,7 +1416,7 @@ ${passages}`;
     diag=`<section class="block visual"><h3>${esc(String(dg.title||"How it fits together").slice(0,80))}</h3><div class="gflow">${steps.map((s,i)=>`${i?'<span class="garrow" aria-hidden="true">→</span>':""}<span class="gnode${s.c?"":" gen"}" style="animation-delay:${i*60}ms">${esc(s.l)}${s.c?citeBtns([s.c]):""}</span>`).join("")}</div><p class="cap">Solid steps cite a passage. Dashed steps are Unravel's own framing.</p></section>`;
   }
   let demo="";
-  if(topic){const T=TOPICS[topic];demo={fee:visFee,ironwood:visIronwood,ua:visUA,migrate:visMigrate}[T.visual]()}
+  if(topic){const T=TOPICS[topic];demo=VIS[T.visual]()}
   const expl=[data&&data.explanation?`<p>${fmtInline(String(data.explanation))}</p>`:"",
     dem.length?`<p style="margin-top:10px;font-weight:600;font-size:.875rem">Could not be matched to a passage, treat as unverified:</p><ul class="demoted">${dem.map(([t,w])=>`<li>${fmtInline(t)} <span class="mono" style="font-size:.75rem">(${esc(w)})</span></li>`).join("")}</ul>`:""].join("");
   const gaps=data&&data.gaps&&String(data.gaps).trim()?`<section class="block callout"><h3>Gaps and conflicts</h3><p>${fmtInline(String(data.gaps))}</p></section>`:"";
@@ -1223,21 +1424,21 @@ ${passages}`;
     ${claimsHTML}${gaps}${diag}${demo}
     ${expl?`<section class="block explain"><h3>Explanation · written by Unravel</h3>${expl}</section>`:""}
     <section class="block" id="srcBlock"></section>`);
-  if(topic){ if(TOPICS[topic].visual==="fee")bindFee(); if(TOPICS[topic].visual==="ua")bindUA(); if(TOPICS[topic].visual==="migrate")bindMig(); }
+  if(topic) bindVis(TOPICS[topic].visual);
   finishSources(ids);
 }
 function renderPassagesOnly(q,ids,topic,msg){
   citeOrder=[];
   const list=ids.slice(0,4).map(id=>{const c=CI[id];return `<li>${esc(c.x)}${citeBtns([id])}</li>`}).join("");
   let demo="";
-  if(topic){demo={fee:visFee,ironwood:visIronwood,ua:visUA,migrate:visMigrate}[TOPICS[topic].visual]()}
+  if(topic){demo=VIS[TOPICS[topic].visual]()}
   $("#main").innerHTML=`<article class="answer"><h2 class="q">${esc(q)}</h2>
    <div class="meta"><span class="badge partial">Passages only</span><span>Snapshot ${SNAP}</span></div>
    <section class="block callout"><h3>No drafted answer</h3><p>${esc(msg)}</p></section>
    <section class="block verified"><h3>Matching passages</h3><ol class="claims">${list}</ol></section>
    ${demo}
    <section class="block" id="srcBlock"></section></article>`;
-  if(topic){ if(TOPICS[topic].visual==="fee")bindFee(); if(TOPICS[topic].visual==="ua")bindUA(); if(TOPICS[topic].visual==="migrate")bindMig(); }
+  if(topic) bindVis(TOPICS[topic].visual);
   finishSources(ids);
 }
 function finishSources(){
@@ -1264,6 +1465,7 @@ function applyMotion(){
 $("#motionBtn").addEventListener("click",()=>{motionOn=!motionOn;try{localStorage.setItem("unravel-motion",motionOn?"1":"0")}catch(e){}applyMotion()});
 if(matchMedia("(max-width:820px)").matches) $("#railDetails").open=false;
 
+EMPTY_DRAWER=$("#drawerBody").innerHTML;
 renderRail(); route(); applyMotion();
 })();
 </script>
