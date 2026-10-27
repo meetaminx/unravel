@@ -1,0 +1,1310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Unravel answers Zcash developer questions from ZIPs, Zebra and Zallet docs, with every fact linked to its source.">
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Unravel</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="icon" type="image/png" href="data:image/png;base64,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">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap">
+<style>
+/* Layout: drafting table. Vertical column rules run behind a two-part hero (claim left, live stage right);
+   the working copilot sits below on the same grid. Blue = action, amber = Zcash data, green = cited, dashed slate = generated. */
+:root{
+  --bg:#F4F6F9; --surface:#FFFFFF; --surface-2:#EEF2F6; --ink:#0E1626; --ink-2:#334155; --muted:#5B6678; --line:#E2E7EE; --grid:#E3E8EF; --rose:#CDD5E1;
+  --blue:#1F56E0; --blue-hover:#1847C2; --blue-ink:#FFFFFF; --blue-soft:#E7EEFE;
+  --amber:#C98410; --amber-soft:#FBF0DA; --accent:var(--amber); --accent-soft:var(--amber-soft);
+  --verified:#12805A; --verified-soft:#E3F3EC; --gen:#52627A; --warn:#B4540E; --warn-soft:#FCEBDD; --danger:#B42318;
+  --term:#0E1626; --term-2:#17213A; --term-line:#24304A; --term-ink:#D6DEEA; --term-dim:#7C8AA3; --term-green:#5FD3A0; --term-amber:#F2B544; --term-blue:#8EB0FF; --term-red:#F2877B;
+  --shadow-lg:0 40px 80px -30px rgba(14,22,38,.32),0 2px 6px rgba(14,22,38,.06);
+  --shadow-sm:0 8px 20px -10px rgba(14,22,38,.25);
+  --f-display:"Archivo","Helvetica Neue",Arial,system-ui,sans-serif;
+  --f-body:"Archivo","Helvetica Neue",Arial,system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --t-fast:83ms; --t-mid:167ms; --t-slow:250ms; --t-scene:420ms; --t-draw:900ms;
+  --ease-in:cubic-bezier(0,0,0,1); --ease-out:cubic-bezier(.7,0,1,1); --ease-std:cubic-bezier(.2,0,0,1); --ease-spring:cubic-bezier(.34,1.4,.64,1);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#080C14; --surface:#0F1622; --surface-2:#151E2C; --ink:#E8EDF4; --ink-2:#C2CCDA; --muted:#8E9AAD; --line:#1F2A3B; --grid:#121B28; --rose:#1E2A3C;
+  --blue:#6A93FF; --blue-hover:#86A8FF; --blue-ink:#07101F; --blue-soft:#14213D; --amber:#F0B444; --amber-soft:#2A2010;
+  --verified:#4CC79A; --verified-soft:#0F241C; --gen:#93A5BD; --warn:#F0955A; --warn-soft:#2B1A10; --danger:#F07B70;
+  --term:#05080F; --term-2:#0D1424; --term-line:#1D2840;
+  --shadow-lg:0 40px 80px -30px rgba(0,0,0,.7),0 2px 6px rgba(0,0,0,.4); --shadow-sm:0 8px 20px -10px rgba(0,0,0,.6); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#080C14; --surface:#0F1622; --surface-2:#151E2C; --ink:#E8EDF4; --ink-2:#C2CCDA; --muted:#8E9AAD; --line:#1F2A3B; --grid:#121B28; --rose:#1E2A3C;
+  --blue:#6A93FF; --blue-hover:#86A8FF; --blue-ink:#07101F; --blue-soft:#14213D; --amber:#F0B444; --amber-soft:#2A2010;
+  --verified:#4CC79A; --verified-soft:#0F241C; --gen:#93A5BD; --warn:#F0955A; --warn-soft:#2B1A10; --danger:#F07B70;
+  --term:#05080F; --term-2:#0D1424; --term-line:#1D2840;
+  --shadow-lg:0 40px 80px -30px rgba(0,0,0,.7),0 2px 6px rgba(0,0,0,.4); --shadow-sm:0 8px 20px -10px rgba(0,0,0,.6); color-scheme:dark}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;overflow-x:clip}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;padding-block:0;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow-x:hidden}
+a{color:var(--blue)}
+button{font:inherit;color:inherit}
+code,.mono{font-family:var(--f-mono);font-size:.86em}
+code{background:var(--surface-2);padding:.05em .35em;border-radius:3px}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.wrap{max-width:1296px;margin:0 auto;position:relative}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* column rules, as in a drafting sheet */
+.rules-bg{position:absolute;inset:0 0 auto 0;height:1100px;pointer-events:none;z-index:0;
+  background-image:repeating-linear-gradient(90deg,transparent 0 calc(20% - 1px),var(--grid) calc(20% - 1px) 20%);
+  -webkit-mask-image:linear-gradient(#000 55%,transparent);mask-image:linear-gradient(#000 55%,transparent)}
+
+/* nav */
+.top{position:relative;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;height:74px;border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink)}
+.brand b{font-family:var(--f-display);font-weight:800;font-size:1.45rem;letter-spacing:-.03em}
+.top nav{display:flex;gap:28px;align-items:center}
+.top nav a{color:var(--ink);text-decoration:none;font-weight:500;font-size:.95rem}
+.top nav a:hover{color:var(--blue)}
+.top .right{display:flex;gap:10px;align-items:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:44px;padding:0 18px;border-radius:6px;font-weight:600;font-size:.98rem;text-decoration:none;cursor:pointer;border:1px solid transparent;transition:background var(--t-fast),transform var(--t-fast) var(--ease-std),border-color var(--t-fast)}
+.btn:active{transform:translateY(1px)}
+.btn.primary{background:var(--blue);color:var(--blue-ink)}
+.btn.primary:hover{background:var(--blue-hover)}
+.btn.outline{background:var(--surface);border-color:var(--ink);color:var(--ink)}
+.btn.outline:hover{border-color:var(--blue);color:var(--blue)}
+.btn.lg{height:54px;padding:0 24px;font-size:1.06rem}
+.btn[disabled]{opacity:.5;cursor:default}
+.iconbtn{height:36px;padding:0 10px;border:1px solid var(--line);background:var(--surface);border-radius:6px;cursor:pointer;font-size:.82rem;color:var(--muted);display:inline-flex;gap:6px;align-items:center}
+.iconbtn:hover{color:var(--ink);border-color:var(--ink-2)}
+
+/* hero */
+.hero{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:40px;align-items:center;padding-block:64px 48px}
+.livechip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--line);background:var(--surface);border-radius:4px;font-size:.86rem;color:var(--ink-2);margin-bottom:26px}
+.livechip i{width:8px;height:8px;border-radius:50%;background:var(--verified);box-shadow:0 0 0 3px var(--verified-soft);flex:none}
+.livechip b{font-family:var(--f-mono);font-weight:500;font-size:.82rem}
+.hero h1{font-family:var(--f-display);font-weight:800;font-size:clamp(2.6rem,5.6vw,4.6rem);line-height:.98;letter-spacing:-.045em;margin:0 0 24px;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero .lede{font-size:clamp(1.05rem,1.4vw,1.28rem);line-height:1.55;color:var(--ink-2);max-width:34ch;margin:0 0 32px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap}
+.fine{margin-top:28px;font-size:.86rem;color:var(--muted);max-width:52ch}
+
+/* stage */
+.stage{position:relative;height:640px;isolation:isolate}
+.rosette{position:absolute;left:50%;top:50%;width:900px;height:900px;transform:translate(-42%,-50%);z-index:-1;pointer-events:none}
+.rosette g{transform-origin:450px 450px;animation:spin 180s linear infinite}
+.rosette g + g{animation-direction:reverse;animation-duration:240s}
+.rosette path{fill:none;stroke:var(--rose);stroke-width:.8}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.ico{position:absolute;width:46px;height:46px;border-radius:8px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-sm);display:grid;place-items:center;color:var(--ink-2);z-index:4;pointer-events:none;animation:bob 7s var(--ease-std) infinite alternate}
+.ico svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ico.a{color:var(--amber)} .ico.b{color:var(--blue)} .ico.g{color:var(--verified)}
+@keyframes bob{from{transform:translateY(-6px)}to{transform:translateY(6px)}}
+.ico.i1{left:4%;top:8%;animation-delay:-1s}.ico.i2{left:16%;top:-1%;animation-delay:-3s}.ico.i3{right:-2%;top:18%;animation-delay:-2s}.ico.i4{right:34%;bottom:-6%;animation-delay:-5s}
+.ico.i5{left:-3%;bottom:30%;animation-delay:-4s}.ico.i6{left:34%;bottom:-3%;animation-delay:-6s}.ico.i7{right:-4%;top:52%;animation-delay:-2.5s}.ico.i8{right:38%;top:-4%;animation-delay:-3.5s}
+
+/* terminal device */
+.term{position:absolute;left:0;top:124px;width:40%;max-width:292px;height:452px;z-index:3;background:var(--term);border-radius:22px;border:6px solid var(--term-2);box-shadow:var(--shadow-lg);color:var(--term-ink);display:flex;flex-direction:column;overflow:hidden}
+.term .bar{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;border-bottom:1px solid var(--term-line);font-family:var(--f-mono);font-size:.7rem;color:var(--term-dim)}
+.term .bar b{color:var(--term-ink);font-weight:600}
+.term .tagx{font-family:var(--f-mono);font-size:.66rem;padding:1px 6px;border-radius:3px;background:var(--term-amber);color:var(--term);font-weight:600}
+.term pre{margin:0;padding:14px;font-family:var(--f-mono);font-size:.72rem;line-height:1.7;white-space:pre-wrap;word-break:break-word;flex:1;overflow:hidden}
+.term .ln{display:block;opacity:0;transform:translateY(4px);transition:opacity var(--t-mid) var(--ease-in),transform var(--t-mid) var(--ease-in)}
+.term .ln.on{opacity:1;transform:none}
+.term .ln.hl{background:rgba(142,176,255,.12);margin:0 -14px;padding:0 14px}
+.term .c{color:var(--term-dim)} .term .k{color:var(--term-blue)} .term .s{color:var(--term-green)} .term .n{color:var(--term-amber)} .term .r{color:var(--term-red)} .term .x{text-decoration:line-through;color:var(--term-dim)}
+.term .caret{display:inline-block;width:7px;height:1.05em;background:var(--term-amber);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.term .foot{padding:10px 14px;border-top:1px solid var(--term-line);font-size:.7rem;color:var(--term-dim);display:flex;align-items:center;gap:8px;font-family:var(--f-mono)}
+
+/* answer card */
+.card{position:absolute;right:0;top:0;width:68%;height:610px;z-index:2;background:var(--surface);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:24px 26px 20px 26px;display:flex;flex-direction:column}
+.card .chead{display:flex;justify-content:space-between;gap:12px;font-size:.88rem;padding-bottom:14px;border-bottom:1px solid var(--line)}
+.card .chead b{font-weight:600}
+.card .chead span{color:var(--muted);font-family:var(--f-mono);font-size:.78rem}
+.card .scene{flex:1;display:flex;flex-direction:column;min-height:0;padding-top:18px;padding-left:13%}
+.card h3{font-family:var(--f-display);font-weight:700;font-size:1.72rem;letter-spacing:-.025em;line-height:1.1;margin:0 0 6px}
+.card .csub{color:var(--muted);margin:0 0 14px;font-size:.95rem}
+.card .vis{flex:1;min-height:0;position:relative;display:grid;place-items:center}
+.card .vis svg{width:100%;height:100%;max-height:300px;overflow:visible}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.chipx{font-family:var(--f-mono);font-size:.7rem;padding:3px 7px;border-radius:3px;border:1px solid var(--verified);color:var(--verified);background:var(--verified-soft)}
+.chipx.g{border:1px dashed var(--gen);color:var(--gen);background:none}
+.chipx.w{border-color:var(--warn);color:var(--warn);background:var(--warn-soft)}
+
+.scene>*{animation:sceneIn var(--t-scene) var(--ease-in) both}
+.scene>*:nth-child(2){animation-delay:60ms}.scene>*:nth-child(3){animation-delay:120ms}.scene>*:nth-child(4){animation-delay:180ms}
+@keyframes sceneIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.scene.leaving>*{animation:sceneOut 200ms var(--ease-out) both}
+@keyframes sceneOut{to{opacity:0;transform:translateY(-10px)}}
+
+/* progress */
+.prog{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-top:16px;margin-left:13%}
+.prog button{background:none;border:0;padding:0;text-align:left;cursor:pointer;display:grid;gap:8px;font-size:.84rem;color:var(--muted)}
+.prog button[aria-current="true"]{color:var(--ink);font-weight:600}
+.prog .track{height:3px;background:var(--line);border-radius:2px;overflow:hidden}
+.prog .fill{display:block;height:100%;width:0;background:var(--blue)}
+.prog button.done .fill{width:100%;background:var(--amber)}
+.stagectl{position:absolute;right:12px;bottom:-46px;display:flex;gap:6px;z-index:5}
+
+/* scene visuals */
+.v-axis{stroke:var(--line);stroke-width:1}
+.v-txt{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+.v-lbl{font-family:var(--f-body);font-size:12px;font-weight:600;fill:var(--ink)}
+.v-step{fill:none;stroke:var(--amber);stroke-width:2.5;stroke-linejoin:round}
+.v-area{fill:var(--amber-soft);opacity:.9}
+.draw{stroke-dasharray:var(--len,1000);stroke-dashoffset:var(--len,1000);animation:draw var(--t-draw) var(--ease-std) forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pop{transform-box:fill-box;transform-origin:center;animation:popIn 380ms var(--ease-spring) both}
+@keyframes popIn{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.fade{animation:fadeIn 400ms var(--ease-in) both}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.v-node{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+.v-node.acc{fill:var(--amber-soft);stroke:var(--amber)}
+.v-node.dim{stroke:var(--muted);stroke-dasharray:4 3}
+.v-flow{fill:none;stroke:var(--verified);stroke-width:2;stroke-linecap:round}
+.v-flow.no{stroke:var(--danger);stroke-dasharray:5 4}
+.v-flow.gen{stroke:var(--gen);stroke-dasharray:5 4}
+.v-dot{fill:var(--amber)}
+.v-ring{fill:none;stroke:var(--amber);stroke-width:1.1;opacity:.8}
+.spin{transform-box:fill-box;transform-origin:center;animation:spin 14s linear infinite}
+.v-bar{rx:3}
+.donut circle{fill:none;stroke-width:22}
+.ans{display:grid;gap:10px;width:100%;align-self:start}
+.ans .vl{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-left:3px solid var(--verified);background:var(--verified-soft);border-radius:0 6px 6px 0;font-size:.9rem;animation:sceneIn 380ms var(--ease-in) both}
+.ans .vl svg{flex:none;width:18px;height:18px;stroke:var(--verified);fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-top:2px}
+.ans .ex{border:1.5px dashed var(--gen);border-radius:6px;padding:10px 12px;font-size:.86rem;color:var(--gen);animation:sceneIn 380ms var(--ease-in) both}
+.ans .ex b{display:block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px}
+.ans .mv{max-height:90px;overflow:hidden;animation:demote 1.8s var(--ease-std) both}
+@keyframes demote{0%{opacity:0}15%{opacity:1}40%{opacity:1;border-left-color:var(--danger);background:var(--warn-soft)}70%{opacity:.6;max-height:90px;padding-block:10px;transform:translateY(16px);border-left-color:var(--danger);background:var(--warn-soft)}100%{opacity:0;max-height:0;padding-block:0;transform:translateY(24px);border-left-color:var(--danger)}}
+.paused .spin,.paused .ico,.paused .rosette g,.paused .caret{animation-play-state:paused!important}
+
+/* tier strip */
+.strip{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;padding-block:28px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-top:56px}
+.strip>span{font-size:.86rem;color:var(--muted);max-width:22ch}
+.strip ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px 32px}
+.strip li{display:flex;align-items:baseline;gap:8px;font-weight:600;font-size:1.02rem}
+.strip li span{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);font-weight:400}
+
+/* section heads */
+.sec{position:relative;z-index:1;padding-block:72px 0}
+.eyebrow{font-family:var(--f-mono);font-size:.76rem;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin:0 0 12px}
+.sec h2.big{font-family:var(--f-display);font-weight:800;font-size:clamp(2rem,3.6vw,3rem);letter-spacing:-.04em;line-height:1.02;margin:0 0 14px;text-wrap:balance;max-width:20ch}
+.sec .sublede{color:var(--ink-2);max-width:60ch;margin:0 0 28px;font-size:1.06rem}
+
+/* ask */
+.ask{display:flex;gap:10px;max-width:760px}
+.ask input{flex:1;min-width:0;height:56px;padding:0 18px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font:inherit;font-size:1.02rem;box-shadow:var(--shadow-sm)}
+.ask input:focus{outline:2px solid var(--blue);outline-offset:-1px;border-color:transparent}
+.ask .btn{height:56px}
+.suggest{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.suggest button{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer;font-size:.9rem;text-align:left;transition:border-color var(--t-fast),background var(--t-fast)}
+.suggest button:hover{border-color:var(--blue)}
+.suggest button[aria-current="true"]{border-color:var(--blue);background:var(--blue-soft)}
+.tag{font-family:var(--f-mono);font-size:.64rem;letter-spacing:.04em;text-transform:uppercase;color:var(--blue);border:1px solid currentColor;border-radius:3px;padding:0 4px}
+.hint{font-size:.86rem;color:var(--muted);margin-top:10px}
+
+/* desk */
+.desk{position:relative;z-index:1;display:grid;grid-template-columns:236px minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:36px}
+.rail{position:sticky;top:16px;font-size:.88rem}
+.rail h2,.drawer h2,.section-h{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600;margin:0 0 10px;font-family:var(--f-mono)}
+.rail .group{margin-bottom:18px}
+.rail ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.rail li button{width:100%;text-align:left;background:none;border:0;padding:5px 8px;border-radius:6px;cursor:pointer;color:var(--ink);display:flex;justify-content:space-between;gap:8px}
+.rail li button:hover{background:var(--surface)}
+.rail li button span.n{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+.legend{display:grid;gap:8px;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--surface)}
+.legend div{display:flex;gap:8px;align-items:flex-start;font-size:.82rem;color:var(--muted)}
+.sw{flex:none;width:14px;height:14px;border-radius:3px;margin-top:3px}
+.sw.v{background:var(--verified-soft);border:2px solid var(--verified)}
+.sw.g{border:1.5px dashed var(--gen)}
+.sw.w{background:var(--warn-soft);border:2px solid var(--warn)}
+main{min-width:0}
+.answer{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:30px;display:grid;gap:24px;box-shadow:var(--shadow-sm)}
+.answer h2.q{font-family:var(--f-display);font-weight:700;font-size:1.6rem;line-height:1.2;letter-spacing:-.025em;margin:0;text-wrap:balance}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.82rem;color:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:6px;font-size:.74rem;font-weight:600;padding:2px 8px;border-radius:3px;border:1px solid var(--line)}
+.badge.full{color:var(--verified);border-color:var(--verified);background:var(--verified-soft)}
+.badge.partial{color:var(--warn);border-color:var(--warn);background:var(--warn-soft)}
+.badge.none{color:var(--danger);border-color:var(--danger)}
+.block{display:grid;gap:12px;animation:rise var(--t-slow) var(--ease-in) both}
+.block:nth-child(3){animation-delay:40ms}.block:nth-child(4){animation-delay:80ms}.block:nth-child(5){animation-delay:120ms}.block:nth-child(6){animation-delay:160ms}
+@keyframes rise{from{transform:translateY(8px);opacity:.01}to{transform:none;opacity:1}}
+.block h3{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;margin:0;display:flex;align-items:center;gap:8px;font-weight:600;font-family:var(--f-mono)}
+.verified h3{color:var(--verified)}
+.claims{list-style:none;margin:0;padding:0;display:grid;gap:10px;max-width:72ch}
+.claims li{padding-left:14px;border-left:3px solid var(--verified)}
+.cite{font-family:var(--f-mono);font-size:.72rem;color:var(--verified);background:var(--verified-soft);border:1px solid transparent;border-radius:3px;padding:0 4px;margin-left:3px;cursor:pointer;vertical-align:1px}
+.cite:hover,.cite[aria-pressed="true"]{border-color:var(--verified)}
+.explain{border:1.5px dashed var(--gen);border-radius:6px;padding:16px}
+.explain h3{color:var(--gen)}
+.explain p{margin:0;max-width:70ch}
+.explain .demoted{margin:8px 0 0;padding-left:18px;color:var(--muted);font-size:.94rem}
+.callout{border-left:3px solid var(--warn);background:var(--warn-soft);padding:12px 16px;border-radius:0 6px 6px 0}
+.callout h3{color:var(--warn)}
+.callout p{margin:0;max-width:72ch}
+.srcs{display:grid;gap:6px;margin:0;padding:0;list-style:none;font-size:.88rem}
+.srcs li{line-height:1.7}
+.srcs li>*{margin-right:8px}
+.srcs .num{font-family:var(--f-mono);font-size:.74rem;color:var(--muted)}
+.tier{font-family:var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;padding:0 5px;border-radius:3px;border:1px solid var(--line);color:var(--muted)}
+.tier.Spec,.tier.Official{color:var(--verified);border-color:var(--verified)}
+.tier.Implementation{color:var(--blue);border-color:var(--blue)}
+.tier.Secondary,.tier.Proposal{color:var(--warn);border-color:var(--warn)}
+
+.visual{border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--bg)}
+.visual h3{color:var(--ink)}
+.visual .cap{font-size:.82rem;color:var(--muted);margin:0}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;min-width:520px;height:auto}
+svg .node{fill:var(--surface);stroke:var(--line);stroke-width:1.5}
+svg .node.acc{stroke:var(--amber);fill:var(--amber-soft)}
+svg .node.dim{stroke:var(--muted);stroke-dasharray:4 3}
+svg .lbl{font-family:var(--f-body);font-size:13px;font-weight:600;fill:var(--ink)}
+svg .sub{font-family:var(--f-mono);font-size:10px;fill:var(--muted)}
+svg .flow{fill:none;stroke:var(--verified);stroke-width:1.75;stroke-linecap:round}
+svg .flow.gen{stroke:var(--gen);stroke-dasharray:5 4}
+svg .flow.block{stroke:var(--danger);stroke-dasharray:5 4}
+svg .particle{fill:var(--amber)}
+svg .axis{stroke:var(--line);stroke-width:1.5}
+svg .tick{stroke:var(--muted);stroke-width:1.5}
+svg .tick.acc{stroke:var(--amber)}
+svg .tick.warn{stroke:var(--warn)}
+svg .tick.gen{stroke:var(--gen);stroke-dasharray:3 3}
+svg .x{stroke:var(--danger);stroke-width:2}
+svg .citetag{font-family:var(--f-mono);font-size:10px;fill:var(--verified);cursor:pointer}
+
+.feegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.step{display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;background:var(--surface);font-size:.82rem}
+.step .ctl{display:flex;align-items:center;gap:4px}
+.step button{width:26px;height:26px;border:1px solid var(--line);border-radius:3px;background:var(--surface-2);cursor:pointer;line-height:1}
+.step output{font-family:var(--f-mono);min-width:22px;text-align:center}
+.presets{display:flex;flex-wrap:wrap;gap:6px}
+.presets button{font-size:.82rem;padding:4px 8px;border:1px solid var(--line);border-radius:3px;background:var(--surface);cursor:pointer}
+.presets button:hover{border-color:var(--blue)}
+.cells{display:flex;flex-wrap:wrap;gap:4px;min-height:22px}
+.cell{width:18px;height:18px;border-radius:3px;background:var(--amber);animation:pop var(--t-mid) var(--ease-in)}
+.cell.grace{background:none;border:1.5px dashed var(--amber)}
+@keyframes pop{from{transform:scale(.4)}to{transform:none}}
+.feeout{display:grid;gap:10px}
+.bar{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px;align-items:center;font-size:.82rem}
+.bar .track{height:22px;background:var(--surface-2);border-radius:3px;overflow:hidden;position:relative}
+.bar .fill{height:100%;background:var(--amber);width:0;transition:width var(--t-slow) var(--ease-std)}
+.bar .fill.next{background:var(--verified)}
+.bar .val{position:absolute;left:6px;top:2px;font-family:var(--f-mono);font-size:.74rem;color:var(--ink);background:var(--surface);padding:0 5px;border-radius:2px;line-height:18px}
+.kv{display:flex;flex-wrap:wrap;gap:16px;font-size:.88rem}
+.kv b{font-family:var(--f-mono);font-weight:500}
+.uagrid{display:grid;grid-template-columns:minmax(0,220px) minmax(0,1fr);gap:16px}
+.checks{display:grid;gap:6px;font-size:.88rem}
+.checks label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.seg{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;width:max-content}
+.seg button{padding:5px 10px;border:0;background:var(--surface);cursor:pointer;font-size:.82rem}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.uaout{display:grid;gap:10px;min-width:0}
+.prefix{font-family:var(--f-mono);font-size:1rem;padding:8px 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);overflow-wrap:anywhere}
+.prefix.gen{border-style:dashed;border-color:var(--gen)}
+.stack{display:grid;gap:4px}
+.recv{display:flex;align-items:center;gap:10px;font-size:.82rem;animation:rise var(--t-mid) var(--ease-in)}
+.recv .b{height:22px;border-radius:3px;background:var(--amber-soft);border:1.5px solid var(--amber);flex:none}
+.recv .b.t{background:var(--surface-2);border-color:var(--muted)}
+.recv .tc{font-family:var(--f-mono);font-size:.74rem;color:var(--gen);border:1px dashed var(--gen);border-radius:3px;padding:0 4px}
+.rules{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:.82rem}
+.rules li{display:flex;gap:8px;align-items:baseline}
+.dot{width:8px;height:8px;border-radius:50%;flex:none;transform:translateY(-1px)}
+.dot.ok{background:var(--verified)}.dot.bad{background:var(--danger)}.dot.unk{border:1.5px dashed var(--gen)}
+.verdict{font-weight:600}
+.verdict.ok{color:var(--verified)}.verdict.bad{color:var(--danger)}.verdict.unk{color:var(--gen)}
+.boundary{display:flex;height:26px;border-radius:3px;overflow:hidden;gap:2px}
+.boundary div{height:100%}
+.blegend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.74rem;color:var(--muted)}
+.blegend span{display:inline-flex;align-items:center;gap:6px}
+.blegend i{width:10px;height:10px;border-radius:2px;display:inline-block}
+.st-Done{background:var(--verified)}.st-Partial{background:var(--warn)}.st-Replaced{background:var(--gen)}.st-Planned{background:var(--muted);opacity:.55}.st-Deferred{background:var(--muted);opacity:.35}.st-Undecided{background:var(--line)}.st-Retired{background:var(--danger)}
+.lookup{display:flex;gap:8px;flex-wrap:wrap}
+.lookup input{flex:1;min-width:0;height:40px;padding:0 12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink);font-family:var(--f-mono);font-size:.86rem}
+.mtable{width:100%;border-collapse:collapse;font-size:.82rem}
+.mtable th{text-align:left;font-weight:600;color:var(--muted);font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;padding:6px 8px;border-bottom:1px solid var(--line)}
+.mtable td{padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.mtable td:first-child{font-family:var(--f-mono);white-space:nowrap}
+.chip{display:inline-block;font-size:.68rem;font-weight:600;padding:1px 6px;border-radius:3px}
+.chip.Retired,.chip.Replaced,.chip.Partial,.chip.Done{color:var(--bg)}
+.chip.Planned,.chip.Deferred,.chip.Undecided{color:var(--ink);background:none;border:1px solid var(--muted);opacity:1}
+.tablebox{overflow-x:auto;max-height:340px;overflow-y:auto}
+.pipe{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.pstep{border:1px solid var(--line);border-radius:6px;padding:10px;background:var(--surface);font-size:.82rem;display:grid;gap:4px}
+.pstep b{font-size:.9rem}
+.pstep span{color:var(--muted)}
+.pstep.on{border-color:var(--blue);background:var(--blue-soft)}
+.pstep.done{border-color:var(--verified)}
+.pstep.on b::after{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--blue);margin-left:8px;vertical-align:2px;animation:blink 900ms infinite}
+.stop{justify-self:start;font-size:.82rem;padding:4px 10px;border:1px solid var(--line);border-radius:6px;background:var(--surface);cursor:pointer}
+.gflow{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.gnode{border:1.5px solid var(--verified);border-radius:6px;padding:6px 10px;font-size:.82rem;background:var(--surface);animation:rise var(--t-mid) var(--ease-in) both}
+.gnode.gen{border-style:dashed;border-color:var(--gen)}
+.garrow{color:var(--muted);font-family:var(--f-mono)}
+.drawer{position:sticky;top:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px;font-size:.88rem;max-height:calc(100vh - 32px);overflow:auto;box-shadow:var(--shadow-sm)}
+.drawer .empty{color:var(--muted)}
+.drawer .ptitle{font-weight:600;font-size:1rem;margin:0}
+.drawer blockquote{margin:0;padding:12px 14px;border-left:3px solid var(--verified);background:var(--verified-soft);border-radius:0 6px 6px 0;line-height:1.55}
+.drawer mark{background:var(--amber-soft);color:inherit;padding:0 2px;border-radius:2px}
+.drawer .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:.82rem}
+.drawer .close{display:none}
+.secnote{font-size:.82rem;color:var(--warn)}
+.openlink{display:inline-flex;align-items:center;gap:6px;font-weight:600;text-decoration:none;border:1px solid var(--line);border-radius:6px;padding:6px 10px;width:max-content;color:var(--ink)}
+.openlink:hover{border-color:var(--blue)}
+.ghost{font-size:.86rem;color:var(--muted);text-decoration:none;padding:6px 10px;border-radius:6px;border:1px solid var(--line);background:var(--surface);cursor:pointer}
+
+/* how */
+.howgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:10px;background:var(--surface);overflow:hidden}
+.howgrid>div{padding:24px;border-right:1px solid var(--line);display:grid;gap:10px;align-content:start}
+.howgrid>div:last-child{border-right:0}
+.howgrid .num{font-family:var(--f-mono);font-size:.76rem;color:var(--blue)}
+.howgrid h3{margin:0;font-size:1.15rem;letter-spacing:-.01em}
+.howgrid p{margin:0;color:var(--muted);font-size:.92rem}
+.howgrid svg{width:100%;height:84px}
+.howgrid svg .hl{fill:none;stroke:var(--line);stroke-width:1.5}
+.howgrid svg .ha{fill:none;stroke:var(--blue);stroke-width:1.8;stroke-linecap:round}
+.howgrid svg .hg{fill:var(--verified-soft);stroke:var(--verified);stroke-width:1.5}
+.howgrid svg .hd{fill:none;stroke:var(--gen);stroke-width:1.5;stroke-dasharray:4 3}
+.howgrid svg .hb{fill:var(--amber)}
+.howgrid svg .scan{animation:scan 3.2s var(--ease-std) infinite}
+@keyframes scan{0%,100%{transform:translateX(0)}50%{transform:translateX(120px)}}
+.howgrid svg .tick2{stroke-dasharray:30;stroke-dashoffset:30;animation:tickd 3s var(--ease-std) infinite}
+@keyframes tickd{0%,20%{stroke-dashoffset:30}50%,100%{stroke-dashoffset:0}}
+
+footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+@media (max-width:1180px){
+  .desk{grid-template-columns:200px minmax(0,1fr)}
+  .drawer{position:fixed;right:max(16px,env(safe-area-inset-right,0px));bottom:max(16px,env(safe-area-inset-bottom,0px));top:auto;width:min(380px,calc(100vw - 32px));max-height:60vh;box-shadow:var(--shadow-lg);z-index:20;transition:transform var(--t-slow) var(--ease-in),opacity var(--t-slow)}
+  .drawer[data-open="false"]{transform:translateY(24px);opacity:0;pointer-events:none}
+  .drawer .close{display:inline-block}
+  .hero{grid-template-columns:1fr;gap:56px}
+  .hero .lede{max-width:48ch}
+  .stage{max-width:760px;width:100%;margin:0 auto}
+}
+@media (max-width:860px){
+  .top nav{display:none}
+  .desk{grid-template-columns:1fr}
+  .rail{position:static}
+  .rail details:not([open]) .railbody{display:none}
+  .answer{padding:18px}
+  .uagrid{grid-template-columns:1fr}
+  .pipe{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .howgrid{grid-template-columns:1fr 1fr}
+  .howgrid>div:nth-child(2){border-right:0}
+  .howgrid>div:nth-child(-n+2){border-bottom:1px solid var(--line)}
+  .bar{grid-template-columns:110px minmax(0,1fr)}
+  .drawer{left:max(16px,env(safe-area-inset-left,0px));width:auto}
+  .strip{grid-template-columns:1fr}
+  .rules-bg{background-image:repeating-linear-gradient(90deg,transparent 0 calc(33.33% - 1px),var(--grid) calc(33.33% - 1px) 33.33%)}
+}
+@media (max-width:640px){
+  .prog{margin-left:0}
+  .hero{padding-block:36px 24px}
+  .stage{height:auto;display:grid;gap:14px}
+  .card{position:relative;width:100%;height:540px;padding:18px}
+  .card .scene{padding-left:0}
+  .term{position:relative;top:auto;width:100%;max-width:none;height:250px;border-radius:14px}
+  .ico.i2,.ico.i5,.ico.i6,.ico.i7,.ico.i8,.ico.i1{display:none}
+  .ico.i3{top:-14px;right:6px}.ico.i4{bottom:250px;right:6px}
+  .prog{gap:6px}.prog button{font-size:.7rem}
+  .stagectl{position:static;justify-content:flex-end}
+  .ask{flex-direction:column}.ask .btn{width:100%}
+  .howgrid{grid-template-columns:1fr}
+  .howgrid>div{border-right:0;border-bottom:1px solid var(--line)}
+  .howgrid>div:last-child{border-bottom:0}
+  .top .right .iconbtn{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important;scroll-behavior:auto!important}
+}
+.no-motion *,.no-motion *::before,.no-motion *::after{animation-duration:1ms!important;animation-iteration-count:1!important;transition-duration:1ms!important}
+</style>
+
+<div class="rules-bg" aria-hidden="true"></div>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#top" aria-label="Unravel">
+      <img src="data:image/png;base64,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" width="36" height="36" alt="" style="display:block">
+      <b>Unravel</b>
+    </a>
+    <nav aria-label="Main">
+      <a href="#ask">Ask</a>
+      <a href="#ask">Topics</a>
+      <a href="#corpus">Corpus</a>
+      <a href="#how">How it works</a>
+    </nav>
+    <div class="right">
+      <button class="iconbtn" id="motionBtn" aria-pressed="true" type="button">Motion: on</button>
+      <a class="btn primary" href="#ask">Ask a question</a>
+    </div>
+  </header>
+
+  <section class="hero" id="top">
+    <div>
+      <div class="livechip"><i></i><span>Next mainnet fee change at block <b>3,590,000</b>, <span id="feeEta">about two months away</span></span></div>
+      <h1>Ask about Zcash. <em>Every answer</em> cites its source.</h1>
+      <p class="lede">A docs copilot for developers building on Zebra, Zallet and the ZIPs. Each fact links to the passage it came from. Anything Unravel adds on its own is labeled as an explanation.</p>
+      <div class="ctas">
+        <a class="btn primary lg" href="#ask">Ask a question</a>
+        <a class="btn outline lg" href="#how">See how answers are checked</a>
+      </div>
+      <p class="fine">Unravel answers from a fixed corpus captured on 27 Oct 2026. It is an independent tool, not an official Zcash Foundation or ZODL product.</p>
+    </div>
+
+    <div class="stage" id="stage" aria-roledescription="carousel" aria-label="What Unravel can show">
+      <svg class="rosette" id="rosette" viewBox="0 0 900 900" aria-hidden="true"></svg>
+      <div class="ico i1 a" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 9l3 3-3 3M12 15h5"/></svg></div>
+      <div class="ico i2 b" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 4c-2 0-3 1-3 3v2c0 1.5-1 3-2 3 1 0 2 1.5 2 3v2c0 2 1 3 3 3M16 4c2 0 3 1 3 3v2c0 1.5 1 3 2 3-1 0-2 1.5-2 3v2c0 2-1 3-3 3"/></svg></div>
+      <div class="ico i3 g" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg></div>
+      <div class="ico i4" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></div>
+      <div class="ico i5 b" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="6" cy="5" r="2"/><circle cx="6" cy="19" r="2"/><circle cx="18" cy="8" r="2"/><path d="M6 7v10M18 10c0 4-6 3-11.5 7.5"/></svg></div>
+      <div class="ico i6 a" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2l9 5v10l-9 5-9-5V7z"/><path d="M3 7l9 5 9-5M12 12v10"/></svg></div>
+      <div class="ico i7" aria-hidden="true"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></div>
+      <div class="ico i8 g" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 19V5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zm0 0a2 2 0 002 2h13"/><path d="M9 7h6M9 11h4"/></svg></div>
+
+      <div class="term" aria-hidden="true">
+        <div class="bar"><b id="termTitle">zsh</b><span class="tagx" id="termTag">mainnet</span></div>
+        <pre id="termBody"></pre>
+        <div class="foot"><img src="data:image/png;base64,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" width="16" height="16" alt="" style="display:block"><span id="termFoot">Checked by Unravel</span></div>
+      </div>
+
+      <div class="card">
+        <div class="chead"><b id="cardTopic">Fees</b><span>Snapshot 27 Oct 2026</span></div>
+        <div class="scene" id="scene" aria-live="off"></div>
+        <div class="prog" id="prog" role="tablist" aria-label="Scenes"></div>
+      </div>
+      <div class="stagectl"><button class="iconbtn" id="stagePlay" type="button" aria-label="Pause the slideshow">Pause</button></div>
+    </div>
+  </section>
+
+  <section class="strip" aria-label="Corpus sources">
+    <span>Answers come only from these source types, captured 27 Oct 2026.</span>
+    <ul id="tierStrip"></ul>
+  </section>
+
+  <section class="sec" id="ask">
+    <p class="eyebrow">Ask Unravel</p>
+    <h2 class="big">Ask in plain words. Read the passage behind every line.</h2>
+    <p class="sublede">Curated questions answer instantly with interactive diagrams. Typed questions are drafted by Claude from the corpus, then every sentence is checked against the passage it cites.</p>
+    <form class="ask" id="askForm" autocomplete="off">
+      <label class="sr" for="ask-box">Your question</label>
+      <input id="ask-box" name="q" placeholder="e.g. Which RPC replaces z_getnewaddress?" maxlength="300">
+      <button class="btn primary" id="askBtn" type="submit">Ask</button>
+    </form>
+    <div class="suggest" id="suggest" aria-label="Curated questions"></div>
+
+    <div class="desk">
+      <aside class="rail" id="corpus" aria-label="Corpus">
+        <details open id="railDetails">
+          <summary class="section-h" style="cursor:pointer">Corpus snapshot</summary>
+          <div class="railbody">
+            <p style="margin:6px 0 14px;color:var(--muted);font-size:.82rem" id="corpusLine"></p>
+            <div id="railGroups"></div>
+            <div class="legend" aria-label="How to read an answer">
+              <div><span class="sw v"></span><span>From the docs: cited, checked against the passage</span></div>
+              <div><span class="sw g"></span><span>Explanation: written by Unravel, not quoted</span></div>
+              <div><span class="sw w"></span><span>Changing soon or sources disagree</span></div>
+            </div>
+          </div>
+        </details>
+      </aside>
+      <main id="main" aria-live="polite"></main>
+      <aside class="drawer" id="drawer" data-open="false" aria-label="Source passage">
+        <div style="display:flex;justify-content:space-between;align-items:center"><h2 style="margin:0">Source passage</h2><button class="ghost close" id="drawerClose" type="button">Close</button></div>
+        <div id="drawerBody"><p class="empty">Select a citation like <span class="cite" style="cursor:default">[1]</span> to read the exact passage it points to, with a link to the original.</p></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="sec" id="how">
+    <p class="eyebrow">How answers are checked</p>
+    <h2 class="big">Four steps between your question and a cited line.</h2>
+    <p class="sublede">A sentence is shown as fact only if it cites a passage, every number in it appears in that passage, and enough of its wording matches. Everything else is labeled as explanation.</p>
+    <div class="howgrid">
+      <div><span class="num">01</span>
+        <svg viewBox="0 0 220 84" aria-hidden="true"><rect class="hl" x="10" y="14" width="200" height="12" rx="3"/><rect class="hl" x="10" y="36" width="160" height="12" rx="3"/><rect class="hl" x="10" y="58" width="180" height="12" rx="3"/><rect class="scan" x="10" y="10" width="64" height="64" rx="4" fill="none" stroke="var(--blue)" stroke-width="1.8"/></svg>
+        <h3>Search</h3><p>Keyword ranking over every passage, with Zcash terms expanded (UA, ZEC, zats).</p></div>
+      <div><span class="num">02</span>
+        <svg viewBox="0 0 220 84" aria-hidden="true"><rect class="hl" x="10" y="12" width="56" height="60" rx="4"/><rect class="hg" x="82" y="12" width="56" height="60" rx="4"/><rect class="hl" x="154" y="12" width="56" height="60" rx="4"/><text x="110" y="47" text-anchor="middle" font-family="JetBrains Mono" font-size="11" fill="var(--verified)">c12</text></svg>
+        <h3>Select</h3><p>The top six passages go to the writer, each tagged with its source tier.</p></div>
+      <div><span class="num">03</span>
+        <svg viewBox="0 0 220 84" aria-hidden="true"><rect class="hg" x="10" y="10" width="200" height="26" rx="4"/><rect class="hd" x="10" y="46" width="200" height="28" rx="4"/><circle class="hb" cx="196" cy="23" r="4"/></svg>
+        <h3>Draft</h3><p>Claude writes cited sentences and, separately, its own explanation.</p></div>
+      <div><span class="num">04</span>
+        <svg viewBox="0 0 220 84" aria-hidden="true"><circle cx="42" cy="42" r="26" fill="var(--verified-soft)" stroke="var(--verified)" stroke-width="1.6"/><path class="tick2" d="M30 43l8 8 15-17" fill="none" stroke="var(--verified)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><rect class="hl" x="86" y="24" width="124" height="10" rx="3"/><rect class="hl" x="86" y="46" width="90" height="10" rx="3"/></svg>
+        <h3>Check</h3><p>Each sentence is matched to its passage. Any that fail move to explanation.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <span id="footLine"></span>
+    <span>Values are shown as the sources state them. Verify against the linked source before shipping.</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+const SNAP = "27 Oct 2026";
+
+/* ---------- Sources ---------- */
+const S = {
+  zip317:{t:"ZIP 317: Proportional Transfer Fee Mechanism",u:"https://zips.z.cash/zip-0317",tier:"Spec",note:"Revision 0 Active"},
+  zebra317:{t:"Zebra source: zip317.rs",u:"https://zebra.zfnd.org/internal/src/zebra_chain/transaction/unmined/zip317.rs.html",tier:"Implementation"},
+  ledger:{t:"Ledger zcash-utils PR #61 (ZIP 2009)",u:"https://github.com/LedgerHQ/ledger-zcash-utils/pull/61",tier:"Implementation"},
+  zipissue:{t:"zcash/zips issue #1388",u:"https://github.com/zcash/zips/issues/1388",tier:"Proposal"},
+  migr:{t:"zcashd API Migration Guide (Zebra Book)",u:"https://zebra.zfnd.org/user/zcashd-api-migration-guide.html",tier:"Official"},
+  eol:{t:"zcashd End of Life",u:"https://zcash.github.io/zcash/user/end-of-life.html",tier:"Official"},
+  theblock:{t:"The Block: Zcash activates Ironwood",u:"https://theblock.co/post/409934/zcash-ironwood-upgrade-launching-new-shielded-pool-after-orchard-vulnerability",tier:"Secondary"},
+  kucoin:{t:"KuCoin: Ironwood NU6.3 shielded pool",u:"https://www.kucoin.com/blog/in-zcash-ironwood-nu6-3-shielded-pool-migration",tier:"Secondary"},
+  keepkey:{t:"KeepKey Vault PR #381 (NU6.3)",u:"https://github.com/keepkey/keepkey-vault/pull/381",tier:"Implementation"},
+  cobo:{t:"Cobo: NU6.3 upgrade notice",u:"https://www.cobo.com/post/ZEC_Ironwood_Network_Upgrade-2026-07-27-1536",tier:"Secondary"},
+  blofin:{t:"BloFin Academy: Zcash network upgrades",u:"https://blofin.com/academy/education/zcash/zcash-network-upgrades-explained",tier:"Secondary"},
+  uarev:{t:"librustzcash: unified/revision.rs",u:"https://zcash.github.io/librustzcash/rustdoc/latest/src/zcash_address/kind/unified/revision.rs.html",tier:"Implementation"},
+  uasrc:{t:"librustzcash: unified.rs, address.rs",u:"https://zcash.github.io/librustzcash/rustdoc/latest/src/zcash_address/kind/unified.rs.html",tier:"Implementation"},
+  f4:{t:"f4jumble crate README",u:"https://docs.rs/crate/f4jumble/latest/source/README.md",tier:"Implementation"},
+  coinstats:{t:"CoinStats: Zcash Unified Addresses",u:"https://coinstats.app/news/d17c9b928156619cc37fbbe9e562b81babc8dd9a2a0dc14b8015d45819738d03_Zcash-Unified-Addresses-How-They-Simplify-Private-Payments/",tier:"Secondary"},
+  coindesk:{t:"CoinDesk: Zcash protocol overview",u:"https://www.coindesk.com/price/zec",tier:"Secondary"}
+};
+const TIER_LABEL={Spec:"Spec",Implementation:"Implementation",Official:"Official docs",Proposal:"Proposal",Secondary:"Secondary"};
+
+/* ---------- Passages (paraphrased from each source, captured 27 Oct 2026) ---------- */
+const C = [
+ {id:"c1",s:"zip317",sec:"Fee calculation",x:"ZIP 317 tells wallets to pay a conventional fee of marginal_fee multiplied by the larger of grace_actions and the transaction's logical actions. Revision 0 sets marginal_fee to 5,000 zatoshis per logical action, which puts a minimal transaction at 10,000 zatoshis (0.0001 ZEC)."},
+ {id:"c2",s:"zebra317",sec:"conventional_actions()",x:"Zebra counts logical actions as: the larger of ceil(transparent input bytes / 150) and ceil(transparent output bytes / 34), plus 2 per JoinSplit, plus the larger of Sapling spends and Sapling outputs, plus Orchard actions, plus Ironwood actions. Ironwood actions have the same structure and cost as Orchard actions and are zero for pre-v6 transactions. The result is raised to GRACE_ACTIONS, which is 2."},
+ {id:"c3",s:"zebra317",sec:"mempool_checks()",x:"Zebra's mempool rejects a transaction with more unpaid actions than BLOCK_UNPAID_ACTION_LIMIT, which is 0. It also applies a minimum fee rate of 100 zatoshis per 1,000 bytes, capped at 1,000 zatoshis. In this revision of the source, MARGINAL_FEE is 1,000 and the block production weight ratio cap is 10."},
+ {id:"c4",s:"ledger",sec:"Context",x:"ZIP 2009 lowers the ZIP 317 marginal fee from 5,000 to 1,000 zatoshis per logical action, so a minimal transaction drops from 10,000 to 2,000 zatoshis. It is a wallet convention, not a network upgrade. Wallets switch together at mainnet height 3,590,000 so the fee does not reveal which software built a transaction. Test networks use 1,000 at every height. At the time of the change, librustzcash still defined MARGINAL_FEE as 5,000."},
+ {id:"c5",s:"migr",sec:"Zebra-only methods: getstandardfee",x:"Zebra adds getstandardfee, which returns standard_fee and version: the ZIP 317 marginal fee per logical action, in zatoshis, for the next block. The value depends on the next block's height."},
+ {id:"c6",s:"zipissue",sec:"Proposal",x:"The proposal also raises weight_ratio_cap for block template construction from 4 to 10, because the cap is a multiple of the conventional fee and cutting marginal_fee alone would shrink the range of fees that influence inclusion. No other ZIP 317 parameter or formula changes."},
+ {id:"c7",s:"eol",sec:"End of Life",x:"zcashd reached its End-of-Support halt on July 18, 2026 at block height 3,417,100. Every zcashd 6.20.0 node shut down and refuses to restart. Users who do not need the zcashd wallet should move to Zebra; users who do should migrate their wallet.dat to Zallet. zcashd does not support NU6.3."},
+ {id:"c8",s:"migr",sec:"Where the boundary falls today",x:"The guide covers all 135 RPC methods registered by zcashd 6.20.0. 36 are available from Zebra, 27 from Zallet, 21 are replaced by another method, 18 are planned, 6 deferred, 2 undecided and 25 retired. It describes Zebra 7.0.0-rc.0 and Zallet 0.1.0-beta.3. Ownership does not promise byte-identical responses."},
+ {id:"c9",s:"migr",sec:"Wallet",x:"Zallet owns wallet methods. getnewaddress and z_getnewaddress are replaced by z_getnewaccount plus z_getaddressforaccount. getbalance and z_getbalance are replaced by z_getbalanceforaccount. sendtoaddress is replaced by z_sendfromaccount. listunspent is replaced by z_listunspent and gettransaction by z_viewtransaction. settxfee is retired because ZIP 317 fees are always used. Through the zcashd-compat sidecar, z_sendmany and z_shieldcoinbase reject Ironwood inputs always and Orchard inputs from NU6.3 on."},
+ {id:"c10",s:"migr",sec:"Raw transactions",x:"createrawtransaction, fundrawtransaction and signrawtransaction are replaced by Zallet's PCZT methods: pczt_create, pczt_prove, pczt_sign and pczt_extract. decoderawtransaction is served by Zallet, not Zebra. sendrawtransaction is in Zebra, where allowhighfees is accepted and ignored."},
+ {id:"c11",s:"migr",sec:"Notification transports",x:"Zebra does not implement ZMQ. Its equivalent is the indexer gRPC service, which streams ChainTipChange, NonFinalizedStateChange and MempoolChange. Enable it with indexer_listen_addr in the [rpc] section of zebrad.toml. It has no authentication, so bind it to a loopback or private address. JSON-RPC is the supported HTTP interface; the REST interface is undecided. Zallet releases after 0.1.0-beta.3 read chain data only from Zebra."},
+ {id:"c12",s:"theblock",sec:"Report",x:"Zcash's Ironwood upgrade activated on schedule at block height 3,428,143 as part of NU6.3, introducing a new shielded pool after concerns about the soundness of the Orchard pool. The old Orchard pool is restricted to withdrawals only."},
+ {id:"c13",s:"kucoin",sec:"How Ironwood changes shielded transactions",x:"Ironwood activated on July 28, 2026. It is a separate shielded value pool that keeps Orchard Actions and the Halo 2 proving system. Wallets that support the version 6 transaction format create Ironwood outputs without Zcash abandoning its address structure. There is no separate Ironwood token. Funds leaving Orchard pass through the turnstile before entering Ironwood."},
+ {id:"c14",s:"keepkey",sec:"PR description",x:"Building a version 6 transaction requires the NU6.3 consensus branch ID and uses a separate Ironwood ZIP-229 digest slot. New transaction builders spend Ironwood notes only; a cross-pool migration flow is follow-up work. A mainnet transparent-to-Ironwood shield was confirmed in block 3,430,876."},
+ {id:"c15",s:"cobo",sec:"Compatibility checks",x:"Integrators were told to update the consensus branch ID to 0x37A5165B and run a node that supports NU6.3, such as Zebra 6.0.0 or later. Using the previous branch ID can cause signing failures, broadcast failures or rejected transactions."},
+ {id:"c16",s:"blofin",sec:"NU6, NU6.1, NU6.2 and NU6.3",x:"NU6.2, the emergency Orchard mitigation upgrade, activated at block 3,364,600 on June 3, 2026. ZIP 258, the deployment specification for NU6.3, is still listed as Draft even though the network enforces it."},
+ {id:"c17",s:"uarev",sec:"enum Revision",x:"Revision 0 of the unified encoding requires at least one shielded receiver in both Unified Addresses and Unified Viewing Keys. Revision 1 was withdrawn before anything encoded it. Revision 2 adds metadata items such as address expiry and drops the shielded requirement for Unified Viewing Keys. Under Revision 2 a Unified Address carries the zu prefix when it has no transparent receiver and the tu prefix when it has one."},
+ {id:"c18",s:"uasrc",sec:"ParseError, Receiver",x:"Known receivers are Orchard (43 bytes), Sapling (43 bytes), P2PKH (20 bytes) and P2SH (20 bytes); other typecodes parse as Unknown. A unified container is rejected if it contains both P2PKH and P2SH items, a duplicated typecode, items not in typecode order, only transparent items, or a string that is not Bech32m encoded."},
+ {id:"c19",s:"f4",sec:"README",x:"F4Jumble is an unkeyed variable-width permutation. Unified Addresses and Unified Viewing Keys use it to prevent certain kinds of malleation attacks, as specified by ZIP 316."},
+ {id:"c20",s:"coinstats",sec:"What are unified addresses",x:"A sending wallet must use the most preferred receiver it supports, in the order Orchard, then Sapling, then transparent. Unrecognized items are ignored, which keeps unified addresses usable as the protocol grows."},
+ {id:"c21",s:"coindesk",sec:"Protocol overview",x:"Zcash targets a block interval of roughly 75 seconds. NU6 activated at block height 2,726,400 around November 23, 2024, sending 8% of the block subsidy to Zcash Community Grants and 12% to an in-protocol lockbox defined by ZIP 1015. NU6.1 activated at block height 3,146,400 on November 24, 2025."}
+];
+const CI = Object.fromEntries(C.map(c=>[c.id,c]));
+window.UNRAVEL_CORPUS={S:S,C:C,TIER_LABEL:{Spec:"Spec",Implementation:"Implementation",Official:"Official docs",Proposal:"Proposal",Secondary:"Secondary"}};
+
+/* ---------- Height helpers ---------- */
+const NU63_H=3428143, NU63_MS=Date.UTC(2026,6,28,12,0,0);
+function estTip(){return Math.round(NU63_H+(Date.now()-NU63_MS)/75000)}
+const fmt=n=>n.toLocaleString("en-US");
+
+/* ---------- Utilities ---------- */
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmtInline=s=>esc(s).replace(/`([^`]+)`/g,"<code>$1</code>");
+let motionOn=true;
+try{const m=localStorage.getItem("unravel-motion"); if(m!==null) motionOn=m==="1"; else motionOn=!matchMedia("(prefers-reduced-motion: reduce)").matches;}catch(e){motionOn=!matchMedia("(prefers-reduced-motion: reduce)").matches}
+
+/* ---------- Answer state ---------- */
+let citeOrder=[];
+function citeNum(id){let i=citeOrder.indexOf(id); if(i<0){citeOrder.push(id); i=citeOrder.length-1} return i+1}
+function citeBtns(ids){return ids.filter(id=>CI[id]).map(id=>`<button class="cite" type="button" data-cite="${id}" aria-label="Show source passage ${citeNum(id)}">[${citeNum(id)}]</button>`).join("")}
+
+/* ---------- Curated topics ---------- */
+const TOPICS = {
+ fees:{q:"How is the Zcash transaction fee calculated right now?",kw:["fee","fees","zatoshi","zats","marginal","zip","317","2009","logical","actions","cost","getstandardfee"],
+  coverage:"full",
+  claims:[
+   ["Wallets pay a conventional fee of <code>marginal_fee × max(grace_actions, logical_actions)</code>. ZIP 317 revision 0 sets the marginal fee to 5,000 zatoshis per logical action, so a minimal transaction pays 10,000 zatoshis (0.0001 ZEC).",["c1"]],
+   ["Logical actions add up transparent inputs and outputs (by standard P2PKH size: 150-byte inputs, 34-byte outputs), 2 per JoinSplit, the larger of Sapling spends and outputs, Orchard actions and Ironwood actions. The total is never less than 2.",["c2"]],
+   ["Ironwood actions are counted exactly like Orchard actions.",["c2"]],
+   ["ZIP 2009 lowers the marginal fee to 1,000 zatoshis on mainnet from height 3,590,000, taking a minimal transaction to 2,000 zatoshis. It is a wallet convention, not a network upgrade; test networks already use 1,000 at every height.",["c4"]],
+   ["Zebra's <code>getstandardfee</code> RPC returns the marginal fee for the next block, so it changes with height.",["c5"]],
+   ["Zebra's mempool rejects transactions with any unpaid actions (the limit is 0).",["c3"]]
+  ],
+  callout:{h:"Changing soon",p:()=>`Mainnet is near block ${fmt(estTip())} today (estimated from 75-second blocks), below the 3,590,000 switch height. Until then, wallets building for mainnet use 5,000 zatoshis per action. Zebra's current source already defines MARGINAL_FEE as 1,000, which the Ledger change describes as mempool acceptance on all networks; the wallet convention still waits for the switch height.`,cites:["c3","c4","c21"]},
+  visual:"fee",
+  explain:"Fees in Zcash track transaction shape, not size in bytes or value sent. A fully shielded send with two Ironwood actions sits inside the 2-action grace window, so it costs the minimum. A transparent payout to many recipients counts each output, which is why exchange batch withdrawals cost more. Ask Zebra for <code>getstandardfee</code> instead of hardcoding 5,000 or 1,000: the switch is height-based, and a wallet that changes early or late makes its transactions easier to fingerprint.",
+  sources:["c1","c2","c3","c4","c5","c6"]},
+ ua:{q:"What is inside a unified address, and how is it checked?",kw:["unified","address","addresses","ua","receiver","receivers","zip","316","f4jumble","bech32m","zu","tu","typecode","viewing","ufvk","uivk","prefix"],
+  coverage:"partial",
+  claims:[
+   ["A unified address packs several receivers into one string. Known receivers are Orchard (43 bytes), Sapling (43 bytes), P2PKH (20 bytes) and P2SH (20 bytes); any other typecode parses as Unknown.",["c18"]],
+   ["The encoding is rejected if it holds both P2PKH and P2SH, repeats a typecode, lists items out of typecode order, holds only transparent items, or is not Bech32m.",["c18"]],
+   ["F4Jumble, an unkeyed permutation, is applied to the encoding to prevent malleation attacks.",["c19"]],
+   ["Revision 0 requires at least one shielded receiver. Revision 2 marks addresses <code>zu</code> when there is no transparent receiver and <code>tu</code> when there is one, and adds metadata such as address expiry.",["c17"]],
+   ["A sender picks the most preferred receiver it supports: Orchard, then Sapling, then transparent. This comes from a secondary source written before Ironwood.",["c20"]]
+  ],
+  callout:{h:"Not covered by the corpus",p:()=>"None of the indexed sources say whether Ironwood adds its own receiver type or reuses the Orchard receiver. One secondary source says wallets create Ironwood outputs without abandoning the existing address structure. Check ZIP 316 and the Ironwood ZIP before relying on either reading.",cites:["c13"]},
+  visual:"ua",
+  explain:"Decoding goes Bech32m, then F4Jumble in reverse, then reading items in typecode order. The typecodes shown in the composer (0x00 P2PKH, 0x01 P2SH, 0x02 Sapling, 0x03 Orchard) and the mainnet prefix <code>u</code> for revision 0 come from ZIP 316 as Unravel knows it; they are not in the indexed passages, so they are drawn dashed. Use <code>z_listunifiedreceivers</code> (served by Zebra and Zallet) to inspect a real address.",
+  sources:["c17","c18","c19","c20","c13"]},
+ ironwood:{q:"What changed with Ironwood (NU6.3), and what do I need to update?",kw:["ironwood","nu6.3","nu6","orchard","pool","turnstile","upgrade","v6","branch","shielded","halo","migration","nu6.2","activation","height"],
+  coverage:"full",
+  claims:[
+   ["Ironwood activated with NU6.3 at block height 3,428,143 on July 28, 2026, adding a new shielded pool after soundness concerns in Orchard.",["c12","c13"]],
+   ["Orchard is now withdrawals only. Funds leaving Orchard pass through the turnstile before entering Ironwood.",["c12","c13"]],
+   ["Ironwood keeps Orchard Actions and the Halo 2 proving system, and uses the version 6 transaction format. There is no separate Ironwood token.",["c13"]],
+   ["Building a v6 transaction needs the NU6.3 consensus branch ID, reported to integrators as 0x37A5165B, and a node such as Zebra 6.0.0 or later.",["c14","c15"]],
+   ["A transparent-to-Ironwood shield was confirmed on mainnet in block 3,430,876.",["c14"]],
+   ["NU6.2, the emergency Orchard mitigation, activated earlier at block 3,364,600 on June 3, 2026. zcashd halted at block 3,417,100 and does not support NU6.3.",["c16","c7"]]
+  ],
+  callout:{h:"Sources disagree on status",p:()=>"ZIP 258, the NU6.3 deployment spec, is still marked Draft although the rules are live. The branch ID comes from an exchange notice, not a spec page in this corpus. Confirm it against ZIP 258 or your node's getblockchaininfo before signing.",cites:["c16","c15"]},
+  visual:"ironwood",
+  explain:"For an integrator the checklist is short: run an NU6.3-capable node (Zebra, since zcashd stopped), build v6 transactions with the new branch ID, and treat Orchard as a source of withdrawals only. Paths from Sapling straight into Ironwood are not described in the indexed sources, so the diagram draws them dashed.",
+  sources:["c12","c13","c14","c15","c16","c7"]},
+ migrate:{q:"zcashd is gone. Which component replaces each RPC I use?",kw:["zcashd","rpc","zebra","zallet","replace","replaces","replaced","migrate","migration","method","methods","z_getnewaddress","getnewaddress","z_sendmany","getbalance","pczt","zmq","rest","indexer","wallet.dat","sidecar","z_getbalance","listunspent","sendrawtransaction"],
+  coverage:"full",
+  claims:[
+   ["zcashd halted on July 18, 2026 at block 3,417,100 and will not restart. Move node use to Zebra; move wallet use to Zallet by migrating wallet.dat.",["c7"]],
+   ["Of zcashd's 135 RPC methods, 36 are available from Zebra and 27 from Zallet; 21 are replaced, 18 planned, 6 deferred, 2 undecided and 25 retired.",["c8"]],
+   ["New addresses come from <code>z_getnewaccount</code> plus <code>z_getaddressforaccount</code>; balances from <code>z_getbalanceforaccount</code>; sends from <code>z_sendfromaccount</code> or <code>z_sendmany</code>.",["c9"]],
+   ["Raw transaction building moves to Zallet's PCZT methods: <code>pczt_create</code>, <code>pczt_prove</code>, <code>pczt_sign</code>, <code>pczt_extract</code>.",["c10"]],
+   ["ZMQ is replaced by Zebra's indexer gRPC service, enabled with <code>indexer_listen_addr</code> in <code>[rpc]</code>. It has no authentication, so bind it to loopback.",["c11"]]
+  ],
+  callout:{h:"Version-pinned",p:()=>"This table describes Zebra 7.0.0-rc.0 and Zallet 0.1.0-beta.3. Methods marked Planned or Deferred may have shipped since; check the owner's release notes.",cites:["c8"]},
+  visual:"migrate",
+  explain:"Most breakage comes from three places: account-based wallet calls replacing address-based ones, raw transaction signing moving to PCZTs, and ZMQ consumers that need to switch to the indexer stream. Look up each method you call in the table below before cutting over.",
+  sources:["c7","c8","c9","c10","c11"]}
+};
+const TOPIC_ORDER=["fees","ironwood","ua","migrate"];
+const HASH={fees:"fees",ironwood:"ironwood",ua:"unified-addresses",migrate:"migration"};
+const UNHASH=Object.fromEntries(Object.entries(HASH).map(([k,v])=>[v,k]));
+
+/* ---------- Rail ---------- */
+function renderRail(){
+  const groups={};
+  for(const [k,s] of Object.entries(S)){(groups[s.tier]=groups[s.tier]||[]).push(k)}
+  const order=["Spec","Official","Implementation","Proposal","Secondary"];
+  $("#railGroups").innerHTML=order.filter(t=>groups[t]).map(t=>`<div class="group"><h2>${TIER_LABEL[t]}</h2><ul>${groups[t].map(k=>{const first=C.find(c=>c.s===k);const n=C.filter(c=>c.s===k).length;return `<li><button type="button" data-cite="${first.id}"><span>${esc(S[k].t)}</span><span class="n">${n}</span></button></li>`}).join("")}</ul></div>`).join("");
+  const line=`${C.length} passages from ${Object.keys(S).length} sources, captured ${SNAP}.`;
+  $("#corpusLine").textContent=line;
+  $("#footLine").textContent="Corpus snapshot "+SNAP+" · "+C.length+" passages · "+Object.keys(S).length+" sources";
+}
+
+/* ---------- Suggestions ---------- */
+function renderSuggest(active){
+  $("#suggest").innerHTML=TOPIC_ORDER.map(k=>`<button type="button" data-topic="${k}" aria-current="${k===active}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("");
+}
+
+/* ---------- Drawer ---------- */
+let lastTerms=[];
+function openDrawer(id){
+  const c=CI[id]; if(!c) return; const s=S[c.s];
+  let txt=esc(c.x);
+  const terms=[...new Set(lastTerms.filter(t=>t.length>3))].slice(0,8);
+  for(const t of terms){txt=txt.replace(new RegExp("\\b("+t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")\\b","gi"),"<mark>$1</mark>")}
+  $("#drawerBody").innerHTML=`<div class="row"><span class="tier ${s.tier}">${TIER_LABEL[s.tier]}</span><span class="mono">${c.id}</span><span>Captured ${SNAP}</span></div>
+   <p class="ptitle">${esc(s.t)}</p><div class="row">Section: ${esc(c.sec)}${s.note?" · "+esc(s.note):""}</div>
+   <blockquote>${txt}</blockquote>
+   ${s.tier==="Secondary"?'<p class="secnote">Secondary source. Verify against the spec or implementation before relying on it.</p>':""}
+   <p style="margin:0;color:var(--muted);font-size:.8125rem">Passage paraphrased from the source for this corpus. Open the original to read it in full.</p>
+   <a class="openlink" href="${s.u}" target="_blank" rel="noopener">Open source <span aria-hidden="true">↗</span></a>`;
+  const d=$("#drawer"); d.dataset.open="true";
+  document.querySelectorAll(".cite[aria-pressed]").forEach(b=>b.setAttribute("aria-pressed","false"));
+  document.querySelectorAll(`.cite[data-cite="${id}"]`).forEach(b=>b.setAttribute("aria-pressed","true"));
+}
+$("#drawerClose").addEventListener("click",()=>{$("#drawer").dataset.open="false"});
+
+/* ---------- Visual builders ---------- */
+function drawPrep(root){
+  root.querySelectorAll("path.draw").forEach(p=>{try{p.style.setProperty("--len",Math.ceil(p.getTotalLength())+1)}catch(e){p.classList.remove("draw")}});
+  root.querySelectorAll("svg").forEach(s=>{try{motionOn?s.unpauseAnimations():s.pauseAnimations()}catch(e){}});
+}
+
+function heightTimeline(){
+  const x=h=>30+(h-3350000)/260000*580;
+  const tip=estTip();
+  // [height, label, above?, class, cite, anchor]
+  const ev=[[3364600,"NU6.2",0,"tick","c16","start"],[3417100,"zcashd halt",1,"tick","c7","end"],[3428143,"NU6.3 Ironwood",0,"tick acc","c12","start"],[tip,"tip",1,"tick gen",null,"middle"],[3590000,"fee to 1,000",0,"tick warn","c4","end"]];
+  return `<div class="svgbox"><svg viewBox="0 0 640 132" role="img" aria-label="Block height timeline from 3,350,000 to 3,610,000">
+   <line class="axis" x1="30" y1="66" x2="610" y2="66"/>
+   
+   ${ev.map(([h,l,up,cls,cid,anc])=>{const X=+x(h).toFixed(1);const y1=up?34:66,y2=up?66:100;const ty=up?24:114;const dx=anc==="start"?-2:anc==="end"?2:0;
+     return `<line class="${cls}" x1="${X}" y1="${y1}" x2="${X}" y2="${y2}"/><circle cx="${X}" cy="66" r="3.5" fill="var(--surface)" stroke="var(--muted)" stroke-width="1.5"/>
+     <text class="sub" x="${X+dx}" y="${ty}" text-anchor="${anc}">${esc(l)}${cid?" · ":" ≈ "}${fmt(h)}${cid?` <tspan class="citetag" data-cite="${cid}">[${citeNum(cid)}]</tspan>`:""}</text>`}).join("")}
+  </svg></div><p class="cap">Heights from cited sources. The tip is an estimate from 75-second blocks since NU6.3 and is drawn dashed.</p>`;
+}
+
+function visFee(){
+  return `<section class="block visual" id="feeDemo"><h3>Fee calculator</h3>
+  <p class="cap">Set the shape of a transaction. Cells are logical actions; dashed cells are the grace minimum. Counting rules from Zebra's implementation ${citeBtns(["c2"])}, rates from ${citeBtns(["c1","c4"])}.</p>
+  <div class="presets" role="group" aria-label="Examples">
+    <button type="button" data-p="0,0,0,0,0,2">Shielded send (2 Ironwood actions)</button>
+    <button type="button" data-p="3,0,0,0,0,2">Shield 3 transparent UTXOs</button>
+    <button type="button" data-p="1,20,0,0,0,0">Transparent payout to 20</button>
+    <button type="button" data-p="0,0,0,0,2,2">Orchard withdrawal into Ironwood</button>
+  </div>
+  <div class="feegrid" id="feeCtl"></div>
+  <div class="feeout">
+    <div class="cells" id="feeCells" aria-hidden="true"></div>
+    <div class="kv"><span>Logical actions <b id="fLog">0</b></span><span>Charged actions <b id="fConv">2</b></span></div>
+    <div class="bar"><span>Mainnet now<br><span class="mono" style="color:var(--muted)">5,000 / action</span></span><div class="track"><div class="fill" id="fBarA"></div><span class="val" id="fValA"></span></div></div>
+    <div class="bar"><span>From 3,590,000<br><span class="mono" style="color:var(--muted)">1,000 / action</span></span><div class="track"><div class="fill next" id="fBarB"></div><span class="val" id="fValB"></span></div></div>
+  </div>
+  ${heightTimeline()}
+  </section>`;
+}
+const FEE_FIELDS=[["tin","Transparent inputs"],["tout","Transparent outputs"],["sspend","Sapling spends"],["sout","Sapling outputs"],["orch","Orchard actions"],["iron","Ironwood actions"]];
+let feeState=[0,0,0,0,0,2];
+function bindFee(){
+  const ctl=$("#feeCtl"); if(!ctl) return;
+  ctl.innerHTML=FEE_FIELDS.map(([k,l],i)=>`<div class="step"><label for="f-${k}">${l}</label><div class="ctl"><button type="button" data-i="${i}" data-d="-1" aria-label="Fewer ${l}">−</button><output id="f-${k}">${feeState[i]}</output><button type="button" data-i="${i}" data-d="1" aria-label="More ${l}">+</button></div></div>`).join("");
+  ctl.addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(!b)return;const i=+b.dataset.i;feeState[i]=Math.max(0,Math.min(40,feeState[i]+ +b.dataset.d));updFee()});
+  $("#feeDemo .presets").addEventListener("click",e=>{const b=e.target.closest("button[data-p]");if(!b)return;feeState=b.dataset.p.split(",").map(Number);updFee()});
+  updFee();
+}
+function updFee(){
+  const [tin,tout,ss,so,orch,iron]=feeState;
+  FEE_FIELDS.forEach(([k],i)=>{const o=$("#f-"+k); if(o) o.textContent=feeState[i]});
+  const logical=Math.max(Math.ceil(tin*150/150),Math.ceil(tout*34/34))+Math.max(ss,so)+orch+iron;
+  const conv=Math.max(2,logical);
+  const a=conv*5000,b=conv*1000;
+  $("#fLog").textContent=logical; $("#fConv").textContent=conv;
+  let cells="";for(let i=0;i<conv;i++)cells+=`<span class="cell${i>=logical?" grace":""}"></span>`; $("#feeCells").innerHTML=cells;
+  const max=Math.max(a,10000);
+  $("#fBarA").style.width=(a/max*100)+"%"; $("#fBarB").style.width=(b/max*100)+"%";
+  $("#fValA").textContent=fmt(a)+" zats · "+(a/1e8).toFixed(5)+" ZEC";
+  $("#fValB").textContent=fmt(b)+" zats · "+(b/1e8).toFixed(5)+" ZEC";
+}
+
+function visIronwood(){
+  return `<section class="block visual"><h3>Where shielded value can move after NU6.3</h3>
+  <div class="svgbox"><svg viewBox="0 0 640 290" role="img" aria-label="Pool flow: transparent and Orchard funds move into Ironwood; new funds cannot enter Orchard">
+    <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--verified)"/></marker>
+    <marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--gen)"/></marker></defs>
+    <path id="pT" class="flow draw" marker-end="url(#ah)" d="M142 140 C 290 140, 380 140, 496 140"/>
+    <path id="pO" class="flow draw" marker-end="url(#ah)" d="M382 236 L 452 236 C 520 236, 556 220, 556 180"/>
+    <path class="flow block draw" d="M120 170 C 170 220, 200 236, 246 236"/>
+    <path class="flow gen draw" marker-end="url(#ahg)" d="M382 48 C 470 48, 540 70, 556 100"/>
+    <line class="x" x1="226" y1="226" x2="240" y2="246"/><line class="x" x1="240" y1="226" x2="226" y2="246"/>
+    <rect class="node" x="22" y="110" width="120" height="60" rx="6"/><text class="lbl" x="82" y="136" text-anchor="middle">Transparent</text><text class="sub" x="82" y="154" text-anchor="middle">public UTXOs</text>
+    <rect class="node dim" x="250" y="20" width="132" height="56" rx="6"/><text class="lbl" x="316" y="45" text-anchor="middle">Sapling</text><text class="sub" x="316" y="62" text-anchor="middle">route not in corpus</text>
+    <rect class="node" x="250" y="208" width="132" height="56" rx="6"/><text class="lbl" x="316" y="233" text-anchor="middle">Orchard</text><text class="sub" x="316" y="250" text-anchor="middle">withdrawals only</text>
+    <g transform="translate(456 216)"><rect x="0" y="0" width="34" height="40" rx="3" fill="var(--surface)" stroke="var(--verified)" stroke-width="1.5"/><line x1="17" y1="6" x2="17" y2="34" stroke="var(--verified)" stroke-width="1.5"/><line x1="6" y1="20" x2="28" y2="20" stroke="var(--verified)" stroke-width="1.5"><animateTransform attributeName="transform" type="rotate" values="0 17 20;90 17 20;90 17 20" keyTimes="0;.3;1" dur="3.2s" repeatCount="indefinite"/></line></g>
+    <text class="sub" x="473" y="276" text-anchor="middle">turnstile</text>
+    <rect class="node acc" x="496" y="100" width="124" height="80" rx="6"/><text class="lbl" x="558" y="133" text-anchor="middle">Ironwood</text><text class="sub" x="558" y="151" text-anchor="middle">NU6.3 · v6 tx</text><text class="sub" x="558" y="166" text-anchor="middle">Halo 2</text>
+    <text class="citetag" data-cite="c14" x="300" y="130" text-anchor="middle">shield [${citeNum("c14")}]</text>
+    <text class="citetag" data-cite="c13" x="420" y="228" text-anchor="middle">[${citeNum("c13")}]</text>
+    <text class="sub" x="178" y="262" fill="var(--danger)" style="fill:var(--danger)">no new funds [${citeNum("c12")}]</text>
+    <circle class="particle" r="4"><animateMotion dur="3.6s" repeatCount="indefinite"><mpath href="#pT"/></animateMotion></circle>
+    <circle class="particle" r="4"><animateMotion dur="3.6s" begin="1.2s" repeatCount="indefinite"><mpath href="#pT"/></animateMotion></circle>
+    <circle class="particle" r="4"><animateMotion dur="3.2s" begin=".6s" repeatCount="indefinite"><mpath href="#pO"/></animateMotion></circle>
+  </svg></div>
+  <p class="cap">Solid green paths are cited. The red dashed path is blocked. The grey dashed path is not described by the indexed sources. Use the Motion toggle in the header to stop the moving value.</p>
+  ${heightTimeline()}
+  </section>`;
+}
+
+let uaState={orch:true,sap:true,p2pkh:true,p2sh:false,rev:"R2"};
+function visUA(){
+  return `<section class="block visual" id="uaDemo"><h3>Unified address composer</h3>
+  <p class="cap">Pick receivers and an encoding revision. Rules come from librustzcash's parser ${citeBtns(["c18"])} and the revision notes ${citeBtns(["c17"])}. Dashed items are explanation.</p>
+  <div class="uagrid">
+    <div class="checks">
+      <label><input type="checkbox" id="ua-orch"> Orchard</label>
+      <label><input type="checkbox" id="ua-sap"> Sapling</label>
+      <label><input type="checkbox" id="ua-p2pkh"> Transparent P2PKH</label>
+      <label><input type="checkbox" id="ua-p2sh"> Transparent P2SH</label>
+      <div class="seg" role="group" aria-label="Revision" style="margin-top:8px"><button type="button" data-rev="R0">Revision 0</button><button type="button" data-rev="R2">Revision 2</button></div>
+    </div>
+    <div class="uaout">
+      <div class="prefix" id="uaPrefix"></div>
+      <div class="stack" id="uaStack"></div>
+      <div><span class="verdict" id="uaVerdict"></span></div>
+      <ul class="rules" id="uaRules"></ul>
+    </div>
+  </div></section>`;
+}
+function bindUA(){
+  const root=$("#uaDemo"); if(!root) return;
+  ["orch","sap","p2pkh","p2sh"].forEach(k=>{const el=$("#ua-"+k); el.checked=uaState[k]; el.addEventListener("change",()=>{uaState[k]=el.checked;updUA()})});
+  root.querySelectorAll("[data-rev]").forEach(b=>b.addEventListener("click",()=>{uaState.rev=b.dataset.rev;updUA()}));
+  updUA();
+}
+function updUA(){
+  const st=uaState, root=$("#uaDemo");
+  root.querySelectorAll("[data-rev]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rev===st.rev));
+  const items=[["p2pkh","P2PKH","0x00",20,true],["p2sh","P2SH","0x01",20,true],["sap","Sapling","0x02",43,false],["orch","Orchard","0x03",43,false]].filter(i=>st[i[0]]);
+  $("#uaStack").innerHTML=items.map(([k,l,tc,b,t])=>`<div class="recv"><span class="tc" title="Typecode, from ZIP 316 as Unravel knows it">${tc}</span><span class="b${t?" t":""}" style="width:${b*3}px"></span><span>${l} · <span class="mono">${b} bytes</span></span></div>`).join("")||`<div class="cap">No receivers selected.</div>`;
+  const hasT=st.p2pkh||st.p2sh, hasS=st.orch||st.sap;
+  const rules=[];
+  let verdict="ok";
+  if(!items.length){rules.push(["bad","An empty container has nothing to encode."]);verdict="bad"}
+  if(st.p2pkh&&st.p2sh){rules.push(["bad",`Contains both P2PKH and P2SH items ${citeBtns(["c18"])}`]);verdict="bad"}
+  else if(items.length) rules.push(["ok",`At most one transparent receiver ${citeBtns(["c18"])}`]);
+  if(items.length){
+    if(st.rev==="R0"){
+      if(hasS) rules.push(["ok",`At least one shielded receiver, required in Revision 0 ${citeBtns(["c17"])}`]);
+      else {rules.push(["bad",`Only transparent items: rejected ${citeBtns(["c18","c17"])}`]);verdict="bad"}
+    } else {
+      if(hasS) rules.push(["ok",`Has a shielded receiver ${citeBtns(["c17"])}`]);
+      else {rules.push(["unk","Revision 2 drops the shielded requirement for viewing keys. Whether a transparent-only Unified Address is allowed is not covered by the corpus."]); if(verdict!=="bad")verdict="unk"}
+    }
+    rules.push(["ok",`Items are written in typecode order and F4Jumbled, then Bech32m encoded ${citeBtns(["c18","c19"])}`]);
+  }
+  $("#uaRules").innerHTML=rules.map(([k,t])=>`<li><span class="dot ${k}"></span><span>${t}</span></li>`).join("");
+  const v=$("#uaVerdict"); v.className="verdict "+verdict; v.textContent=verdict==="ok"?"Valid encoding":verdict==="bad"?"Rejected by the parser":"Not covered by the corpus";
+  const p=$("#uaPrefix");
+  if(st.rev==="R2"){p.className="prefix";p.innerHTML=items.length?`${hasT?"tu":"zu"}… <span class="cap">Revision 2 prefix ${citeBtns(["c17"])}</span>`:"…"}
+  else {p.className="prefix gen";p.innerHTML=items.length?`u1… <span class="cap">mainnet, from ZIP 316 as Unravel knows it (not in corpus)</span>`:"…"}
+}
+
+const METHODS=[
+ ["getinfo","Zebra","Partial","No timeoffset; wallet fields never apply."],
+ ["getblockchaininfo","Zebra","Partial","No initial_block_download_complete or softforks; some fields are placeholders."],
+ ["getblock","Zebra","Partial","verbosity must be a number; adds nTx and an ironwood entry in trees."],
+ ["getrawtransaction","Zebra","Partial","vout omits valueSat; spentindex fields absent; adds ironwood."],
+ ["sendrawtransaction","Zebra","Partial","allowhighfees is accepted and ignored."],
+ ["getblocktemplate","Zebra","Done","Superset: adds maxtime and submitold."],
+ ["getrawmempool","Zebra","Done",""],
+ ["getaddressbalance","Zebra","Done",""],
+ ["getaddressutxos","Zebra","Done",""],
+ ["getaddresstxids","Zebra","Done",""],
+ ["validateaddress","Zebra","Partial","No scriptPubKey; adds isscript."],
+ ["z_validateaddress","Zebra","Partial","Emits address_type, not the deprecated type alias; ismine is always false."],
+ ["z_gettreestate","Zebra","Partial","Each pool reports finalState only; adds ironwood."],
+ ["z_listunifiedreceivers","Zebra","Done","Zallet implements it too."],
+ ["getpeerinfo","Zebra","Partial","10 of zcashd's 24 per-peer fields."],
+ ["getchaintips","Zebra","Planned",""],
+ ["getblockdeltas","None","Retired","Block-explorer index; use the indexer gRPC service."],
+ ["createrawtransaction","Zallet","Replaced","Use pczt_create, pczt_prove, pczt_sign, pczt_extract."],
+ ["fundrawtransaction","Zallet","Replaced","Use Zallet's PCZT methods."],
+ ["signrawtransaction","Zallet","Replaced","Use Zallet's PCZT methods."],
+ ["decoderawtransaction","Zallet","Done","Not implemented in Zebra."],
+ ["getnewaddress","Zallet","Replaced","Use z_getnewaccount + z_getaddressforaccount."],
+ ["z_getnewaddress","Zallet","Replaced","Use z_getnewaccount + z_getaddressforaccount."],
+ ["getbalance","Zallet","Replaced","Use z_getbalanceforaccount."],
+ ["z_getbalance","Zallet","Replaced","Use z_getbalanceforaccount."],
+ ["sendtoaddress","Zallet","Replaced","Use z_sendfromaccount; z_sendmany covers most uses."],
+ ["sendmany","Zallet","Replaced","Use z_sendmany or z_sendfromaccount."],
+ ["z_sendmany","Zallet","Done","Via the zcashd-compat sidecar: rejects Ironwood inputs, and Orchard from NU6.3 on."],
+ ["z_shieldcoinbase","Zallet","Done","Same sidecar restriction as z_sendmany."],
+ ["listunspent","Zallet","Replaced","Use z_listunspent."],
+ ["gettransaction","Zallet","Replaced","Use z_viewtransaction."],
+ ["listtransactions","Zallet","Planned","Available today as account-scoped z_listtransactions."],
+ ["importprivkey","Zallet","Planned",""],
+ ["importwallet","Zallet","Replaced","Use z_importkey per key, or zallet migrate-zcashd-wallet."],
+ ["dumpprivkey","None","Retired","Not planned by Zallet."],
+ ["backupwallet","None","Retired","May become a Zallet CLI command."],
+ ["settxfee","None","Retired","ZIP 317 fees are always used."],
+ ["z_mergetoaddress","Zallet","Planned",""],
+ ["z_exportwallet","Zallet","Planned","Planned as a ZeWIF export."],
+ ["signmessage","Zallet","Done","Shipped in 0.1.0-beta.3."],
+ ["z_getaddressforaccount","Zallet","Done",""],
+ ["z_getbalanceforaccount","Zallet","Done",""],
+ ["z_listunspent","Zallet","Done",""],
+ ["z_viewtransaction","Zallet","Done",""]
+];
+function visMigrate(){
+  const seg=[["Zebra",36,"Done"],["Zallet",27,"Done"],["Replaced",21,"Replaced"],["Planned",18,"Planned"],["Deferred",6,"Deferred"],["Undecided",2,"Undecided"],["Retired",25,"Retired"]];
+  return `<section class="block visual" id="migDemo"><h3>Where zcashd's 135 RPC methods went</h3>
+  <div class="boundary" role="img" aria-label="36 Zebra, 27 Zallet, 21 replaced, 18 planned, 6 deferred, 2 undecided, 25 retired">${seg.map(([l,n,c],i)=>`<div class="st-${c}" style="flex-grow:${n};${i===1?"opacity:.75":""}" title="${l}: ${n}"></div>`).join("")}</div>
+  <div class="blegend">${seg.map(([l,n,c],i)=>`<span><i class="st-${c}" ${i===1?'style="opacity:.75"':""}></i>${l} ${n}</span>`).join("")} <span>${citeBtns(["c8"])}</span></div>
+  <div class="lookup"><label class="sr" for="mq">Find a method</label><input id="mq" placeholder="Filter methods, e.g. getbalance" list="mlist"><datalist id="mlist">${METHODS.map(m=>`<option value="${m[0]}">`).join("")}</datalist></div>
+  <div class="tablebox"><table class="mtable"><thead><tr><th>zcashd method</th><th>Owner</th><th>Status</th><th>What to do</th></tr></thead><tbody id="mbody"></tbody></table></div>
+  <p class="cap">${METHODS.length} commonly used methods shown, from the Zebra Book migration guide ${citeBtns(["c9","c10"])}.</p></section>`;
+}
+function bindMig(){
+  const i=$("#mq"); if(!i) return;
+  const draw=()=>{const q=i.value.trim().toLowerCase();$("#mbody").innerHTML=METHODS.filter(m=>!q||m[0].includes(q)||m[3].toLowerCase().includes(q)).map(([m,o,s,n])=>`<tr><td>${m}</td><td>${o==="None"?"<span style='color:var(--muted)'>None</span>":o}</td><td><span class="chip st-${s} ${s}">${s}</span></td><td>${fmtInline(n)||"<span style='color:var(--muted)'>Use as before</span>"}</td></tr>`).join("")||`<tr><td colspan="4" style="font-family:var(--f-body);color:var(--muted)">Not in this list. Check the full guide ${citeBtns(["c8"])}.</td></tr>`};
+  i.addEventListener("input",draw); draw();
+}
+
+/* ---------- Render curated answer ---------- */
+function renderTopic(key){
+  const T=TOPICS[key]; citeOrder=[]; lastTerms=T.kw;
+  const claims=T.claims.map(([h,ids])=>`<li>${h}${citeBtns(ids)}</li>`).join("");
+  const callout=T.callout?`<section class="block callout"><h3>${T.callout.h}</h3><p>${T.callout.p()} ${citeBtns(T.callout.cites)}</p></section>`:"";
+  const vis={fee:visFee,ironwood:visIronwood,ua:visUA,migrate:visMigrate}[T.visual]();
+  const srcs=sourcesList();
+  $("#main").innerHTML=`<article class="answer">
+    <h2 class="q">${esc(T.q)}</h2>
+    <div class="meta"><span class="badge ${T.coverage}">${T.coverage==="full"?"Covered by corpus":"Partly covered"}</span><span>Snapshot ${SNAP}</span><span>Curated answer, no Claude usage</span></div>
+    <section class="block verified"><h3>From the docs</h3><ol class="claims">${claims}</ol></section>
+    ${callout}
+    ${vis}
+    <section class="block explain"><h3>Explanation · written by Unravel</h3><p>${T.explain}</p></section>
+    <section class="block"><h3 style="color:var(--muted)">Sources in this answer</h3>${sourcesList()}</section>
+  </article>`;
+  renderSuggest(key);
+  if(T.visual==="fee") bindFee(); if(T.visual==="ua") bindUA(); if(T.visual==="migrate") bindMig();
+  // the sources list must include cites added by visuals; rerender it
+  const lists=document.querySelectorAll(".answer .block:last-child");
+  lists[lists.length-1].innerHTML=`<h3 style="color:var(--muted)">Sources in this answer</h3>${sourcesList()}`;
+  drawPrep($("#main"));
+  if(citeOrder[0]) openDrawerQuiet(citeOrder[0]);
+}
+function openDrawerQuiet(id){ if(matchMedia("(min-width:1181px)").matches) openDrawer(id) }
+function sourcesList(){
+  return `<ol class="srcs">${citeOrder.map((id,i)=>{const c=CI[id],s=S[c.s];return `<li><span class="num">[${i+1}]</span><span class="tier ${s.tier}">${TIER_LABEL[s.tier]}</span><a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a><span style="color:var(--muted)">· ${esc(c.sec)}</span></li>`}).join("")}</ol>`;
+}
+
+/* ---------- Retrieval ---------- */
+const STOP=new Set("a an the of to in on for and or is are be by with what which how do does i my can it this that from at as was were will should when where why who any all into use using vs about zcash new without get need want make there their than then also just only".split(" "));
+const SYN={ua:["unified","address"],uas:["unified","address"],zats:["zatoshis"],zat:["zatoshis"],zatoshi:["zatoshis"],fee:["fee","marginal"],fees:["fee","marginal"],nu63:["ironwood","nu6.3"],"nu6.3":["ironwood"],rpc:["methods","rpc"],wallet:["zallet","wallet"],node:["zebra","node"],zmq:["zmq","indexer"],shield:["shield","shielded"],receivers:["receiver","receivers"],branch:["branch","consensus"],upgrade:["upgrade","activated"]};
+function toks(s){return s.toLowerCase().replace(/[^a-z0-9_.]+/g," ").split(" ").map(t=>t.replace(/^\.+|\.+$/g,"")).filter(t=>t&&!STOP.has(t))}
+const DOCS=C.map(c=>({id:c.id,t:toks(c.x+" "+S[c.s].t+" "+c.sec)}));
+const DF={};DOCS.forEach(d=>new Set(d.t).forEach(t=>DF[t]=(DF[t]||0)+1));
+const AVG=DOCS.reduce((a,d)=>a+d.t.length,0)/DOCS.length;
+function search(q){
+  let qt=toks(q); qt=qt.concat(...qt.map(t=>SYN[t]||[]));
+  const N=DOCS.length;
+  return DOCS.map(d=>{let sc=0;for(const t of new Set(qt)){const tf=d.t.filter(x=>x===t||(t.length>4&&x.startsWith(t))).length;if(!tf)continue;const idf=Math.log(1+(N-(DF[t]||0)+.5)/((DF[t]||0)+.5));sc+=idf*tf*2.2/(tf+1.2*(.25+.75*d.t.length/AVG))}return {id:d.id,sc}}).filter(r=>r.sc>0).sort((a,b)=>b.sc-a.sc);
+}
+function topicFor(q){const qt=toks(q);let best=null,bs=0;for(const k of TOPIC_ORDER){const s=qt.filter(t=>TOPICS[k].kw.includes(t)).length;if(s>bs){bs=s;best=k}}return bs>=1?best:null}
+
+/* ---------- Claim check ---------- */
+function norm(s){return s.toLowerCase().replace(/,/g,"")}
+function checkClaim(text,ids){
+  const src=norm(ids.map(i=>CI[i].x).join(" "));
+  const nums=(norm(text).match(/\d+(\.\d+)?/g)||[]).filter(n=>n.length>1||+n>9);
+  for(const n of nums){if(!src.includes(n))return {ok:false,why:"a number is not in the cited passage"}}
+  const words=toks(text).filter(w=>w.length>3&&!/^\d/.test(w));
+  if(!words.length)return {ok:true};
+  const hit=words.filter(w=>src.includes(w.slice(0,Math.max(4,w.length-2)))).length/words.length;
+  return hit>=0.3?{ok:true}:{ok:false,why:"wording does not match the passage"};
+}
+
+/* ---------- Claude-drafted answers ---------- */
+let sampleFn=null, inflight=null, sampleChecked=false;
+const samplePromise=(async()=>{try{return window.claude?await window.claude.use("sample"):null}catch(e){return null}})();
+samplePromise.then(f=>{if(!sampleChecked){sampleFn=f}});
+
+function pipelineHTML(stage,ids){
+  const st=["Search","Select","Draft","Check"];const sub=["Ranking passages","",(sampleFn?"Claude is writing cited sentences":"Claude unavailable here"),"Matching each sentence to its passage"];
+  sub[1]=ids&&ids.length?ids.join(", "):"Picking the top passages";
+  return `<div class="pipe">${st.map((s,i)=>`<div class="pstep ${i<stage?"done":i===stage?"on":""}"><b>${s}</b><span class="mono" style="font-size:.75rem">${esc(sub[i])}</span></div>`).join("")}</div>`;
+}
+
+async function ask(q){
+  q=q.trim(); if(!q) return;
+  if(inflight) inflight.abort();
+  citeOrder=[]; lastTerms=toks(q);
+  const all=search(q); const hits=all.filter(h=>h.sc>=all[0]?.sc*0.35).slice(0,6); const ids=hits.map(h=>h.id);
+  const topic=topicFor(q);
+  renderSuggest(null);
+  const shell=(inner)=>`<article class="answer"><h2 class="q">${esc(q)}</h2>${inner}</article>`;
+  if(!hits.length){
+    $("#main").innerHTML=shell(`<div class="meta"><span class="badge none">Not covered</span><span>Snapshot ${SNAP}</span></div>
+     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question. The corpus covers fees, unified addresses, the Ironwood upgrade and the zcashd to Zebra and Zallet migration. Try one of the curated questions, or rephrase with protocol terms.</p></section>`);
+    return;
+  }
+  $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(1,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
+  await new Promise(r=>setTimeout(r,motionOn?350:0));
+  if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
+  if(!sampleFn){ renderPassagesOnly(q,ids,topic,"Claude isn't available in this view, so Unravel can't draft an answer. These are the passages that best match your question."); return }
+  $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(2,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
+  const ctl=new AbortController(); inflight=ctl;
+  $("#stopBtn").addEventListener("click",()=>ctl.abort());
+  const passages=ids.map(id=>{const c=CI[id],s=S[c.s];return `[${id}] (${s.tier.toUpperCase()}) ${s.t} / ${c.sec}: ${c.x}`}).join("\n\n");
+  const prompt=`You are Unravel, a documentation assistant for Zcash developers. Answer the question using ONLY the passages below.
+
+Rules:
+- Put a sentence in "verified" only if a cited passage directly supports it. Cite passage ids such as "c4".
+- One sentence per item, in your own words. Copy numbers, heights and method names exactly as the passages write them.
+- Interpretation, advice, or background that the passages do not state goes in "explanation", in plain words, at most 90 words. No em dashes.
+- If the passages do not answer the question, leave "verified" empty and say what is missing in "gaps".
+- Passages tagged SECONDARY or PROPOSAL are weaker; when they disagree with SPEC, IMPLEMENTATION or OFFICIAL, say so in "gaps".
+- "diagram" is optional: use it only when the answer is a process or path, with 3 to 6 ordered steps, each {"label": at most 6 words, "cite": passage id or null}. Otherwise null.
+
+Reply with only JSON in this shape:
+{"verified":[{"text":"...","cites":["c1"]}],"explanation":"...","gaps":"...","diagram":{"title":"...","steps":[{"label":"...","cite":"c1"}]}}
+
+Question: ${q}
+
+Passages:
+${passages}`;
+  let data;
+  try{ data=await sampleFn.json(prompt,{signal:ctl.signal}) }
+  catch(e){
+    inflight=null;
+    if(e&&e.code==="cancelled"){ renderPassagesOnly(q,ids,topic,"Stopped. Here are the matching passages instead."); return }
+    if(e&&(e.code==="not_granted"||e.code==="sampling_disabled"||e.code==="capability_disabled")){ sampleFn=null; sampleChecked=true; renderPassagesOnly(q,ids,topic,"Claude isn't allowed in this view, so Unravel can't draft an answer. These are the passages that best match your question."); return }
+    const msg=e&&e.code==="rate_limited"?"Too many questions in a short time. Wait a moment and ask again. Meanwhile, here are the matching passages.":e&&e.code==="invalid_json"?"The draft came back in a format Unravel couldn't check, so it isn't shown. Ask again, or read the matching passages.":"The draft didn't finish. Ask again, or read the matching passages below.";
+    renderPassagesOnly(q,ids,topic,msg); return;
+  }
+  inflight=null;
+  $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(3,ids)}</div>`);
+  await new Promise(r=>setTimeout(r,motionOn?300:0));
+  const ver=[],dem=[];
+  for(const v of (Array.isArray(data&&data.verified)?data.verified:[])){
+    if(!v||typeof v.text!=="string")continue;
+    const cs=(Array.isArray(v.cites)?v.cites:[]).map(String).filter(id=>ids.includes(id));
+    if(!cs.length){dem.push([v.text,"no valid citation"]);continue}
+    const r=checkClaim(v.text,cs); r.ok?ver.push([v.text,cs]):dem.push([v.text,r.why]);
+  }
+  const cov=ver.length?(dem.length||data.gaps?"partial":"full"):"none";
+  const claimsHTML=ver.length?`<section class="block verified"><h3>From the docs</h3><ol class="claims">${ver.map(([t,cs])=>`<li>${fmtInline(t)}${citeBtns(cs)}</li>`).join("")}</ol></section>`:"";
+  let diag="";
+  const dg=data&&data.diagram;
+  if(dg&&Array.isArray(dg.steps)&&dg.steps.length>=2){
+    const steps=dg.steps.slice(0,6).map(s=>{const c=s&&s.cite&&ids.includes(String(s.cite))?String(s.cite):null;return {l:String(s&&s.label||"").slice(0,60),c}}).filter(s=>s.l);
+    diag=`<section class="block visual"><h3>${esc(String(dg.title||"How it fits together").slice(0,80))}</h3><div class="gflow">${steps.map((s,i)=>`${i?'<span class="garrow" aria-hidden="true">→</span>':""}<span class="gnode${s.c?"":" gen"}" style="animation-delay:${i*60}ms">${esc(s.l)}${s.c?citeBtns([s.c]):""}</span>`).join("")}</div><p class="cap">Solid steps cite a passage. Dashed steps are Unravel's own framing.</p></section>`;
+  }
+  let demo="";
+  if(topic){const T=TOPICS[topic];demo={fee:visFee,ironwood:visIronwood,ua:visUA,migrate:visMigrate}[T.visual]()}
+  const expl=[data&&data.explanation?`<p>${fmtInline(String(data.explanation))}</p>`:"",
+    dem.length?`<p style="margin-top:10px;font-weight:600;font-size:.875rem">Could not be matched to a passage, treat as unverified:</p><ul class="demoted">${dem.map(([t,w])=>`<li>${fmtInline(t)} <span class="mono" style="font-size:.75rem">(${esc(w)})</span></li>`).join("")}</ul>`:""].join("");
+  const gaps=data&&data.gaps&&String(data.gaps).trim()?`<section class="block callout"><h3>Gaps and conflicts</h3><p>${fmtInline(String(data.gaps))}</p></section>`:"";
+  $("#main").innerHTML=shell(`<div class="meta"><span class="badge ${cov}">${cov==="full"?"Covered by corpus":cov==="partial"?"Partly covered":"Not covered"}</span><span>Snapshot ${SNAP}</span><span>Drafted by Claude from ${ids.length} passages, ${ver.length} of ${ver.length+dem.length} sentences passed the check</span></div>
+    ${claimsHTML}${gaps}${diag}${demo}
+    ${expl?`<section class="block explain"><h3>Explanation · written by Unravel</h3>${expl}</section>`:""}
+    <section class="block" id="srcBlock"></section>`);
+  if(topic){ if(TOPICS[topic].visual==="fee")bindFee(); if(TOPICS[topic].visual==="ua")bindUA(); if(TOPICS[topic].visual==="migrate")bindMig(); }
+  finishSources(ids);
+}
+function renderPassagesOnly(q,ids,topic,msg){
+  citeOrder=[];
+  const list=ids.slice(0,4).map(id=>{const c=CI[id];return `<li>${esc(c.x)}${citeBtns([id])}</li>`}).join("");
+  let demo="";
+  if(topic){demo={fee:visFee,ironwood:visIronwood,ua:visUA,migrate:visMigrate}[TOPICS[topic].visual]()}
+  $("#main").innerHTML=`<article class="answer"><h2 class="q">${esc(q)}</h2>
+   <div class="meta"><span class="badge partial">Passages only</span><span>Snapshot ${SNAP}</span></div>
+   <section class="block callout"><h3>No drafted answer</h3><p>${esc(msg)}</p></section>
+   <section class="block verified"><h3>Matching passages</h3><ol class="claims">${list}</ol></section>
+   ${demo}
+   <section class="block" id="srcBlock"></section></article>`;
+  if(topic){ if(TOPICS[topic].visual==="fee")bindFee(); if(TOPICS[topic].visual==="ua")bindUA(); if(TOPICS[topic].visual==="migrate")bindMig(); }
+  finishSources(ids);
+}
+function finishSources(){
+  const b=$("#srcBlock"); if(b) b.innerHTML=`<h3 style="color:var(--muted)">Sources in this answer</h3>${sourcesList()}`;
+  drawPrep($("#main"));
+  if(citeOrder[0]) openDrawerQuiet(citeOrder[0]);
+}
+
+/* ---------- Events ---------- */
+document.addEventListener("click",e=>{
+  const c=e.target.closest("[data-cite]"); if(c){e.preventDefault();openDrawer(c.dataset.cite);return}
+  const t=e.target.closest("[data-topic]"); if(t){const h=HASH[t.dataset.topic]; if(location.hash==="#"+h) renderTopic(t.dataset.topic); else location.hash=h; return}
+});
+$("#askForm").addEventListener("submit",e=>{e.preventDefault();ask($("#ask-box").value)});
+function route(){const k=UNHASH[(location.hash||"").slice(1)]; if(k) renderTopic(k); else if(!$("#main").innerHTML) renderTopic("fees")}
+window.addEventListener("hashchange",route);
+
+function applyMotion(){
+  document.documentElement.classList.toggle("no-motion",!motionOn);
+  const b=$("#motionBtn"); b.textContent="Motion: "+(motionOn?"on":"off"); b.setAttribute("aria-pressed",motionOn);
+  document.querySelectorAll("#main svg, .howgrid svg").forEach(s=>{try{motionOn?s.unpauseAnimations():s.pauseAnimations()}catch(e){}});
+  document.dispatchEvent(new CustomEvent("unravel:motion",{detail:motionOn}));
+}
+$("#motionBtn").addEventListener("click",()=>{motionOn=!motionOn;try{localStorage.setItem("unravel-motion",motionOn?"1":"0")}catch(e){}applyMotion()});
+if(matchMedia("(max-width:820px)").matches) $("#railDetails").open=false;
+
+renderRail(); route(); applyMotion();
+})();
+</script>
+<script>(function(){
+"use strict";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fmt=n=>n.toLocaleString("en-US");
+const NU63_H=3428143, NU63_MS=Date.UTC(2026,6,28,12,0,0);
+const tip=()=>Math.round(NU63_H+(Date.now()-NU63_MS)/75000);
+
+/* live chip + tier strip */
+(function(){
+  const days=Math.round((3590000-tip())*75/86400);
+  const el=$("#feeEta");
+  if(el) el.textContent = days>1 ? `about ${days} days away (est.)` : days>-1 ? "about now (est.)" : "already passed (est.)";
+  const K=window.UNRAVEL_CORPUS; const ul=$("#tierStrip");
+  if(K&&ul){
+    const by={}; for(const c of K.C){const t=K.S[c.s].tier;(by[t]=by[t]||new Set()).add(c.s)}
+    ul.innerHTML=["Spec","Official","Implementation","Proposal","Secondary"].filter(t=>by[t]).map(t=>`<li>${K.TIER_LABEL[t]}<span>${by[t].size} source${by[t].size>1?"s":""}</span></li>`).join("");
+  }
+})();
+
+/* rosette: hypotrochoid curves, drawn once */
+(function(){
+  const svg=$("#rosette"); if(!svg) return;
+  const curve=(R,r,d,turns,n)=>{let p="";for(let i=0;i<=n;i++){const t=i/n*Math.PI*2*turns;const x=450+(R-r)*Math.cos(t)+d*Math.cos((R-r)/r*t);const y=450+(R-r)*Math.sin(t)-d*Math.sin((R-r)/r*t);p+=(i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1)}return p};
+  svg.innerHTML=`<g><path d="${curve(300,105,140,7,2600)}"/></g><g><path d="${curve(330,88,180,4,2200)}" opacity=".7"/></g>`;
+})();
+
+/* ---------- scenes ---------- */
+const CHECK='<svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>';
+function feeVis(){
+  const x=h=>40+(h-3420000)/200000*360, y=v=>200-v/6000*180;
+  const sw=x(3590000).toFixed(1), t=x(tip()).toFixed(1), nu=x(NU63_H).toFixed(1);
+  return `<svg viewBox="0 0 420 236" role="img" aria-label="Fee per logical action: 5,000 zatoshis until block 3,590,000, then 1,000">
+   ${[0,2000,4000,6000].map(v=>`<line class="v-axis" x1="40" x2="404" y1="${y(v)}" y2="${y(v)}"/><text class="v-txt" x="34" y="${y(v)+3}" text-anchor="end">${v?v/1000+"k":"0"}</text>`).join("")}
+   <path class="v-area fade" style="animation-delay:500ms" d="M40 200 V${y(5000)} H${sw} V${y(1000)} H404 V200 Z"/>
+   <path class="v-step draw" d="M40 ${y(5000)} H${sw} V${y(1000)} H404"/>
+   <line x1="${nu}" x2="${nu}" y1="20" y2="200" stroke="var(--amber)" stroke-width="1" opacity=".6"/>
+   <text class="v-txt" x="${+nu+4}" y="30">NU6.3</text>
+   <line x1="${t}" x2="${t}" y1="20" y2="200" stroke="var(--gen)" stroke-width="1.2" stroke-dasharray="3 3"/>
+   <text class="v-txt" x="${+t+4}" y="30">tip ≈ ${fmt(tip())}</text>
+   <circle class="pop" style="animation-delay:700ms" cx="${sw}" cy="${y(5000)}" r="5" fill="var(--surface)" stroke="var(--amber)" stroke-width="2"/>
+   <circle class="pop" style="animation-delay:950ms" cx="${sw}" cy="${y(1000)}" r="5" fill="var(--amber)"/>
+   <g class="fade" style="animation-delay:1100ms"><rect x="${+sw-150}" y="${y(1000)-62}" width="142" height="40" rx="5" fill="var(--surface)" stroke="var(--line)"/>
+   <text class="v-lbl" x="${+sw-140}" y="${y(1000)-44}">5,000 → 1,000 zats</text><text class="v-txt" x="${+sw-140}" y="${y(1000)-30}">per action, ZIP 2009</text></g>
+   <text class="v-txt" x="40" y="222">3,420,000</text><text class="v-txt" x="${sw}" y="222" text-anchor="middle">3,590,000</text>
+  </svg>`;
+}
+function ironVis(){
+  return `<svg viewBox="0 0 420 250" role="img" aria-label="Transparent and Orchard funds flow into Ironwood; new funds cannot enter Orchard">
+   <path id="sp1" class="v-flow draw" d="M110 124 C 200 124, 230 124, 300 124"/>
+   <path id="sp2" class="v-flow draw" style="animation-delay:250ms" d="M262 212 H 300 C 342 212, 356 190, 356 160"/>
+   <path class="v-flow no draw" style="animation-delay:400ms" d="M70 150 C 90 196, 116 212, 150 212"/>
+   <path class="v-flow gen draw" style="animation-delay:500ms" d="M262 34 C 322 34, 350 60, 356 90"/>
+   <g class="fade" style="animation-delay:650ms"><line x1="124" y1="204" x2="136" y2="220" stroke="var(--danger)" stroke-width="2"/><line x1="136" y1="204" x2="124" y2="220" stroke="var(--danger)" stroke-width="2"/></g>
+   <rect class="v-node pop" x="10" y="100" width="100" height="50" rx="6"/><text class="v-lbl" x="60" y="122" text-anchor="middle">Transparent</text><text class="v-txt" x="60" y="138" text-anchor="middle">public</text>
+   <rect class="v-node dim pop" style="animation-delay:80ms" x="150" y="12" width="112" height="44" rx="6"/><text class="v-lbl" x="206" y="32" text-anchor="middle">Sapling</text><text class="v-txt" x="206" y="46" text-anchor="middle">route not in corpus</text>
+   <rect class="v-node pop" style="animation-delay:120ms" x="150" y="190" width="112" height="44" rx="6"/><text class="v-lbl" x="206" y="210" text-anchor="middle">Orchard</text><text class="v-txt" x="206" y="224" text-anchor="middle">withdrawals only</text>
+   <rect class="v-node acc pop" style="animation-delay:200ms" x="300" y="90" width="112" height="70" rx="8"/><text class="v-lbl" x="356" y="120" text-anchor="middle">Ironwood</text><text class="v-txt" x="356" y="136" text-anchor="middle">v6 tx · Halo 2</text>
+   <g transform="translate(272 200)"><rect width="22" height="24" rx="3" fill="var(--surface)" stroke="var(--verified)" stroke-width="1.5"/><line x1="11" y1="12" x2="11" y2="12" /><line x1="3" y1="12" x2="19" y2="12" stroke="var(--verified)" stroke-width="1.6"><animateTransform attributeName="transform" type="rotate" values="0 11 12;90 11 12;90 11 12" keyTimes="0;.3;1" dur="2.4s" repeatCount="indefinite"/></line></g>
+   <text class="v-txt" x="283" y="244" text-anchor="middle">turnstile</text>
+   <text class="v-txt" x="205" y="114" text-anchor="middle" fill="var(--verified)" style="fill:var(--verified)">shield</text>
+   <circle class="v-dot" r="4.5"><animateMotion dur="2.8s" repeatCount="indefinite"><mpath href="#sp1"/></animateMotion></circle>
+   <circle class="v-dot" r="4.5"><animateMotion dur="2.8s" begin="1.4s" repeatCount="indefinite"><mpath href="#sp1"/></animateMotion></circle>
+   <circle class="v-dot" r="4.5"><animateMotion dur="2.4s" begin=".5s" repeatCount="indefinite"><mpath href="#sp2"/></animateMotion></circle>
+  </svg>`;
+}
+function braid(cx,cy,r0,a,n){let out="";for(let k=0;k<3;k++){let p="";for(let i=0;i<=720;i++){const t=i/720*Math.PI*2;const r=r0+a*Math.sin(n*t+k*2.094);p+=(i?"L":"M")+(cx+r*Math.cos(t)).toFixed(1)+" "+(cy+r*Math.sin(t)).toFixed(1)}out+=`<path class="v-ring" d="${p}"/>`}return out}
+function ring(cx,cy,R,r,d,turns,n){let p="";for(let i=0;i<=n;i++){const t=i/n*Math.PI*2*turns;const x=cx+(R-r)*Math.cos(t)+d*Math.cos((R-r)/r*t);const y=cy+(R-r)*Math.sin(t)-d*Math.sin((R-r)/r*t);p+=(i?"L":"M")+x.toFixed(1)+" "+y.toFixed(1)}return p}
+function uaVis(){
+  return `<svg viewBox="0 0 420 250" role="img" aria-label="A unified address decodes through F4Jumble into receivers in typecode order">
+   <rect class="v-node pop" x="6" y="104" width="82" height="42" rx="6"/><text x="47" y="130" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="14" fill="var(--ink)">zu1…</text>
+   <text class="v-txt" x="47" y="164" text-anchor="middle">Bech32m</text>
+   <path class="v-flow draw" d="M90 125 H 122" marker-end=""/>
+   <g class="spin">${braid(176,125,46,7,22)}</g>
+   <circle cx="176" cy="125" r="30" fill="var(--surface)" stroke="var(--amber)" stroke-width="1.5"/>
+   <text class="v-lbl" x="176" y="122" text-anchor="middle" style="font-size:10.5px">F4</text><text class="v-txt" x="176" y="135" text-anchor="middle">Jumble</text>
+   <path class="v-flow draw" style="animation-delay:300ms" d="M236 125 C 252 125, 252 78, 268 78 M252 125 H 268 M236 125 C 252 125, 252 172, 268 172"/>
+   <g class="pop" style="animation-delay:500ms"><rect x="270" y="64" width="129" height="28" rx="4" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/><text class="v-lbl" x="280" y="83">Orchard</text><text class="v-txt" x="391" y="82" text-anchor="end">43 B</text></g>
+   <g class="pop" style="animation-delay:700ms"><rect x="270" y="111" width="129" height="28" rx="4" fill="var(--amber-soft)" stroke="var(--amber)" stroke-width="1.5"/><text class="v-lbl" x="280" y="130">Sapling</text><text class="v-txt" x="391" y="129" text-anchor="end">43 B</text></g>
+   <g class="pop" style="animation-delay:900ms"><rect x="270" y="158" width="60" height="28" rx="4" fill="none" stroke="var(--gen)" stroke-width="1.5" stroke-dasharray="4 3"/><text class="v-txt" x="280" y="176">P2PKH</text><text class="v-txt" x="338" y="176">20 B · tu</text></g>
+   <text class="v-txt" x="270" y="210">read in typecode order</text>
+  </svg>`;
+}
+function migVis(){
+  const seg=[["Zebra",36,"var(--verified)"],["Zallet",27,"var(--blue)"],["Replaced",21,"var(--gen)"],["Planned",18,"var(--amber)"],["Deferred",6,"var(--muted)"],["Undecided",2,"var(--line)"],["Retired",25,"var(--danger)"]];
+  const r=74, C=2*Math.PI*r; let off=0, i=0;
+  const arcs=seg.map(([l,n,c])=>{const len=n/135*C; const s=`<circle cx="112" cy="122" r="${r}" stroke="${c}" stroke-dashoffset="${(-off).toFixed(2)}" style="--l:${(len-2).toFixed(2)};--c:${C.toFixed(2)};animation-delay:${i++*110}ms" class="arc"/>`; off+=len; return s}).join("");
+  return `<svg viewBox="0 0 420 250" role="img" aria-label="Of 135 zcashd RPC methods: 36 Zebra, 27 Zallet, 21 replaced, 18 planned, 6 deferred, 2 undecided, 25 retired">
+   <style>.arc{fill:none;stroke-width:24;stroke-dasharray:0 var(--c);transform:rotate(-90deg);transform-origin:112px 122px;animation:arc 700ms var(--ease-std) forwards}@keyframes arc{to{stroke-dasharray:var(--l) var(--c)}}</style>
+   ${arcs}
+   <text x="112" y="120" text-anchor="middle" font-family="Archivo, Arial, sans-serif" font-weight="800" font-size="34" fill="var(--ink)">135</text>
+   <text class="v-txt" x="112" y="140" text-anchor="middle">zcashd methods</text>
+   ${seg.map(([l,n,c],k)=>`<g class="fade" style="animation-delay:${300+k*90}ms"><rect x="226" y="${36+k*26}" width="12" height="12" rx="2" fill="${c}"/><text class="v-lbl" x="246" y="${46+k*26}" style="font-weight:500">${l}</text><text x="404" y="${46+k*26}" text-anchor="end" font-family="JetBrains Mono" font-size="12" fill="var(--ink)">${n}</text></g>`).join("")}
+  </svg>`;
+}
+function checkVis(){
+  return `<div class="ans">
+   <div class="vl" style="animation-delay:300ms">${CHECK}<span>Use <code>z_getnewaccount</code>, then <code>z_getaddressforaccount</code>. <span class="chipx">c9</span></span></div>
+   <div class="vl" style="animation-delay:900ms">${CHECK}<span>Zallet now owns wallet methods that need keys. <span class="chipx">c9</span></span></div>
+   <div class="vl mv" style="animation-delay:1600ms">${CHECK}<span>Shipped in Zallet 0.2.0. <span class="chipx">c9</span></span></div>
+   <div class="ex" style="animation-delay:3000ms"><b>Explanation · could not be matched</b>"Shipped in Zallet 0.2.0." The number is not in passage c9, so it is shown as unverified.</div>
+  </div>`;
+}
+
+const SCENES=[
+ {key:"fees",label:"Fees",title:"Fee per logical action",sub:"ZIP 317 rate by mainnet block height",tTitle:"zebra · json-rpc",tTag:"mainnet",foot:"Rates from ZIP 317 and ZIP 2009",
+  chips:[["ZIP 317",""],["ZIP 2009",""],["getstandardfee",""],["tip is estimated","g"]],vis:feeVis,
+  lines:[["$ curl -s 127.0.0.1:8232 \\","c",0,1],["    -d '{\"method\":\"getstandardfee\"}'","",900,1],["{ \"result\": {","",2000],["    \"standard_fee\": <span class=n>5000</span>,","",2200],["    ... } }","c",2400],["# per logical action, next block","c",3000],["# 1000 from block 3,590,000","n",3500],["# minimal tx: 10,000 → 2,000 zats","s",4100]]},
+ {key:"ironwood",label:"Ironwood",title:"Where shielded value moves",sub:"After NU6.3 activated at block 3,428,143",tTitle:"unravel · pipeline",tTag:"query",foot:"6 of 6 sentences matched",
+  chips:[["NU6.3",""],["Orchard: withdrawals only",""],["Sapling route: not covered","g"]],vis:ironVis,
+  lines:[["> ask \"what changed with Ironwood?\"","k",0,1],["  search   21 passages","",1400],["  select   c12 c13 c14 c15 c16 c7","",2000],["  draft    6 cited sentences","",2700],["  check    6/6 matched","s",3400],["  visual   pool flow","n",4000]]},
+ {key:"unified-addresses",label:"Addresses",title:"Inside a unified address",sub:"ZIP 316 revision 2, as parsed by librustzcash",tTitle:"decode.rs",tTag:"rust",foot:"API from zcash_address docs",
+  chips:[["ZIP 316 rev 2",""],["zu: no transparent",""],["tu: has transparent",""],["F4Jumble",""]],vis:uaVis,
+  lines:[["<span class=k>use</span> zcash_address::unified::{","",0],["    <span class=k>self</span>, Container, Encoding};","",250],["","",400],["<span class=k>let</span> (network, ua) =","",700,0,1],["    unified::Address::<span class=n>decode</span>(addr)?;","",900,0,1],["<span class=k>for</span> r <span class=k>in</span> ua.<span class=n>items</span>() {","",1900,0,1],["    <span class=k>match</span> r {","",2200],["      Receiver::<span class=s>Orchard</span>(_) => ..,","",2700,0,1],["      Receiver::<span class=s>Sapling</span>(_) => ..,","",3100,0,1],["      _ => {}","",3400],["    }","",3500],["}","",3600]]},
+ {key:"migration",label:"Migration",title:"Where zcashd's 135 RPCs went",sub:"Zebra 7.0.0-rc.0 and Zallet 0.1.0-beta.3",tTitle:"zcashd to zallet",tTag:"rpc",foot:"From the Zebra Book migration guide",
+  chips:[["zcashd halted at 3,417,100",""],["Zallet: wallet",""],["Zebra: node",""]],vis:migVis,
+  lines:[["# zcashd, halted Jul 18","c",0],["<span class=x>z_getnewaddress</span>","r",500],["<span class=x>getbalance</span>","r",800],["<span class=x>signrawtransaction</span>","r",1100],["","",1200],["# use in Zallet","c",1800],["z_getnewaccount","s",2200],["z_getaddressforaccount","s",2500],["z_getbalanceforaccount","s",2800],["pczt_create, pczt_sign","s",3100]]},
+ {key:"how",label:"Checks",title:"Every sentence is checked",sub:"Example: one drafted sentence fails and is moved",tTitle:"unravel · check",tTag:"draft",foot:"Numbers must appear in the passage",
+  chips:[["cited","" ],["explanation","g"],["moved","w"]],vis:checkVis,
+  lines:[["> ask \"which rpc replaces z_getnewaddress?\"","k",0,1],["  draft  3 sentences","",1700],["  check  s1 [c9]  ok","s",2200],["  check  s2 [c9]  ok","s",2700],["  check  s3 [c9]  number not in passage","r",3200],["  move   s3 → explanation","n",3800]]}
+];
+const DUR=7200, TYPE_MS=26;
+
+const stage=$("#stage"), sceneEl=$("#scene"), prog=$("#prog"), body=$("#termBody");
+if(!stage) return;
+let idx=0, elapsed=0, last=0, playing=true, userPaused=false, visible=true, raf=0;
+const motionOn=()=>!document.documentElement.classList.contains("no-motion");
+
+prog.innerHTML=SCENES.map((s,i)=>`<button type="button" role="tab" data-i="${i}" aria-label="Show ${s.label}"><span class="track"><span class="fill"></span></span>${s.label}</button>`).join("");
+prog.addEventListener("click",e=>{const b=e.target.closest("button[data-i]"); if(b) go(+b.dataset.i)});
+
+function prep(root){
+  root.querySelectorAll(".draw").forEach(p=>{try{p.style.setProperty("--len",Math.ceil(p.getTotalLength())+2)}catch(e){}});
+  root.querySelectorAll("svg").forEach(s=>{try{(playing&&motionOn())?s.unpauseAnimations():s.pauseAnimations()}catch(e){}});
+}
+function lineHTML(l){return `<span class="ln${l[1]?" "+l[1]:""}"></span>`}
+function render(){
+  const s=SCENES[idx];
+  $("#cardTopic").textContent=s.label;
+  $("#termTitle").textContent=s.tTitle; $("#termTag").textContent=s.tTag; $("#termFoot").textContent=s.foot;
+  sceneEl.innerHTML=`<h3>${esc(s.title)}</h3><p class="csub">${esc(s.sub)}</p><div class="vis">${s.vis()}</div>
+   <div class="chips">${s.chips.map(([t,c])=>`<span class="chipx ${c}">${esc(t)}</span>`).join("")}<a href="#${s.key}" class="chipx g" style="border-style:solid;border-color:var(--blue);color:var(--blue);text-decoration:none" data-open="${s.key}">Open full answer</a></div>`;
+  body.innerHTML=s.lines.map(lineHTML).join("");
+  prog.querySelectorAll("button").forEach((b,i)=>{b.setAttribute("aria-current",i===idx);b.classList.toggle("done",i<idx);b.querySelector(".fill").style.width=i<idx?"100%":"0%"});
+  stage.setAttribute("aria-label","What Unravel can show: "+s.label+", "+(idx+1)+" of "+SCENES.length);
+  prep(sceneEl);
+  paint();
+}
+function paint(){
+  const s=SCENES[idx], lns=body.children, full=!motionOn()||!playing;
+  const e=full?Infinity:elapsed;
+  let typing=-1;
+  s.lines.forEach((l,i)=>{
+    const el=lns[i]; if(!el) return; const [txt,,at,typed,hl]=l;
+    if(e>=at){
+      el.classList.add("on");
+      if(typed){const n=Math.min(txt.length,Math.floor((e-at)/TYPE_MS)); el.textContent=txt.slice(0,n); if(n<txt.length){typing=i}}
+      else if(!el.dataset.set){el.innerHTML=txt||"&nbsp;"; el.dataset.set="1"}
+      el.classList.toggle("hl",!!hl && !full && e-at<1100);
+    }
+  });
+  if(typing>=0){const c=document.createElement("span");c.className="caret";lns[typing].appendChild(c)}
+  else{const lastOn=[...lns].filter(x=>x.classList.contains("on")).pop(); if(lastOn&&!full&&!lastOn.querySelector(".caret")){/* idle caret on last line */}}
+  const f=prog.children[idx]&&prog.children[idx].querySelector(".fill");
+  if(f) f.style.width=(full?100:Math.min(100,elapsed/DUR*100))+"%";
+}
+function go(i){
+  idx=(i+SCENES.length)%SCENES.length; elapsed=0;
+  render();
+}
+function frame(ts){
+  raf=0;
+  const dt=last?Math.min(100,ts-last):0; last=ts;
+  if(playing&&visible&&motionOn()&&!document.hidden){
+    elapsed+=dt; paint();
+    if(elapsed>=DUR){go(idx+1)}
+  }
+  raf=requestAnimationFrame(frame);
+}
+function setPlaying(p){
+  playing=p;
+  stage.classList.toggle("paused",!p);
+  if(sceneEl.children.length) paint();
+  stage.querySelectorAll("svg").forEach(s=>{try{(p&&motionOn())?s.unpauseAnimations():s.pauseAnimations()}catch(e){}});
+  const b=$("#stagePlay"); b.textContent=p?"Pause":"Play"; b.setAttribute("aria-label",p?"Pause the slideshow":"Play the slideshow");
+}
+sceneEl.addEventListener("click",e=>{const a=e.target.closest("[data-open]"); if(!a) return; const k=a.dataset.open; if(k==="how") return; e.preventDefault();
+  if(location.hash==="#"+k) window.dispatchEvent(new HashChangeEvent("hashchange")); else location.hash=k;
+  document.getElementById("ask").scrollIntoView({behavior:motionOn()?"smooth":"auto"});});
+$("#stagePlay").addEventListener("click",()=>{ if(!motionOn()){go(idx+1);return} userPaused=playing; setPlaying(!playing)});
+document.addEventListener("unravel:motion",()=>{
+  const b=$("#stagePlay");
+  if(!motionOn()){ setPlaying(false); b.textContent="Next"; b.setAttribute("aria-label","Show the next scene"); }
+  else { setPlaying(!userPaused); }
+  render();
+});
+try{ new IntersectionObserver(es=>{visible=es[0].isIntersecting},{threshold:.15}).observe(stage) }catch(e){}
+
+render();
+if(!motionOn()){ setPlaying(false); const b=$("#stagePlay"); b.textContent="Next"; b.setAttribute("aria-label","Show the next scene"); }
+else setPlaying(true);
+raf=requestAnimationFrame(frame);
+})();
+</script>
+
+</body>
+</html>
