@@ -346,7 +346,7 @@ async function groqCallPatient(body, key, until) {
   if (r.res.status === 429) {
     const v = parseFloat(r.res.headers.get("retry-after") || "");
     const wait = Number.isFinite(v) ? v * 1000 + 300 : null;
-    if (wait != null && wait <= 12000 && left() - wait > 12000) {
+    if (wait != null && wait <= 20000 && left() - wait > 12000) {
       console.error("groq_wait", Math.round(wait), body.tools ? "search" : "answer");
       await sleep(wait);
       r = await groqCall(body, key, Math.max(5000, Math.min(22000, left())));
@@ -356,27 +356,42 @@ async function groqCallPatient(body, key, until) {
 }
 const retryAfter = res => { const v = parseFloat(res?.headers?.get("retry-after") || ""); return Number.isFinite(v) ? v * 1000 : null; };
 
+// The search reads whole pages and can use most of a model's per-minute token allowance on the free plan.
+// Groq counts that allowance per model, so the search runs on a smaller model by default and the
+// main model keeps its full allowance for writing the answer.
+const SEARCH_MODEL = () => process.env.UNRAVEL_SEARCH_MODEL || "openai/gpt-oss-20b";
+
 async function research(question, key, model) {
   const messages = [{ role: "system", content: RESEARCH }, { role: "user", content: question }];
   const tools = [{ type: "browser_search" }];
-  // Groq's samples use tool_choice "required"; fall back to simpler shapes if a field is rejected.
-  const attempts = [
-    { model, messages, tools, tool_choice: "required", reasoning_effort: "low", max_completion_tokens: 1800 },
-    { model, messages, tools, tool_choice: "auto", reasoning_effort: "low", max_completion_tokens: 1800 },
-    { model, messages, tools }
-  ];
-  let res, data;
   const started = Date.now();
-  for (const body of attempts) {
-    ({ res, data } = await groqCall(body, key, Math.max(8000, 24000 - (Date.now() - started))));
-    if (res.status === 429) {
-      const wait = retryAfter(res);
-      if (wait != null && wait <= 6000 && Date.now() - started < 12000) { await sleep(wait + 250); ({ res, data } = await groqCall(body, key, Math.max(8000, 24000 - (Date.now() - started)))); }
+  const left = () => 26000 - (Date.now() - started);
+  const shapes = m => [
+    { model: m, messages, tools, tool_choice: "required", reasoning_effort: "low", max_completion_tokens: 1800 },
+    { model: m, messages, tools, tool_choice: "auto", reasoning_effort: "low", max_completion_tokens: 1800 },
+    { model: m, messages, tools }
+  ];
+  const models = [...new Set([SEARCH_MODEL(), model])];
+  let res, data;
+  for (const m of models) {
+    for (const body of shapes(m)) {
+      ({ res, data } = await groqCall(body, key, Math.max(8000, left())));
+      // a short per-minute wait, or a temporary fault on Groq's side: try once more
+      if (res.status === 429) {
+        const wait = retryAfter(res);
+        if (wait != null && wait <= 6000 && left() - wait > 10000) { await sleep(wait + 250); ({ res, data } = await groqCall(body, key, Math.max(8000, left()))); }
+      } else if (res.status >= 500 && left() > 12000) {
+        console.error("search_5xx_retry", res.status, m);
+        await sleep(800); ({ res, data } = await groqCall(body, key, Math.max(8000, left())));
+      }
+      if (res.ok || res.status !== 400) break;
+      console.error("search_400", m, Object.keys(body).filter(k => k !== "messages" && k !== "model").join(","), String(data?.error?.message || "").slice(0, 300));
+      if (left() < 8000) break;
     }
-    if (res.ok || res.status !== 400) break;
-    // Groq's own error text (no user data) tells us which field it disliked.
-    console.error("search_400", Object.keys(body).filter(k => k !== "messages").join(","), String(data?.error?.message || "").slice(0, 300));
-    if (Date.now() - started > 20000) break;
+    if (res.ok) break;
+    // the search model may be unavailable on this account: fall back to the main model once
+    if (m !== model && left() > 12000 && [400, 403, 404, 429, 500, 502, 503].includes(res.status)) { console.error("search_model_fallback", m, res.status); continue; }
+    break;
   }
   if (!res.ok) return { error: res.status, type: data?.error?.type || data?.error?.code || "", message: data?.error?.message };
   const msg = data?.choices?.[0]?.message || {};

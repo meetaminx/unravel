@@ -18,7 +18,7 @@ A Zcash docs copilot. Every fact links to the passage it came from, and anything
    - Claude: passages go in as `search_result` blocks with citations enabled, and only cited text becomes fact.
 3. Anything without a valid citation is shown as unverified explanation.
 4. If the passages don't answer a Zcash or crypto question, the page sends it with `mode: "web"`:
-   - Groq's built-in `browser_search` tool (on `openai/gpt-oss-120b`) searches the web and lists the pages it found. URLs the search didn't return are dropped.
+   - Groq's built-in `browser_search` tool searches the web and lists the pages it found. It runs on `openai/gpt-oss-20b` by default (`UNRAVEL_SEARCH_MODEL`), because Groq's per-minute token limit is counted per model and a search uses most of it. URLs the search didn't return are dropped.
    - A second call writes the usual cited JSON answer from those pages, and the page checks every sentence against them. The answer is labelled "From the web".
    - If web search isn't available (plan limits, outage, no results), the model answers from its own knowledge. The page labels it "General answer, not checked" and shows no sources.
 5. Questions that aren't about Zcash or crypto get "Outside Unravel's scope" and never reach the model.
