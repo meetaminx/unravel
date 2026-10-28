@@ -1,5 +1,6 @@
 // Unravel answer endpoint.
 // POST /api/answer  { question: string, ids: string[] }  ->  { verified, explanation, gaps, provider, model }
+// POST /api/answer  { question, mode: "web" }  ->  same answer shape plus { mode: "web", web: [sources] } or { mode: "general" }
 // GET  /api/answer  ->  { configured: boolean, provider }
 //
 // The browser picks the best passages (ids) from the corpus and sends only their ids.
@@ -46,7 +47,7 @@ const json = (body, status = 200, extra = {}) =>
 
 export function GET() {
   const p = PROVIDER();
-  return json({ configured: !!p, provider: p, model: p ? MODEL_FOR(p) : null, snapshot: SNAPSHOT });
+  return json({ configured: !!p, provider: p, model: p ? MODEL_FOR(p) : null, web: p === "groq", snapshot: SNAPSHOT });
 }
 
 const SYSTEM = `You are Unravel, a documentation assistant for Zcash developers and newcomers.
@@ -211,6 +212,185 @@ export function shape(content, ids) {
   return out;
 }
 
+// ---- Questions the corpus doesn't cover: live web search, then a general answer ----
+// Step 1 asks gpt-oss on Groq to search the web (built-in browser_search tool) and list what it found.
+// Step 2 writes the usual cited JSON answer from those pages, so the browser can check it the same way.
+// If web search isn't available (plan, outage, no results), a general answer is written from the
+// model's own knowledge and the page labels it as unchecked.
+
+const ON_TOPIC = /\b(zcash|zec|zats?|zatoshis?|zebra|zallet|zashi|zodl|shielded|crypto|cryptocurrenc\w*|blockchain|bitcoin|btc|ethereum|eth|solana|coin|coins|token|tokens|wallet|wallets|mining|miner|miners|mine|node|nodes|exchange|exchanges|stake|staking|validator|bridge|swap|defi|nft|address|addresses|transaction|transactions|private key|seed phrase|privacy|halving|block|blocks|hash|consensus|proof|zk|snark|stablecoin|usdc|usdt|ledger|trezor|keystone|near|intents?)\b/i;
+export const onTopic = q => ON_TOPIC.test(q);
+
+const RESEARCH = `You research Zcash questions on the live web for Unravel, a Zcash documentation assistant.
+Use the browser search tool. Prefer primary sources: zips.z.cash, z.cash, zcash.readthedocs.io, zebra.zfnd.org, zfnd.org, electriccoin.co, shieldedlabs.net, zechub.wiki, forum.zcashcommunity.com and github.com/zcash. Use news sites only for recent events. Look for the newest information.
+When you are done, reply with only this JSON and nothing else:
+{"sources":[{"title":"page title","url":"https://...","published":"date if shown, else \\"\\"","facts":["a short factual sentence taken from the page", "..."]}]}
+List 2 to 6 sources you actually opened or saw in results, each with 2 to 5 facts that help answer the question. Copy numbers, dates and names exactly. Never invent a URL.`;
+
+const GENERAL = deep => `You are Unravel, an assistant for Zcash developers and newcomers.
+Unravel's checked sources do not cover this question and a web search was not available, so answer from your own knowledge.
+Be careful and honest: if something does not exist or is not possible in Zcash (for example a feature Zcash does not have), say so plainly instead of describing steps. If you are unsure, or the facts may have changed recently, say that. Never invent numbers, dates, block heights or product names. Write plainly, explain jargon in a few words, and never use em dashes.
+If the question is not about Zcash, cryptocurrency or a closely related technical topic, reply with "not_covered" set to "Unravel only answers questions about Zcash." and everything else empty.
+
+Return one JSON object with these fields:
+- "short": 1 or 2 sentences that answer the question directly, as [{"text":"..."}].
+- "how": ${deep ? "6 to 10" : "3 to 6"} sentences that explain how it works, as [{"text":"..."}].
+- "numbers": up to 4 key figures you are confident about: {"label":"...","value":"..."}. Empty list if unsure.
+- "visual": one visual that helps, or null: "steps" {"type":"steps","title":"...","items":[{"label":"at most 6 words","detail":"one sentence"}]} for a process, "compare" {"type":"compare","title":"...","columns":["A","B"],"items":[{"label":"...","values":["a","b"]}]} for differences, or "timeline" {"type":"timeline","title":"...","items":[{"when":"...","label":"..."}]} for history.
+- "impact": at most 60 words on what this means in practice for the reader.
+- "explanation": at most 60 words of background or an analogy. "" if nothing useful.
+- "related": 3 short follow-up questions.
+- "gaps": one sentence on what may be out of date or worth checking in official docs.
+- "not_covered": "" unless the question is off topic.
+Reply with only the JSON object.`;
+
+function parseJSON(raw) {
+  if (!raw) return null;
+  try { return JSON.parse(raw); } catch {}
+  const fence = raw.match(/```(?:json)?\s*([\s\S]*?)```/); if (fence) { try { return JSON.parse(fence[1]); } catch {} }
+  const m = raw.match(/\{[\s\S]*\}/); if (m) { try { return JSON.parse(m[0]); } catch {} }
+  return null;
+}
+
+const URL_RE = /https?:\/\/[^\s"'<>\]\)】†]+/g;
+const hostOf = u => { try { return new URL(u).hostname.replace(/^www\./, ""); } catch { return ""; } };
+const PRIMARY = /(^|\.)(z\.cash|zips\.z\.cash|zcash\.readthedocs\.io|zfnd\.org|electriccoin\.co|shieldedlabs\.net|zechub\.wiki|forum\.zcashcommunity\.com|zcashcommunity\.com|zodl\.com|zcash\.github\.io)$/;
+const tierFor = u => { const h = hostOf(u); return PRIMARY.test(h) || /^github\.com\/(zcash|zcashfoundation|ZcashFoundation|ShieldedLabs)\//i.test(h + new URL(u).pathname) ? "WebOfficial" : "Web"; };
+
+// Collect whatever page results the tool call exposed, whatever shape Groq uses.
+export function harvest(message) {
+  const found = new Map();
+  const walk = (x, depth) => {
+    if (!x || depth > 6) return;
+    if (Array.isArray(x)) { x.forEach(v => walk(v, depth + 1)); return; }
+    if (typeof x === "object") {
+      const u = typeof x.url === "string" ? x.url : typeof x.link === "string" ? x.link : "";
+      if (/^https?:\/\//.test(u)) {
+        const prev = found.get(u) || {};
+        found.set(u, { url: u, title: String(x.title || prev.title || hostOf(u)), content: String(x.content || x.text || x.snippet || prev.content || "") });
+      }
+      for (const v of Object.values(x)) walk(v, depth + 1);
+      return;
+    }
+    if (typeof x === "string") {
+      if (x.trim().startsWith("{") || x.trim().startsWith("[")) { try { walk(JSON.parse(x), depth + 1); return; } catch {} }
+      for (const u of x.match(URL_RE) || []) if (!found.has(u)) found.set(u, { url: u, title: hostOf(u), content: "" });
+    }
+  };
+  walk(message?.executed_tools, 0);
+  return found;
+}
+
+export function webSources(parsed, found) {
+  const list = Array.isArray(parsed?.sources) ? parsed.sources : [];
+  const out = [];
+  const seen = new Set();
+  const harvestedHosts = new Set([...found.keys()].map(hostOf));
+  for (const s of list) {
+    const url = String(s?.url || "").trim();
+    if (!/^https:\/\//.test(url) || seen.has(url)) continue;
+    // a URL the model lists must match a page the search actually returned, when we can see them
+    if (found.size && !found.has(url) && !harvestedHosts.has(hostOf(url))) continue;
+    const facts = (Array.isArray(s.facts) ? s.facts : []).map(f => str(f, 300)).filter(f => f.length > 15).slice(0, 5);
+    const page = found.get(url);
+    const text = page && page.content.length > 80 ? str(page.content, 1200) + (facts.length ? " " + facts.join(" ") : "") : facts.join(" ");
+    if (text.length < 30) continue;
+    seen.add(url);
+    out.push({ title: str(s.title || page?.title || hostOf(url), 140), url, host: hostOf(url), published: str(s.published, 40), tier: tierFor(url), basis: page && page.content.length > 80 ? "page" : "summary", text });
+    if (out.length >= 6) break;
+  }
+  if (!out.length) {
+    for (const p of found.values()) {
+      if (!/^https:\/\//.test(p.url) || p.content.length < 80) continue;
+      out.push({ title: str(p.title, 140), url: p.url, host: hostOf(p.url), published: "", tier: tierFor(p.url), basis: "page", text: str(p.content, 1200) });
+      if (out.length >= 6) break;
+    }
+  }
+  return out.map((s, i) => ({ id: "w" + (i + 1), ...s }));
+}
+
+async function groqCall(body, key, ms) {
+  const res = await fetch(GROQ_URL, {
+    method: "POST",
+    headers: { "content-type": "application/json", authorization: "Bearer " + key },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(ms)
+  });
+  const data = await res.json().catch(() => null);
+  return { res, data };
+}
+
+async function research(question, key, model) {
+  const { res, data } = await groqCall({
+    model, temperature: 0.2, max_completion_tokens: 3000, reasoning_effort: "low",
+    tool_choice: "required", tools: [{ type: "browser_search" }],
+    messages: [{ role: "system", content: RESEARCH }, { role: "user", content: question }]
+  }, key, 30000);
+  if (!res.ok) return { error: res.status, type: data?.error?.type || data?.error?.code || "", message: data?.error?.message };
+  const msg = data?.choices?.[0]?.message || {};
+  const sources = webSources(parseJSON(msg.content || ""), harvest(msg));
+  return { sources };
+}
+
+async function answerFromWeb(question, sources, key, model, deep) {
+  const passages = sources.map(s => `[${s.id}] (WEB ${s.host}${s.published ? ", " + s.published : ""}) ${s.title}: ${s.text}`).join("\n\n");
+  const rules = richRules(deep).replace("Answer only from the numbered passages.", "The numbered passages are live web search results captured today, not Unravel's checked corpus. Answer only from them, and prefer official Zcash sources when they disagree.");
+  const base = { model, temperature: 0.2, max_completion_tokens: deep ? 4000 : 2800,
+    messages: [{ role: "system", content: rules + "\n\nReply with only the JSON object." }, { role: "user", content: `Question: ${question}\n\nPassages:\n${passages}` }] };
+  let r;
+  for (const body of [{ ...base, response_format: { type: "json_object" }, reasoning_effort: "low" }, { ...base, response_format: { type: "json_object" } }, base]) {
+    r = await groqCall(body, key, 20000);
+    if (r.res.ok || r.res.status !== 400) break;
+  }
+  if (!r.res.ok) return { error: r.res.status, type: r.data?.error?.type || "", message: r.data?.error?.message };
+  const parsed = parseJSON(r.data?.choices?.[0]?.message?.content || "");
+  if (!parsed || typeof parsed !== "object") return { error: 502, type: "invalid_json" };
+  return { out: { ...sanitize(parsed, sources.map(s => s.id)), model: r.data.model || model } };
+}
+
+export function sanitizeGeneral(parsed) {
+  const sents = a => (Array.isArray(a) ? a : []).filter(v => v && (typeof v.text === "string" || typeof v === "string")).slice(0, 12)
+    .map(v => ({ text: str(typeof v === "string" ? v : v.text, 400), cites: [] })).filter(v => v.text);
+  const base = sanitize({ ...parsed, short: [], how: [] }, []);
+  return { ...base, short: sents(parsed.short), how: sents(parsed.how), unmatched: [] };
+}
+
+async function answerGeneral(question, key, model, deep) {
+  const base = { model, temperature: 0.2, max_completion_tokens: deep ? 3500 : 2400,
+    messages: [{ role: "system", content: GENERAL(deep) }, { role: "user", content: `Question: ${question}` }] };
+  let r;
+  for (const body of [{ ...base, response_format: { type: "json_object" }, reasoning_effort: "low" }, { ...base, response_format: { type: "json_object" } }, base]) {
+    r = await groqCall(body, key, 20000);
+    if (r.res.ok || r.res.status !== 400) break;
+  }
+  if (!r.res.ok) return { error: r.res.status, type: r.data?.error?.type || "", message: r.data?.error?.message };
+  const parsed = parseJSON(r.data?.choices?.[0]?.message?.content || "");
+  if (!parsed || typeof parsed !== "object") return { error: 502, type: "invalid_json" };
+  return { out: { ...sanitizeGeneral(parsed), model: r.data.model || model } };
+}
+
+export async function askOpen(question, key, model, deep) {
+  let why = "";
+  const started = Date.now();
+  try {
+    const r = await research(question, key, model);
+    if (r.error === 429) return { error: 429 };
+    if (r.error) why = `search_error_${r.error}`;
+    else if (r.sources.length < 1) why = "no_sources";
+    else {
+      const a = await answerFromWeb(question, r.sources, key, model, deep);
+      if (a.error === 429) return { error: 429 };
+      if (!a.error && (a.out.short.length || a.out.how.length)) return { out: { ...a.out, mode: "web", checked: "browser", web: r.sources } };
+      why = a.error ? `answer_error_${a.error}` : "answer_empty";
+    }
+  } catch (e) { why = "search_failed"; }
+  console.error("web_fallback", why);
+  if (Date.now() - started > 38000) return { error: 504, type: "timeout" };
+  const g = await answerGeneral(question, key, model, deep);
+  if (g.error) return g;
+  return { out: { ...g.out, mode: "general", checked: "none", webNote: why } };
+}
+
 export async function POST(request) {
   const provider = PROVIDER();
   if (!provider) return json({ code: "not_configured", message: "The answer service is not set up yet." }, 503);
@@ -228,10 +408,13 @@ export async function POST(request) {
   const deep = body?.depth === "deep";
   const original = typeof body?.original === "string" ? body.original.trim().slice(0, MAX_Q) : "";
   const ids = Array.isArray(body?.ids) ? [...new Set(body.ids.map(String))].filter(id => BY_ID.has(id)).slice(0, MAX_IDS) : [];
+  const open = body?.mode === "web";
   if (question.length < 3) return json({ code: "bad_request", message: "Ask a question of at least 3 characters." }, 400);
-  if (!ids.length) return json({ code: "no_passages", message: "No passages were selected for this question." }, 400);
+  if (open && !onTopic(question + " " + original)) return json({ code: "off_topic", message: "Unravel only answers questions about Zcash." }, 400);
+  if (open && provider !== "groq") return json({ code: "web_unavailable", message: "Web answers need the Groq engine." }, 400);
+  if (!open && !ids.length) return json({ code: "no_passages", message: "No passages were selected for this question." }, 400);
 
-  const ckey = question.toLowerCase() + "|" + (deep ? "deep|" : "") + ids.join(",");
+  const ckey = question.toLowerCase() + "|" + (deep ? "deep|" : "") + (open ? "web" : ids.join(","));
   const hit = cache.get(ckey);
   if (hit && Date.now() - hit.at < CACHE_MS) return json({ ...hit.body, cached: true });
 
@@ -240,7 +423,8 @@ export async function POST(request) {
 
   if (provider === "groq") {
     let r;
-    try { r = await askGroq(question + (original && original !== question ? `\n(The reader typed: ${original})` : ""), ids, key, MODEL, deep); }
+    const asked = question + (original && original !== question ? `\n(The reader typed: ${original})` : "");
+    try { r = open ? await askOpen(asked, key, MODEL, deep) : await askGroq(asked, ids, key, MODEL, deep); }
     catch { return json({ code: "upstream_error", message: "The answer service did not respond. Try again." }, 502); }
     if (r.error) {
       console.error("groq_error", r.error, r.type, r.message);

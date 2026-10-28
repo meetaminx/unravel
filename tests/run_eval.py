@@ -24,6 +24,8 @@ with sync_playwright() as p:
         comp = r["plan"].get("companionTopic")
         if c.get("topic") and comp != c["topic"]:
             problems.append(f"expected companion {c['topic']}, got {comp}")
+        if "open" in c and r.get("open") != c["open"]:
+            problems.append(f"expected open={c['open']}, got {r.get('open')}")
         for pid in c.get("mustFind", []):
             if pid not in r["ids"]:
                 problems.append(f"passage {pid} not found")

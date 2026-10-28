@@ -252,7 +252,15 @@ main{min-width:0}
 .tier{font-family:var(--f-mono);font-size:.66rem;text-transform:uppercase;letter-spacing:.04em;padding:0 5px;border-radius:3px;border:1px solid var(--line);color:var(--muted)}
 .tier.Spec,.tier.Official{color:var(--verified);border-color:var(--verified)}
 .tier.Implementation{color:var(--blue);border-color:var(--blue)}
-.tier.Secondary,.tier.Proposal{color:var(--warn);border-color:var(--warn)}
+.tier.Secondary,.tier.Proposal,.tier.Web{color:var(--warn);border-color:var(--warn)}
+.tier.WebOfficial{color:var(--blue);border-color:var(--blue)}
+.badge.web{color:var(--blue);border-color:var(--blue)}
+.callout.webnote h3{color:var(--blue)}
+.callout.gennote h3{color:var(--gen)}
+.badge.gen{color:var(--gen);border:1px dashed var(--gen)}
+.claims.general li{border-left:2px dashed var(--gen);padding-left:12px}
+.callout.webnote{border-left-color:var(--blue);background:transparent;border:1px solid var(--line);border-left:3px solid var(--blue)}
+.callout.gennote{border-left:3px dashed var(--gen);background:transparent;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
 
 .visual{border:1px solid var(--line);border-radius:8px;padding:16px;background:var(--bg)}
 .visual h3{color:var(--ink)}
@@ -817,7 +825,7 @@ const S = {
   coinstats:{t:"CoinStats: Zcash Unified Addresses",u:"https://coinstats.app/news/d17c9b928156619cc37fbbe9e562b81babc8dd9a2a0dc14b8015d45819738d03_Zcash-Unified-Addresses-How-They-Simplify-Private-Payments/",tier:"Secondary"},
   coindesk:{t:"CoinDesk: Zcash protocol overview",u:"https://www.coindesk.com/price/zec",tier:"Secondary"}
 };
-const TIER_LABEL={Spec:"Spec",Implementation:"Implementation",Official:"Official docs",Proposal:"Proposal",Secondary:"Secondary"};
+const TIER_LABEL={Spec:"Spec",Implementation:"Implementation",Official:"Official docs",Proposal:"Proposal",Secondary:"Secondary",WebOfficial:"Web · official site",Web:"Web"};
 
 /* ---------- Passages (paraphrased from each source, captured 27 Oct 2026) ---------- */
 const C = [
@@ -1189,12 +1197,13 @@ function openDrawer(id){
   let txt=esc(c.x);
   const terms=[...new Set(lastTerms.filter(t=>t.length>3))].slice(0,8);
   for(const t of terms){txt=txt.replace(new RegExp("\\b("+t.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")\\b","gi"),"<mark>$1</mark>")}
-  $("#drawerBody").innerHTML=`<div class="row"><span class="tier ${s.tier}">${TIER_LABEL[s.tier]}</span><span class="mono">${c.id}</span><span>Captured ${SNAP}</span></div>
+  $("#drawerBody").innerHTML=`<div class="row"><span class="tier ${s.tier}">${TIER_LABEL[s.tier]}</span><span class="mono">${c.id}</span><span>${s.web?"Found by web search today":"Captured "+SNAP}</span></div>
    <p class="ptitle">${esc(s.t)}</p><div class="row">Section: ${esc(c.sec)}${s.note?" · "+esc(s.note):""}</div>
    <blockquote>${txt}</blockquote>
    ${s.tier==="Secondary"?'<p class="secnote">Secondary source. Verify against the spec or implementation before relying on it.</p>':""}
-   <p style="margin:0;color:var(--muted);font-size:.8125rem">Passage paraphrased from the source for this corpus. Open the original to read it in full.</p>
-   <a class="openlink" href="${s.u}" target="_blank" rel="noopener">Open source <span aria-hidden="true">↗</span></a>`;
+   ${s.web?'<p class="secnote">Live web result, not part of Unravel\'s checked sources. Web pages can be wrong or out of date.</p>':""}
+   <p style="margin:0;color:var(--muted);font-size:.8125rem">${s.web?(s.basis==="page"?"Text from the page as the web search returned it.":"Summary of the page written during the web search. Open the page to confirm it."):"Passage paraphrased from the source for this corpus. Open the original to read it in full."}</p>
+   <a class="openlink" href="${esc(s.u)}" target="_blank" rel="noopener">Open source <span aria-hidden="true">↗</span></a>`;
   const d=$("#drawer"); d.dataset.open="true";
   document.querySelectorAll(".cite[aria-pressed]").forEach(b=>b.setAttribute("aria-pressed","false"));
   document.querySelectorAll(`.cite[data-cite="${id}"]`).forEach(b=>b.setAttribute("aria-pressed","true"));
@@ -1435,7 +1444,7 @@ function renderTopic(key,asked,note){
 }
 function openDrawerQuiet(id){ if(matchMedia("(min-width:1181px)").matches) openDrawer(id) }
 function sourcesList(){
-  return `<ol class="srcs">${citeOrder.map((id,i)=>{const c=CI[id],s=S[c.s];return `<li><span class="num">[${i+1}]</span><span class="tier ${s.tier}">${TIER_LABEL[s.tier]}</span><a href="${s.u}" target="_blank" rel="noopener">${esc(s.t)}</a><span style="color:var(--muted)">· ${esc(c.sec)}</span></li>`}).join("")}</ol>`;
+  return `<ol class="srcs">${citeOrder.map((id,i)=>{const c=CI[id],s=S[c.s];return `<li><span class="num">[${i+1}]</span><span class="tier ${s.tier}">${TIER_LABEL[s.tier]}</span><a href="${esc(s.u)}" target="_blank" rel="noopener">${esc(s.t)}</a><span style="color:var(--muted)">· ${esc(c.sec)}</span></li>`}).join("")}</ol>`;
 }
 
 /* ---------- Retrieval ---------- */
@@ -1477,13 +1486,20 @@ function coverage(q,ids){
   if(missing.some(t=>CRYPTO.has(t)&&!(DF[t]>0))) return {score:0,missing:missing.filter(t=>CRYPTO.has(t))};
   return {score:1-missing.length/key.length,missing};
 }
-function renderLowConfidence(q,ids,missing){
+function renderOffTopic(q,msg){
+  citeOrder=[];
+  $("#main").innerHTML=`<article class="answer"><h2 class="q">${esc(q)}</h2>
+   <div class="meta"><span class="badge none">Outside Unravel's scope</span></div>
+   <section class="block explain"><h3>Explanation · written by Unravel</h3><p>${esc(msg||"Unravel answers questions about Zcash, from the basics to building with it. This question looks like it's about something else, so Unravel won't answer it.")}</p></section>
+   ${suggestHTML(q)}</article>`;
+}
+function renderLowConfidence(q,ids,missing,note){
   citeOrder=[];
   const words=missing.slice(0,4).map(w=>`"${esc(w)}"`).join(", ");
   const loose=ids.slice(0,3).map(id=>`<li>${esc(CI[id].x)}${citeBtns([id])}</li>`).join("");
   $("#main").innerHTML=`<article class="answer"><h2 class="q">${esc(q)}</h2>
    <div class="meta"><span class="badge none">Not covered yet</span><span>Snapshot ${SNAP}</span></div>
-   <section class="block explain"><h3>Explanation · written by Unravel</h3><p>The corpus doesn't cover ${words||"this topic"} yet, so Unravel won't guess an answer. Try rephrasing in plain words.</p></section>
+   <section class="block explain"><h3>Explanation · written by Unravel</h3><p>The corpus doesn't cover ${words||"this topic"} yet, so Unravel won't guess an answer. Try rephrasing in plain words.</p>${note?`<p style="margin-top:8px">${esc(note)}</p>`:""}</section>
    ${suggestHTML(q)}
    ${loose?`<section class="block loose"><h3>Loosely related, may not answer your question</h3><ol class="claims">${loose}</ol></section>`:""}
    <section class="block" id="srcBlock"></section></article>`;
@@ -1500,6 +1516,7 @@ const VOCAB=new Map();
   for(const k of Object.keys(TOPICS)){ RAW(TOPICS[k].q).forEach(w=>add(w,2)); TOPICS[k].kw.forEach(w=>RAW(w).forEach(x=>add(x,2))) }
   Object.keys(SYN).forEach(w=>add(w,1));
   EXTRA_TERMS.forEach(w=>add(w,5));
+  "stake staking validator bridge bridging swap swaps exchange exchanges ethereum bitcoin solana stablecoin defi airdrop governance hardware ledger trezor multisig price".split(" ").forEach(w=>add(w,5));
 })();
 function editDist(a,b,max){
   if(Math.abs(a.length-b.length)>max) return max+1;
@@ -1590,11 +1607,11 @@ function checkClaim(text,ids,numbersOnly){
 
 /* ---------- Claude-drafted answers ---------- */
 /* On the hosted site, /api/answer calls the Claude API with search_result citations. */
-let backendP=null;
+let backendP=null, backendInfo=null;
 function backendReady(){
   if(backendP) return backendP;
   backendP=(async()=>{ if(!/^https?:$/.test(location.protocol)) return false;
-    try{ const r=await fetch("/api/answer",{method:"GET",headers:{accept:"application/json"}}); if(!r.ok) return false; const j=await r.json(); return !!(j&&j.configured) }catch(e){ return false } })();
+    try{ const r=await fetch("/api/answer",{method:"GET",headers:{accept:"application/json"}}); if(!r.ok) return false; const j=await r.json(); backendInfo=j||null; return !!(j&&j.configured) }catch(e){ return false } })();
   return backendP;
 }
 async function callBackend(q,ids,signal,deep){
@@ -1667,6 +1684,7 @@ function normAnswer(d,ids){
   const related=(Array.isArray(d.related)?d.related:[]).map(r=>String(r).trim()).filter(r=>r.length>5&&r.length<120).slice(0,3);
   return {short,how,numbers,visual:normVisual(d.visual,ids),related,impact:String(d.impact||"").trim(),explanation:String(d.explanation||"").trim(),gaps:String(d.gaps||"").trim(),notCovered:String(d.notCovered||d.not_covered||"").trim(),unmatched:sent(d.unmatched),engine:d.engine||"",provider:d.provider||""};
 }
+const sentAll=a=>(Array.isArray(a)?a:[]).map(v=>typeof v==="string"?v:v&&v.text).filter(t=>typeof t==="string"&&t.trim()).map(t=>({text:t.trim(),cites:[]}));
 const VTYPES=["timeline","steps","compare","tiles","bars"];
 function normVisual(v,ids){
   if(!v||typeof v!=="object"||!VTYPES.includes(v.type)) return null;
@@ -1719,6 +1737,53 @@ function scrollToAnswer(){
   window.scrollTo({top:Math.max(0,window.scrollY+r.top-16),behavior:reduce?"auto":"smooth"});
 }
 
+/* ---------- Questions the corpus doesn't cover: web search, then a general answer ---------- */
+const ON_TOPIC=/\b(zcash|zec|zats?|zatoshis?|zebra|zebrad|zallet|zashi|zodl|zaino|lightwalletd|orchard|sapling|sprout|halo|ironwood|zip|zips|memo|memos|shielded|unshielded|viewing|unified|crypto|cryptocurrenc\w*|blockchain|bitcoin|btc|ethereum|eth|solana|coin|coins|token|tokens|wallet|wallets|mining|miner|miners|mine|node|nodes|exchange|exchanges|stake|staking|validator|bridge|swap|defi|nft|address|addresses|transaction|transactions|private key|seed phrase|privacy|halving|block|blocks|hash|consensus|proof|zk|snark|snarks|stablecoin|usdc|usdt|ledger|trezor|keystone|near|intents?)\b/i;
+const onTopic=q=>ON_TOPIC.test(q);
+function registerWeb(list){
+  for(const k of Object.keys(S)) if(k.startsWith("web_")) delete S[k];
+  for(const k of Object.keys(CI)) if(/^w\d+$/.test(k)) delete CI[k];
+  const ids=[];
+  for(const w of (Array.isArray(list)?list:[]).slice(0,6)){
+    const id=String(w&&w.id||""); if(!/^w\d+$/.test(id)||!/^https:\/\//.test(String(w.url||""))) continue;
+    S["web_"+id]={t:String(w.title||w.host||"Web page").slice(0,140),u:String(w.url),tier:w.tier==="WebOfficial"?"WebOfficial":"Web",basis:w.basis==="page"?"page":"summary",web:true};
+    CI[id]={id,s:"web_"+id,sec:String(w.host||"web")+(w.published?" · "+String(w.published).slice(0,40):""),x:String(w.text||"").slice(0,1600)};
+    ids.push(id);
+  }
+  return ids;
+}
+function webPipe(stage){
+  const st=["Search the web","Read pages","Draft","Check"], sub=["Not in Unravel's sources","Picking the most reliable pages","Writing cited sentences","Matching each sentence to its page"];
+  return `<div class="pipe">${st.map((x,i)=>`<div class="pstep ${i<stage?"done":i===stage?"on":""}"><b>${x}</b><span class="mono" style="font-size:.75rem">${sub[i]}</span></div>`).join("")}</div>`;
+}
+/* Returns "done" when an answer (or an off-topic notice) was shown, otherwise why not. */
+async function askOpen(q,opts){
+  opts=opts||{}; const deep=!!opts.deep;
+  const api=!sampleFn && await backendReady();
+  if(!api||!(backendInfo&&backendInfo.web)) return "none";
+  const shell=inner=>`<article class="answer"><h2 class="q">${esc(q)}</h2>${inner}</article>`;
+  $("#main").innerHTML=shell(`<div class="block">${webPipe(0)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
+  scrollToAnswer();
+  const ctl=new AbortController(); inflight=ctl;
+  $("#stopBtn").addEventListener("click",()=>ctl.abort());
+  const tick=setTimeout(()=>{ const b=document.querySelector("#main .pipe"); if(b&&inflight===ctl) b.outerHTML=webPipe(1) },7000);
+  let r,j=null;
+  try{
+    r=await fetch("/api/answer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q,original:lastCorrection.changed.length?lastCorrection.original:"",ids:[],mode:"web",depth:deep?"deep":"normal"}),signal:ctl.signal});
+    j=await r.json().catch(()=>null);
+  }catch(e){ clearTimeout(tick); inflight=null; return ctl.signal.aborted?"cancelled":"fail" }
+  clearTimeout(tick); inflight=null;
+  if(!r.ok){
+    const code=j&&j.code;
+    if(code==="off_topic"){ renderOffTopic(q); return "done" }
+    return code==="rate_limited"?"rate":"fail";
+  }
+  if(j&&j.mode==="web"){ const ids=registerWeb(j.web); if(ids.length){ await renderAnswer(q,ids,{...j,engine:"api"},{deep,mode:"web"}); return "done" } }
+  if(j&&j.mode==="general"){ await renderAnswer(q,[],{...j,engine:"api"},{deep,mode:"general"}); return "done" }
+  return "fail";
+}
+const OPEN_NOTE={rate:"The free answer limit is used up for now, so Unravel couldn't search the web for this. Try again later.",fail:"Unravel tried a web search for this, but it didn't finish. Ask again in a moment.",cancelled:"Stopped before the web search finished."};
+
 /* One routing decision, shared by ask() and the evaluation runner. */
 function decide(q,ids,topic,opts,hasSample){
   opts=opts||{};
@@ -1735,7 +1800,7 @@ function decide(q,ids,topic,opts,hasSample){
   return {kind:"model",companionTopic:companion,score:cv.score};
 }
 function topicPassages(k){ const T=TOPICS[k]; return [...new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[])])] }
-window.unravelDebug=q0=>{const fx=correctQuery(q0);const q=fx.text;let ids=contextIds(q,false);const topic=topicFor(q);const plan=decide(q,ids,topic,{},false);if(plan.companionTopic) ids=[...new Set([...ids,...topicPassages(plan.companionTopic)])].slice(0,10);return {ids,topic,plan,corrected:q,changed:fx.changed}};
+window.unravelDebug=q0=>{const fx=correctQuery(q0);const q=fx.text;let ids=contextIds(q,false);const topic=topicFor(q);const plan=decide(q,ids,topic,{},false);if(plan.companionTopic) ids=[...new Set([...ids,...topicPassages(plan.companionTopic)])].slice(0,10);return {ids,topic,plan,corrected:q,changed:fx.changed,open:plan.kind==="not_covered"&&onTopic(q+" "+q0)}};
 
 /* ---------- Ask ---------- */
 let askTok=0;
@@ -1758,9 +1823,13 @@ async function askInner(q,opts){
   const topic=topicFor(q);
   renderSuggest(null);
   const shell=(inner)=>`<article class="answer"><h2 class="q">${esc(q)}</h2>${inner}</article>`;
+  const asked=q+" "+lastCorrection.original;
   if(!ids.length){
+    if(!onTopic(asked)){ renderOffTopic(q); scrollToAnswer(); return }
+    if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
+    const st=await askOpen(q,opts); if(st==="done") return;
     $("#main").innerHTML=shell(`<div class="meta"><span class="badge none">Not covered</span><span>Snapshot ${SNAP}</span></div>
-     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, issuance and mining, unified addresses, payments, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words.</p></section>
+     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, issuance and mining, unified addresses, payments, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words.</p>${OPEN_NOTE[st]?`<p style="margin-top:8px">${esc(OPEN_NOTE[st])}</p>`:""}</section>
      ${suggestHTML(q)}`);
     scrollToAnswer();
     return;
@@ -1770,7 +1839,11 @@ async function askInner(q,opts){
   await new Promise(r=>setTimeout(r,motionOn?350:0));
   if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
   const plan=decide(q,ids,topic,opts,!!sampleFn);
-  if(plan.kind==="not_covered"){ renderLowConfidence(q,ids,plan.missing); return }
+  if(plan.kind==="not_covered"){
+    if(!onTopic(asked)){ renderOffTopic(q); return }
+    const st=await askOpen(q,opts); if(st==="done") return;
+    renderLowConfidence(q,ids,plan.missing,OPEN_NOTE[st]); return;
+  }
   const comp=plan.companionTopic;
   if(comp) ids=[...new Set([...ids,...topicPassages(comp)])].slice(0,deep?12:10);
   const useApi=!sampleFn && await backendReady();
@@ -1797,37 +1870,66 @@ async function askInner(q,opts){
     renderPassagesOnly(q,ids,topic,msg); return;
   }
   inflight=null;
-  $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(3,ids)}</div>`);
+  const A0=normAnswer(data,ids);
+  if(A0.notCovered&&!A0.short.length&&!A0.how.length){
+    if(onTopic(asked)){ const st=await askOpen(q,opts); if(st==="done") return; }
+    renderLowConfidence(q,ids,[]); const ex=document.querySelector("#main .explain p"); if(ex) ex.textContent="Unravel checked the closest passages and they don't answer this. "+A0.notCovered; return;
+  }
+  /* every sentence failed the check: the passages don't really answer it, so try the web */
+  const okCount=[...A0.short,...A0.how].filter(v=>v.cites.length&&checkClaim(v.text,v.cites,v.api).ok).length;
+  if(!okCount&&comp){ renderTopic(comp,q,"The new answer couldn't be matched to Unravel's sources, so this is the closest prepared answer."); return }
+  if(!okCount&&onTopic(asked)){ const st=await askOpen(q,opts); if(st==="done") return; }
+  await renderAnswer(q,ids,data,{deep,comp,mode:"corpus"});
+}
+async function renderAnswer(q,ids,data,o){
+  const deep=!!o.deep, comp=o.comp||null, mode=o.mode||"corpus", web=mode==="web", gen=mode==="general";
+  const shell=(inner)=>`<article class="answer"><h2 class="q">${esc(q)}</h2>${inner}</article>`;
+  $("#main").innerHTML=shell(`<div class="block">${web?webPipe(3):pipelineHTML(3,ids)}</div>`);
   await new Promise(r=>setTimeout(r,motionOn?300:0));
   const A=normAnswer(data,ids);
-  if(A.notCovered&&!A.short.length&&!A.how.length){ renderLowConfidence(q,ids,[]); const ex=document.querySelector("#main .explain p"); if(ex) ex.textContent="Unravel checked the closest passages and they don't answer this. "+A.notCovered; return }
+  if(A.notCovered&&!A.short.length&&!A.how.length){
+    if(gen){ renderOffTopic(q,A.notCovered); return }
+    renderLowConfidence(q,[],[]); const ex=document.querySelector("#main .explain p"); if(ex) ex.textContent="Unravel searched the web and couldn't find a reliable answer. "+A.notCovered; return;
+  }
+  if(gen){ A.short=sentAll(data.short); A.how=sentAll(data.how); }
   const dem=A.unmatched.map(u=>[u.text,"no citation"]);
   const pass=list=>{const ok=[];for(const v of list){ if(!v.cites.length){dem.push([v.text,"no valid citation"]);continue} const r=checkClaim(v.text,v.cites,v.api); r.ok?ok.push(v):dem.push([v.text,r.why]) } return ok};
-  const short=pass(A.short), how=pass(A.how);
+  const short=gen?A.short:pass(A.short), how=gen?A.how:pass(A.how);
   const nums=A.numbers.map(n=>({...n,ok:itemOK(n.value,n.cites,true)}));
   const nVer=short.length+how.length, nAll=nVer+dem.length;
   const cov=nVer?(dem.length||A.gaps?"partial":"full"):"none";
   const li=v=>`<li>${fmtInline(v.text)}${citeBtns(v.cites)}</li>`;
   const engine=A.engine==="api"?(A.provider==="claude"?"Answered by the Claude API with citations":"Answered by an open model on Groq, then checked by Unravel"):"Drafted by Claude";
-  const shortHTML=short.length?`<section class="block verified"><h3>Short answer</h3><ol class="claims lead">${short.map(li).join("")}</ol></section>`:"";
-  const howHTML=how.length?`<section class="block verified"><h3>${short.length?"How it works":"From the docs"}</h3><ol class="claims">${how.map(li).join("")}</ol></section>`:"";
+  const gli=v=>`<li>${fmtInline(v.text)}</li>`;
+  const shortHTML=short.length?`<section class="block${gen?"":" verified"}"><h3${gen?' style="color:var(--gen)"':""}>Short answer</h3><ol class="claims lead${gen?" general":""}">${short.map(gen?gli:li).join("")}</ol></section>`:"";
+  const howHTML=how.length?`<section class="block${gen?"":" verified"}"><h3${gen?' style="color:var(--gen)"':""}>${short.length?"How it works":"From the docs"}</h3><ol class="claims${gen?" general":""}">${how.map(gen?gli:li).join("")}</ol></section>`:"";
   const numHTML=nums.length?`<section class="block"><h3 style="color:var(--verified)">Key numbers</h3><div class="tablebox" style="max-height:none"><table class="vtable knum"><tbody>${nums.map(n=>`<tr class="${n.ok?"":"unv"}"><th>${esc(n.label)}</th><td class="mono">${esc(n.value)}</td><td>${n.cites.length?citeBtns(n.cites):""}${vBadge(n.ok)}</td></tr>`).join("")}</tbody></table></div></section>`:"";
-  const visHTML=renderVisual(A.visual);
+  let visHTML=renderVisual(A.visual);
+  if(gen) visHTML=visHTML.replace("Drawn from the answer's cited passages. Dashed items could not be matched to a passage.","Drawn from the general answer. Nothing here is checked against a source.");
+  if(web) visHTML=visHTML.replace("Drawn from the answer's cited passages.","Drawn from the web pages found.");
   let demo="";
   if(comp){ const T=TOPICS[comp]; demo=`<details class="block companion"${A.visual?"":" open"}><summary><span class="tag">Explore</span>${esc(T.q)}</summary><div class="compbody">${VIS[T.visual]()}<button type="button" class="btn outline" data-topic="${comp}">Open the full prepared answer</button></div></details>`; }
-  const gaps=A.gaps?`<section class="block callout"><h3>Gaps and conflicts</h3><p>${fmtInline(A.gaps)}</p></section>`:"";
+  const gaps=A.gaps?`<section class="block callout${gen?" gennote":""}"><h3>${gen?"Worth checking":"Gaps and conflicts"}</h3><p>${fmtInline(A.gaps)}</p></section>`:"";
   const expl=[A.impact?`<p><b>What it means for you.</b> ${fmtInline(A.impact)}</p>`:"",A.explanation?`<p${A.impact?' style="margin-top:8px"':""}>${fmtInline(A.explanation)}</p>`:"",
     dem.length?`<p style="margin-top:10px;font-weight:600;font-size:.875rem">Could not be matched to a passage, treat as unverified:</p><ul class="demoted">${dem.map(([t,w])=>`<li>${fmtInline(t)} <span class="mono" style="font-size:.75rem">(${esc(w)})</span></li>`).join("")}</ul>`:""].join("");
   const rel=A.related.length?`<section class="block"><h3 style="color:var(--muted)">Ask next</h3><div class="suggest">${A.related.map(r=>`<button type="button" data-ask="${esc(r)}"><span class="tag">Ask</span>${esc(r)}</button>`).join("")}</div></section>`:"";
   const deeper=!deep?`<div class="block"><button type="button" class="btn outline" data-deeper="${esc(q)}">Go deeper on this question</button></div>`:"";
-  $("#main").innerHTML=shell(`<div class="meta"><span class="badge ${cov}">${cov==="full"?"Covered by corpus":cov==="partial"?"Partly covered":"Not covered"}</span><span>Snapshot ${SNAP}</span>${deep?'<span class="badge">Detailed</span>':""}<span>${engine} from ${ids.length} passage${ids.length===1?"":"s"}, ${nVer} of ${nAll} sentences passed the check</span></div>
+  const meta=web?`<div class="meta"><span class="badge web">From the web</span>${deep?'<span class="badge">Detailed</span>':""}<span>Answered from a live web search by an open model on Groq, then checked by Unravel against ${ids.length} page${ids.length===1?"":"s"}, ${nVer} of ${nAll} sentences passed the check</span></div>
+    <section class="block callout webnote"><h3>Not from Unravel's sources</h3><p>Unravel's checked sources don't cover this, so it searched the web. Each sentence links to the page it came from. Web pages can be wrong or out of date, so check official Zcash docs before relying on this.</p></section>`
+   :gen?`<div class="meta"><span class="badge gen">General answer, not checked</span>${deep?'<span class="badge">Detailed</span>':""}<span>Written by an open model on Groq from its own training</span></div>
+    <section class="block callout gennote"><h3>General answer</h3><p>Unravel's sources don't cover this and a web search wasn't available, so this comes from the AI model's own training. It isn't checked against any source and may be out of date or wrong in places.</p></section>`
+   :`<div class="meta"><span class="badge ${cov}">${cov==="full"?"Covered by corpus":cov==="partial"?"Partly covered":"Not covered"}</span><span>Snapshot ${SNAP}</span>${deep?'<span class="badge">Detailed</span>':""}<span>${engine} from ${ids.length} passage${ids.length===1?"":"s"}, ${nVer} of ${nAll} sentences passed the check</span></div>`;
+  $("#main").innerHTML=shell(`${meta}
     ${shortHTML}${howHTML}${gaps}${visHTML}${numHTML}
     ${expl?`<section class="block explain"><h3>Explanation · written by Unravel</h3>${expl}</section>`:""}
     ${demo}
     ${rel}${deeper}
+    ${web||gen?suggestHTML(q):""}
     <section class="block" id="srcBlock"></section>`);
   if(comp) bindVis(TOPICS[comp].visual);
   finishSources(ids);
+  if(gen){ const sb=$("#srcBlock"); if(sb) sb.innerHTML=`<h3 style="color:var(--muted)">Sources</h3><p style="color:var(--muted);margin:0">None. This answer was written from the model's own knowledge.</p>`; }
+  if(lastCorrection.changed.length) injectCorrection();
 }
 function renderPassagesOnly(q,ids,topic,msg){
   citeOrder=[];

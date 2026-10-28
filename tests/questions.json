@@ -1,5 +1,5 @@
 {
- "about": "Routing checks for typed questions on the hosted site. kind: model = answered by the AI with these passages, not_covered = honest refusal. topic: the prepared answer that must appear as the companion (and fallback). mustFind: passage ids that must be among the passages sent. Misspelled questions are corrected first; must_not_change lists questions whose words must stay as typed.",
+ "about": "Routing checks for typed questions on the hosted site. kind: model = answered by the AI with these passages, not_covered = honest refusal. topic: the prepared answer that must appear as the companion (and fallback). mustFind: passage ids that must be among the passages sent. Misspelled questions are corrected first; must_not_change lists questions whose words must stay as typed. open: true means a not-covered question is sent to the web search, false means it is treated as off topic.",
  "questions": [
   {
    "q": "What is Zcash?",
@@ -223,7 +223,8 @@
   },
   {
    "q": "how do I stake zcash",
-   "kind": "not_covered"
+   "kind": "not_covered",
+   "open": true
   },
   {
    "q": "how do I bridge zec to ethereum",
@@ -235,11 +236,13 @@
   },
   {
    "q": "where can I buy ZEC",
-   "kind": "not_covered"
+   "kind": "not_covered",
+   "open": true
   },
   {
    "q": "what is the weather in lagos",
-   "kind": "not_covered"
+   "kind": "not_covered",
+   "open": false
   },
   {
    "q": "I want to stake my ZEC on a validator to earn yield, how do I do it?",
@@ -307,6 +310,16 @@
    "mustFind": [
     "c17"
    ]
+  },
+  {
+   "q": "how do i stak zcash",
+   "kind": "not_covered",
+   "open": true
+  },
+  {
+   "q": "who won the football match yesterday",
+   "kind": "any",
+   "open": false
   }
  ],
  "must_not_change": [
