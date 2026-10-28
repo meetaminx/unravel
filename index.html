@@ -679,7 +679,7 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
   <section class="sec" id="ask">
     <p class="eyebrow">Ask Unravel</p>
     <h2 class="big">Ask in plain words. Read the passage behind every line.</h2>
-    <p class="sublede">Curated questions answer instantly with interactive diagrams. Typed questions are answered by Claude from the corpus, and every sentence must cite the passage it came from.</p>
+    <p class="sublede">Curated questions answer instantly with interactive diagrams. Typed questions are answered by an AI model from the corpus, and every sentence must cite the passage it came from.</p>
     <form class="ask" id="askForm" autocomplete="off">
       <label class="sr" for="ask-box">Your question</label>
       <input id="ask-box" name="q" placeholder="e.g. Which RPC replaces z_getnewaddress?" maxlength="300">
@@ -1437,14 +1437,14 @@ async function callBackend(q,ids,signal){
   catch(e){ if(signal&&signal.aborted) throw {code:"cancelled"}; throw {code:"upstream_error"} }
   let j=null; try{ j=await r.json() }catch(e){}
   if(!r.ok) throw {code:(j&&j.code)||"upstream_error",message:j&&j.message};
-  return {verified:(j.verified||[]).map(v=>({...v,api:true})),unmatched:j.unmatched||[],explanation:j.explanation||"",gaps:j.gaps||"",notCovered:j.notCovered||"",diagram:null,engine:"api"};
+  return {verified:(j.verified||[]).map(v=>({...v,api:j.checked==="citations"})),unmatched:j.unmatched||[],explanation:j.explanation||"",gaps:j.gaps||"",notCovered:j.notCovered||"",diagram:null,engine:"api",provider:j.provider||""};
 }
 let sampleFn=null, inflight=null, sampleChecked=false;
 const samplePromise=(async()=>{try{return window.claude?await window.claude.use("sample"):null}catch(e){return null}})();
 samplePromise.then(f=>{if(!sampleChecked){sampleFn=f}});
 
 function pipelineHTML(stage,ids){
-  const st=["Search","Select","Draft","Check"];const sub=["Ranking passages","",(sampleFn?"Claude is writing cited sentences":"Claude API is writing cited sentences"),"Matching each sentence to its passage"];
+  const st=["Search","Select","Draft","Check"];const sub=["Ranking passages","","Writing cited sentences","Matching each sentence to its passage"];
   sub[1]=ids&&ids.length?ids.join(", "):"Picking the top passages";
   return `<div class="pipe">${st.map((s,i)=>`<div class="pstep ${i<stage?"done":i===stage?"on":""}"><b>${s}</b><span class="mono" style="font-size:.75rem">${esc(sub[i])}</span></div>`).join("")}</div>`;
 }
@@ -1497,6 +1497,7 @@ ${passages}`;
     inflight=null;
     if(e&&e.code==="cancelled"){ renderPassagesOnly(q,ids,topic,"Stopped. Here are the matching passages instead."); return }
     if(e&&(e.code==="not_granted"||e.code==="sampling_disabled"||e.code==="capability_disabled")){ sampleFn=null; sampleChecked=true; renderPassagesOnly(q,ids,topic,"Claude isn't allowed in this view, so Unravel can't draft an answer. These are the passages that best match your question."); return }
+    if(e&&e.code==="invalid_json"){ renderPassagesOnly(q,ids,topic,"The answer came back in a format Unravel couldn't check, so it isn't shown. Ask again, or read the matching passages."); return }
     if(e&&e.code==="not_configured"){ backendP=Promise.resolve(false); renderPassagesOnly(q,ids,topic,"The answer service isn't set up yet. These are the passages that best match your question."); return }
     const msg=e&&e.code==="rate_limited"?"Too many questions in a short time. Wait a moment and ask again. Meanwhile, here are the matching passages.":e&&e.code==="invalid_json"?"The draft came back in a format Unravel couldn't check, so it isn't shown. Ask again, or read the matching passages.":"The draft didn't finish. Ask again, or read the matching passages below.";
     renderPassagesOnly(q,ids,topic,msg); return;
@@ -1526,7 +1527,7 @@ ${passages}`;
   const expl=[data&&data.explanation?`<p>${fmtInline(String(data.explanation))}</p>`:"",
     dem.length?`<p style="margin-top:10px;font-weight:600;font-size:.875rem">Could not be matched to a passage, treat as unverified:</p><ul class="demoted">${dem.map(([t,w])=>`<li>${fmtInline(t)} <span class="mono" style="font-size:.75rem">(${esc(w)})</span></li>`).join("")}</ul>`:""].join("");
   const gaps=data&&data.gaps&&String(data.gaps).trim()?`<section class="block callout"><h3>Gaps and conflicts</h3><p>${fmtInline(String(data.gaps))}</p></section>`:"";
-  $("#main").innerHTML=shell(`<div class="meta"><span class="badge ${cov}">${cov==="full"?"Covered by corpus":cov==="partial"?"Partly covered":"Not covered"}</span><span>Snapshot ${SNAP}</span><span>${data&&data.engine==="api"?"Answered by the Claude API with citations":"Drafted by Claude"} from ${ids.length} passage${ids.length===1?"":"s"}, ${ver.length} of ${ver.length+dem.length} sentences passed the check</span></div>
+  $("#main").innerHTML=shell(`<div class="meta"><span class="badge ${cov}">${cov==="full"?"Covered by corpus":cov==="partial"?"Partly covered":"Not covered"}</span><span>Snapshot ${SNAP}</span><span>${data&&data.engine==="api"?(data.provider==="claude"?"Answered by the Claude API with citations":"Answered by an open model on Groq, then checked by Unravel"):"Drafted by Claude"} from ${ids.length} passage${ids.length===1?"":"s"}, ${ver.length} of ${ver.length+dem.length} sentences passed the check</span></div>
     ${claimsHTML}${gaps}${diag}${demo}
     ${expl?`<section class="block explain"><h3>Explanation · written by Unravel</h3>${expl}</section>`:""}
     <section class="block" id="srcBlock"></section>`);
