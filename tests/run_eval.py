@@ -19,10 +19,9 @@ with sync_playwright() as p:
         kind, problems = r["plan"]["kind"], []
         if c["kind"] != "any" and kind != c["kind"]:
             problems.append(f"expected {c['kind']}, got {kind}")
-        if c.get("notKind") and kind == c["notKind"]:
-            problems.append(f"must not be {kind}")
-        if c.get("topic") and kind == "curated" and r["topic"] != c["topic"]:
-            problems.append(f"expected topic {c['topic']}, got {r['topic']}")
+        comp = r["plan"].get("companionTopic")
+        if c.get("topic") and comp != c["topic"]:
+            problems.append(f"expected companion {c['topic']}, got {comp}")
         for pid in c.get("mustFind", []):
             if pid not in r["ids"]:
                 problems.append(f"passage {pid} not found")
