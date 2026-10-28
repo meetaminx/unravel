@@ -1,0 +1,6 @@
+{
+  "name": "unravel",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20" }
+}
