@@ -317,22 +317,37 @@ async function groqCall(body, key, ms) {
     signal: AbortSignal.timeout(ms)
   });
   const data = await res.json().catch(() => null);
+  if (res.status === 429) {
+    // Which Groq limit was hit (requests or tokens, per minute or per day). No user data here.
+    const h = k => res.headers.get(k) || "";
+    console.error("groq_429", body.tools ? "search" : "answer",
+      "retry-after=" + h("retry-after"),
+      "tokens-left=" + h("x-ratelimit-remaining-tokens") + "/" + h("x-ratelimit-limit-tokens"),
+      "requests-left=" + h("x-ratelimit-remaining-requests") + "/" + h("x-ratelimit-limit-requests"),
+      String(data?.error?.message || "").slice(0, 240));
+  }
   return { res, data };
 }
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const retryAfter = res => { const v = parseFloat(res?.headers?.get("retry-after") || ""); return Number.isFinite(v) ? v * 1000 : null; };
 
 async function research(question, key, model) {
   const messages = [{ role: "system", content: RESEARCH }, { role: "user", content: question }];
   const tools = [{ type: "browser_search" }];
   // Groq's samples use tool_choice "required"; fall back to simpler shapes if a field is rejected.
   const attempts = [
-    { model, messages, tools, tool_choice: "required", reasoning_effort: "low", max_completion_tokens: 3000 },
-    { model, messages, tools, tool_choice: "auto", reasoning_effort: "low", max_completion_tokens: 3000 },
+    { model, messages, tools, tool_choice: "required", reasoning_effort: "low", max_completion_tokens: 1800 },
+    { model, messages, tools, tool_choice: "auto", reasoning_effort: "low", max_completion_tokens: 1800 },
     { model, messages, tools }
   ];
   let res, data;
   const started = Date.now();
   for (const body of attempts) {
     ({ res, data } = await groqCall(body, key, Math.max(8000, 30000 - (Date.now() - started))));
+    if (res.status === 429) {
+      const wait = retryAfter(res);
+      if (wait != null && wait <= 6000 && Date.now() - started < 12000) { await sleep(wait + 250); ({ res, data } = await groqCall(body, key, 25000)); }
+    }
     if (res.ok || res.status !== 400) break;
     // Groq's own error text (no user data) tells us which field it disliked.
     console.error("search_400", Object.keys(body).filter(k => k !== "messages").join(","), String(data?.error?.message || "").slice(0, 300));
@@ -386,8 +401,8 @@ export async function askOpen(question, key, model, deep) {
   const started = Date.now();
   try {
     const r = await research(question, key, model);
-    if (r.error === 429) return { error: 429 };
-    if (r.error) { why = `search_error_${r.error}`; console.error("search_error", r.error, String(r.message || "").slice(0, 300)); }
+    if (r.error === 429) why = "search_rate_limited";
+    else if (r.error) { why = `search_error_${r.error}`; console.error("search_error", r.error, String(r.message || "").slice(0, 300)); }
     else if (r.sources.length < 1) why = "no_sources";
     else {
       const a = await answerFromWeb(question, r.sources, key, model, deep);
@@ -440,7 +455,7 @@ export async function POST(request) {
     catch { return json({ code: "upstream_error", message: "The answer service did not respond. Try again." }, 502); }
     if (r.error) {
       console.error("groq_error", r.error, r.type, r.message);
-      if (r.error === 429) return json({ code: "rate_limited", message: "Today's free answer limit is used up, or the service is busy. Try again later." }, 429);
+      if (r.error === 429) return json({ code: "rate_limited", message: "The free AI service is at its limit for the moment. Wait about a minute and ask again." }, 429);
       if (r.type === "invalid_json") return json({ code: "invalid_json", message: "The answer came back in a format Unravel couldn't check." }, 502);
       return json({ code: "upstream_error", message: "The answer service returned an error." }, 502);
     }

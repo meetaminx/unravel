@@ -1903,7 +1903,7 @@ async function askOpen(q,opts){
   if(j&&j.mode==="general"){ await renderAnswer(q,[],{...j,engine:"api"},{deep,mode:"general"}); return "done" }
   return "fail";
 }
-const OPEN_NOTE={rate:"The free answer limit is used up for now, so Unravel couldn't search the web for this. Try again later.",fail:"Unravel tried a web search for this, but it didn't finish. Ask again in a moment.",cancelled:"Stopped before the web search finished."};
+const OPEN_NOTE={rate:"The free AI service Unravel uses is at its limit for the moment, so it couldn't search the web for this. Wait about a minute and ask again.",fail:"Unravel tried a web search for this, but it didn't finish. Ask again in a moment.",cancelled:"Stopped before the web search finished."};
 
 /* One routing decision, shared by ask() and the evaluation runner. */
 function decide(q,ids,topic,opts,hasSample){
@@ -1982,7 +1982,7 @@ async function askInner(q,opts){
     }
   }catch(e){
     inflight=null;
-    if(e&&e.code!=="cancelled"&&e.code!=="invalid_json"&&fallback(e.code==="rate_limited"?"The free answer limit is used up for now, so this is the closest prepared answer. Try again later for an answer written for your question.":"The answer service didn't respond, so this is the closest prepared answer.")) return;
+    if(e&&e.code!=="cancelled"&&e.code!=="invalid_json"&&fallback(e.code==="rate_limited"?"The free AI service is at its limit for the moment, so this is the closest prepared answer. Wait about a minute and ask again for an answer written for your question.":"The answer service didn't respond, so this is the closest prepared answer.")) return;
     if(e&&e.code==="cancelled"){ renderPassagesOnly(q,ids,topic,"Stopped. Here are the matching passages instead."); return }
     if(e&&(e.code==="not_granted"||e.code==="sampling_disabled"||e.code==="capability_disabled")){ sampleFn=null; sampleChecked=true; renderPassagesOnly(q,ids,topic,"Claude isn't allowed in this view, so Unravel can't draft an answer. These are the passages that best match your question."); return }
     if(e&&e.code==="invalid_json"){ renderPassagesOnly(q,ids,topic,"The answer came back in a format Unravel couldn't check, so it isn't shown. Ask again, or read the matching passages."); return }
