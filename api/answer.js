@@ -276,7 +276,7 @@ export function harvest(message) {
       const u = typeof x.url === "string" ? x.url : typeof x.link === "string" ? x.link : "";
       if (/^https?:\/\//.test(u)) {
         const prev = found.get(u) || {};
-        found.set(u, { url: u, title: String(x.title || prev.title || hostOf(u)), content: String(x.content || x.text || x.snippet || prev.content || "") });
+        found.set(u, { url: u, title: String(x.title || prev.title || hostOf(u)), content: cleanPage(x.content || x.text || x.snippet || prev.content || "") });
       }
       for (const v of Object.values(x)) walk(v, depth + 1);
       return;
@@ -288,6 +288,21 @@ export function harvest(message) {
   };
   walk(message?.executed_tools, 0);
   return found;
+}
+
+// Page text from the search tool arrives with line markers ("L12:"), a URL header and markdown.
+export function cleanPage(t) {
+  return String(t || "")
+    .replace(/【[^】]*】/g, " ")
+    .replace(/\bL\d+:\s?/g, " ")
+    .replace(/\bURL:\s*https?:\/\/\S+/gi, " ")
+    .replace(/https?:\/\/\S+/g, " ")
+    .replace(/(^|\s)#{1,6}\s+/g, " ")
+    .replace(/\*\*|__|`/g, "")
+    .replace(/(^|\s)_([^_]+)_(?=\s|[.,;:!?]|$)/g, "$1$2")
+    .replace(/\s*\|\s*/g, " ")
+    .replace(/\s{2,}/g, " ")
+    .trim();
 }
 
 export function webSources(parsed, found) {
