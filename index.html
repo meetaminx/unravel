@@ -208,7 +208,7 @@ code{background:var(--surface-2);padding:.05em .35em;border-radius:3px}
 
 /* desk */
 .desk{position:relative;z-index:1;display:grid;grid-template-columns:236px minmax(0,1fr) 340px;gap:24px;align-items:start;margin-top:36px}
-.rail{position:sticky;top:16px;font-size:.88rem}
+.rail{position:sticky;top:76px;font-size:.88rem}
 .rail h2,.drawer h2,.section-h{font-size:.72rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:600;margin:0 0 10px;font-family:var(--f-mono)}
 .rail .group{margin-bottom:18px}
 .rail ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
@@ -352,7 +352,7 @@ svg .citetag{font-family:var(--f-mono);font-size:10px;fill:var(--verified);curso
 .gnode{border:1.5px solid var(--verified);border-radius:6px;padding:6px 10px;font-size:.82rem;background:var(--surface);animation:rise var(--t-mid) var(--ease-in) both}
 .gnode.gen{border-style:dashed;border-color:var(--gen)}
 .garrow{color:var(--muted);font-family:var(--f-mono)}
-.drawer{position:sticky;top:16px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px;font-size:.88rem;max-height:calc(100vh - 32px);overflow:auto;box-shadow:var(--shadow-sm)}
+.drawer{position:sticky;top:76px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px;display:grid;gap:12px;font-size:.88rem;max-height:calc(100vh - 92px);overflow:auto;box-shadow:var(--shadow-sm)}
 .drawer .empty{color:var(--muted)}
 .drawer .ptitle{font-weight:600;font-size:1rem;margin:0}
 .drawer blockquote{margin:0;padding:12px 14px;border-left:3px solid var(--verified);background:var(--verified-soft);border-radius:0 6px 6px 0;line-height:1.55}
@@ -695,6 +695,31 @@ tr.unv{outline:1.5px dashed var(--gen);outline-offset:-3px}
 @keyframes artFadeIn{to{opacity:var(--gridO,.07)}}
 @keyframes artDotsIn{to{opacity:.7}}
 @media (prefers-reduced-motion:reduce){.hx .hx-art *{animation:none!important;stroke-dashoffset:0!important}.hx[data-art="draw"] .hx-art .a-grid{opacity:var(--gridO,.07)!important}.hx[data-art="draw"] .hx-art .a-dots{opacity:1!important}}
+
+/* ===== sticky header: transparent over the hero, a solid slim bar once the hero is passed ===== */
+:root{--pg-bg:var(--bg);--pg-surface:var(--surface);--pg-ink:var(--ink);--pg-muted:var(--muted);--pg-line:var(--line);--pg-blue:var(--blue);--pg-blue-hover:var(--blue-hover);--pg-blue-ink:var(--blue-ink);--topH:74px}
+html{scroll-padding-top:calc(var(--topH) + 12px)}
+.hx{z-index:30}
+.hx-inner{padding-top:74px}
+.hx .top{position:fixed;top:0;left:var(--topL,16px);width:var(--topW,calc(100% - 32px));z-index:60;transition:height var(--t-fast) var(--ease-std),background-color var(--t-fast),border-color var(--t-fast)}
+.hx .top::before{content:"";position:absolute;top:0;bottom:-1px;left:calc(-1 * var(--topL,16px));width:100vw;z-index:-1;background:transparent;transition:background-color var(--t-fast),border-color var(--t-fast);border-bottom:1px solid transparent}
+.hx .top.stuck{height:60px;border-bottom-color:transparent;
+  --bg:var(--pg-bg);--surface:var(--pg-surface);--ink:var(--pg-ink);--muted:var(--pg-muted);--line:var(--pg-line);--blue:var(--pg-blue);--blue-hover:var(--pg-blue-hover);--blue-ink:var(--pg-blue-ink);color-scheme:normal}
+.hx .top.stuck::before{background:color-mix(in srgb,var(--pg-bg) 88%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border-bottom-color:var(--pg-line)}
+.hx .top.stuck .brand img{width:30px;height:30px}
+.hx .top.stuck .brand b{font-size:1.25rem}
+.hx .top.stuck .btn.primary{height:38px}
+.hx .top.over-hero::before{background:rgba(7,11,18,.82);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.top nav a{position:relative;padding:6px 0}
+.top nav a[aria-current="true"]{color:var(--blue)}
+.top nav a[aria-current="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-2px;height:2px;border-radius:1px;background:var(--blue)}
+@media (max-width:760px){
+  :root{--topH:56px}
+  .hx-inner{padding-top:74px}
+  .hx .top.stuck{height:56px}
+  .hx .top.stuck .btn.primary{height:36px;padding:0 14px;font-size:.9rem}
+}
+@media (prefers-reduced-motion:reduce){.hx .top,.hx .top::before{transition:none}}
 </style>
 
 <div class="wrap">
@@ -1807,9 +1832,10 @@ function scrollToAnswer(){
   const el=document.getElementById("main"); if(!el) return;
   const ae=document.activeElement; if(ae&&ae.id==="ask-box") ae.blur();   /* closes the phone keyboard */
   const r=el.getBoundingClientRect(), vh=window.innerHeight||800;
-  if(r.top>=8&&r.top<=vh*0.35) return;                                    /* already in view: no jolt */
+  const topH=(document.querySelector(".hx .top")||{}).offsetHeight||0;
+  if(r.top>=topH+8&&r.top<=vh*0.35) return;                               /* already in view: no jolt */
   const reduce=!motionOn||matchMedia("(prefers-reduced-motion: reduce)").matches;
-  window.scrollTo({top:Math.max(0,window.scrollY+r.top-16),behavior:reduce?"auto":"smooth"});
+  window.scrollTo({top:Math.max(0,window.scrollY+r.top-(document.querySelector(".hx .top.stuck")?60:74)-12),behavior:reduce?"auto":"smooth"});
 }
 
 /* ---------- Questions the corpus doesn't cover: web search, then a general answer ---------- */
@@ -2478,6 +2504,37 @@ requestAnimationFrame(frame);
   build();
   let rt=0; window.addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(build,150) });
   if(document.fonts&&document.fonts.ready) document.fonts.ready.then(build);
+})();
+
+/* sticky header: align with the content column, switch to the solid bar past the hero, mark the current section */
+(function(){
+  const top=document.querySelector(".hx .top"), hx=document.getElementById("hx"), inner=document.querySelector(".hx-inner");
+  if(!top||!hx||!inner) return;
+  function place(){
+    const r=inner.getBoundingClientRect(), cs=getComputedStyle(inner);
+    const l=r.left+parseFloat(cs.paddingLeft), w=r.width-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+    top.style.setProperty("--topL",l+"px"); top.style.setProperty("--topW",w+"px");
+  }
+  const links=[...top.querySelectorAll('nav a[href^="#"]')];
+  const secs=links.map(a=>[a,document.querySelector(a.getAttribute("href"))]).filter(([,el])=>el&&el.id!=="corpus");
+  let ticking=false;
+  function update(){
+    ticking=false;
+    const y=window.scrollY, hb=hx.offsetTop+hx.offsetHeight;
+    const stuck=y>8;
+    top.classList.toggle("over-hero",stuck&&y<hb-80);
+    top.classList.toggle("stuck",y>=hb-80);
+    const line=(top.offsetHeight||60)+Math.min(220,window.innerHeight*0.3);
+    let cur=null, best=-Infinity;
+    for(const [a,el] of secs){ const t=el.getBoundingClientRect().top; if(t<=line&&t>best){ best=t; cur=a } }
+    if(y<hb-80) cur=null;
+    for(const a of links) a.setAttribute("aria-current",a===cur?"true":"false");
+  }
+  const onScroll=()=>{ if(!ticking){ ticking=true; requestAnimationFrame(update) } };
+  window.addEventListener("scroll",onScroll,{passive:true});
+  window.addEventListener("resize",()=>{ place(); onScroll() });
+  place(); update();
+  if(document.fonts&&document.fonts.ready) document.fonts.ready.then(()=>{ place(); update() });
 })();
 </script>
 
