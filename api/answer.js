@@ -139,7 +139,7 @@ async function askGroq(question, ids, key, model, deep) {
     { ...base, response_format: { type: "json_object" } },
     base
   ];
-  let res, data;
+  let res, data, waited = false;
   for (const body of attempts) {
     res = await fetch(GROQ_URL, {
       method: "POST",
@@ -148,6 +148,15 @@ async function askGroq(question, ids, key, model, deep) {
       signal: AbortSignal.timeout(50000)
     });
     data = await res.json().catch(() => null);
+    if (res.status === 429 && !waited) {
+      const v = parseFloat(res.headers.get("retry-after") || "");
+      if (Number.isFinite(v) && v <= 10) {
+        waited = true; console.error("groq_wait", Math.round(v * 1000), "corpus");
+        await new Promise(r => setTimeout(r, v * 1000 + 300));
+        res = await fetch(GROQ_URL, { method: "POST", headers: { "content-type": "application/json", authorization: "Bearer " + key }, body: JSON.stringify(body), signal: AbortSignal.timeout(40000) });
+        data = await res.json().catch(() => null);
+      }
+    }
     if (res.ok || res.status !== 400) break;
   }
   if (!res.ok) return { error: res.status, type: data?.error?.type || data?.error?.code || "", message: data?.error?.message };
@@ -329,6 +338,22 @@ async function groqCall(body, key, ms) {
   return { res, data };
 }
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+// Free-plan limits are per minute. When Groq says "try again in a few seconds", wait and retry once,
+// as long as the whole request still finishes inside the function's time limit.
+async function groqCallPatient(body, key, until) {
+  const left = () => until - Date.now();
+  let r = await groqCall(body, key, Math.max(5000, Math.min(22000, left())));
+  if (r.res.status === 429) {
+    const v = parseFloat(r.res.headers.get("retry-after") || "");
+    const wait = Number.isFinite(v) ? v * 1000 + 300 : null;
+    if (wait != null && wait <= 12000 && left() - wait > 12000) {
+      console.error("groq_wait", Math.round(wait), body.tools ? "search" : "answer");
+      await sleep(wait);
+      r = await groqCall(body, key, Math.max(5000, Math.min(22000, left())));
+    }
+  }
+  return r;
+}
 const retryAfter = res => { const v = parseFloat(res?.headers?.get("retry-after") || ""); return Number.isFinite(v) ? v * 1000 : null; };
 
 async function research(question, key, model) {
@@ -343,10 +368,10 @@ async function research(question, key, model) {
   let res, data;
   const started = Date.now();
   for (const body of attempts) {
-    ({ res, data } = await groqCall(body, key, Math.max(8000, 30000 - (Date.now() - started))));
+    ({ res, data } = await groqCall(body, key, Math.max(8000, 24000 - (Date.now() - started))));
     if (res.status === 429) {
       const wait = retryAfter(res);
-      if (wait != null && wait <= 6000 && Date.now() - started < 12000) { await sleep(wait + 250); ({ res, data } = await groqCall(body, key, 25000)); }
+      if (wait != null && wait <= 6000 && Date.now() - started < 12000) { await sleep(wait + 250); ({ res, data } = await groqCall(body, key, Math.max(8000, 24000 - (Date.now() - started)))); }
     }
     if (res.ok || res.status !== 400) break;
     // Groq's own error text (no user data) tells us which field it disliked.
@@ -359,14 +384,14 @@ async function research(question, key, model) {
   return { sources };
 }
 
-async function answerFromWeb(question, sources, key, model, deep) {
+async function answerFromWeb(question, sources, key, model, deep, until) {
   const passages = sources.map(s => `[${s.id}] (WEB ${s.host}${s.published ? ", " + s.published : ""}) ${s.title}: ${s.text}`).join("\n\n");
   const rules = richRules(deep).replace("Answer only from the numbered passages.", "The numbered passages are live web search results captured today, not Unravel's checked corpus. Answer only from them, and prefer official Zcash sources when they disagree.");
   const base = { model, temperature: 0.2, max_completion_tokens: deep ? 4000 : 2800,
     messages: [{ role: "system", content: rules + "\n\nReply with only the JSON object." }, { role: "user", content: `Question: ${question}\n\nPassages:\n${passages}` }] };
   let r;
   for (const body of [{ ...base, response_format: { type: "json_object" }, reasoning_effort: "low" }, { ...base, response_format: { type: "json_object" } }, base]) {
-    r = await groqCall(body, key, 20000);
+    r = await groqCallPatient(body, key, until || Date.now() + 25000);
     if (r.res.ok || r.res.status !== 400) break;
   }
   if (!r.res.ok) return { error: r.res.status, type: r.data?.error?.type || "", message: r.data?.error?.message };
@@ -382,12 +407,12 @@ export function sanitizeGeneral(parsed) {
   return { ...base, short: sents(parsed.short), how: sents(parsed.how), unmatched: [] };
 }
 
-async function answerGeneral(question, key, model, deep) {
+async function answerGeneral(question, key, model, deep, until) {
   const base = { model, temperature: 0.2, max_completion_tokens: deep ? 3500 : 2400,
     messages: [{ role: "system", content: GENERAL(deep) }, { role: "user", content: `Question: ${question}` }] };
   let r;
   for (const body of [{ ...base, response_format: { type: "json_object" }, reasoning_effort: "low" }, { ...base, response_format: { type: "json_object" } }, base]) {
-    r = await groqCall(body, key, 20000);
+    r = await groqCallPatient(body, key, until || Date.now() + 25000);
     if (r.res.ok || r.res.status !== 400) break;
   }
   if (!r.res.ok) return { error: r.res.status, type: r.data?.error?.type || "", message: r.data?.error?.message };
@@ -399,21 +424,22 @@ async function answerGeneral(question, key, model, deep) {
 export async function askOpen(question, key, model, deep) {
   let why = "";
   const started = Date.now();
+  const until = started + 56000;   /* maxDuration is 60s */
   try {
     const r = await research(question, key, model);
     if (r.error === 429) why = "search_rate_limited";
     else if (r.error) { why = `search_error_${r.error}`; console.error("search_error", r.error, String(r.message || "").slice(0, 300)); }
     else if (r.sources.length < 1) why = "no_sources";
     else {
-      const a = await answerFromWeb(question, r.sources, key, model, deep);
+      const a = await answerFromWeb(question, r.sources, key, model, deep, until);
       if (a.error === 429) return { error: 429 };
       if (!a.error && (a.out.short.length || a.out.how.length)) return { out: { ...a.out, mode: "web", checked: "browser", web: r.sources } };
       why = a.error ? `answer_error_${a.error}` : "answer_empty";
     }
   } catch (e) { why = "search_failed"; }
   console.error("web_fallback", why);
-  if (Date.now() - started > 38000) return { error: 504, type: "timeout" };
-  const g = await answerGeneral(question, key, model, deep);
+  if (until - Date.now() < 15000) return { error: 504, type: "timeout" };
+  const g = await answerGeneral(question, key, model, deep, until);
   if (g.error) return g;
   return { out: { ...g.out, mode: "general", checked: "none", webNote: why } };
 }
