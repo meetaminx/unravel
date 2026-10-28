@@ -48,3 +48,14 @@ Without either key the site still works: curated answers and passage search run 
 ## Keep costs safe
 
 Groq's free tier has a shared daily limit; when it runs out, visitors see a friendly message and the matching passages. If you switch to Claude, set a monthly spend limit in the Anthropic Console. The built-in rate limits are best-effort only.
+
+## Tests
+
+`tests/questions.json` lists questions with the routing each must get: a curated answer, the AI model with specific passages found, or an honest "not covered". It includes beginner, developer, scenario-style and off-topic questions.
+
+```
+pip install playwright && playwright install chromium
+python tests/run_eval.py
+```
+
+The runner exits with an error if any check fails. Run it before every push, and add a new case whenever a real question is answered badly.

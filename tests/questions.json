@@ -1,0 +1,43 @@
+{
+  "about": "Routing checks for Unravel's hosted site (no Claude in the browser). kind: curated = instant prepared answer, model = sent to the AI with these passages, not_covered = honest refusal. mustFind: passage ids that must be among the passages sent.",
+  "questions": [
+    {"q": "What is Zcash?", "kind": "curated", "topic": "basics"},
+    {"q": "what is zksnarks", "kind": "curated", "topic": "zksnark"},
+    {"q": "zk snark", "kind": "curated", "topic": "zksnark"},
+    {"q": "Can people see how much ZEC I sent?", "kind": "curated", "topic": "shielded"},
+    {"q": "is zcash private", "kind": "curated"},
+    {"q": "How many ZEC will ever exist?", "kind": "curated", "topic": "basics"},
+    {"q": "What is a viewing key and who would I give it to?", "kind": "curated", "topic": "viewing"},
+    {"q": "Which RPC replaces z_getnewaddress?", "kind": "curated", "topic": "migrate"},
+    {"q": "How much is the transaction fee right now?", "kind": "curated", "topic": "fees"},
+    {"q": "What changed with Ironwood?", "kind": "curated", "topic": "ironwood"},
+    {"q": "what is a unified address", "kind": "curated", "topic": "ua"},
+    {"q": "How do I accept ZEC payments in my online shop?", "kind": "curated", "topic": "payments"},
+    {"q": "how to create a zcash payment link", "kind": "curated", "topic": "payments"},
+    {"q": "what is the halving", "kind": "model", "mustFind": ["i1"]},
+    {"q": "when is the next halving", "kind": "model", "mustFind": ["i1"]},
+    {"q": "can I mine zcash with my laptop", "kind": "model", "mustFind": ["i5"]},
+    {"q": "what is lightwalletd", "kind": "model", "mustFind": ["n2"]},
+    {"q": "what is zebra", "kind": "model", "mustFind": ["b13"]},
+    {"q": "who makes the zodl wallet", "kind": "model", "mustFind": ["b14"]},
+    {"q": "How do I get free testnet coins?", "kind": "model", "mustFind": ["b15"]},
+    {"q": "what is the zcash foundation", "kind": "model", "mustFind": ["n4"]},
+    {"q": "why did blossom change the block time", "kind": "model", "mustFind": ["i3"]},
+
+    {"q": "I run a small online clothing store in Lagos and my customers want to pay with Zcash privately. What do I need to set up?", "kind": "any", "notKind": "not_covered", "mustFind": ["p4"]},
+    {"q": "My friend sent me ZEC to my t1 address and now everyone can see it. How do I make my future payments private?", "kind": "any", "notKind": "not_covered", "mustFind": ["b5"]},
+    {"q": "I'm a developer and our backend used zcashd to generate addresses and check balances. Since it stopped working in July, what should we switch to?", "kind": "any", "notKind": "not_covered", "mustFind": ["c9"]},
+    {"q": "I have an old GPU in my bedroom. Is it worth trying to mine some ZEC with it?", "kind": "any", "notKind": "not_covered", "mustFind": ["i5"]},
+    {"q": "My accountant wants to check my Zcash income for taxes but I don't want to give her my seed phrase. What can I do?", "kind": "any", "notKind": "not_covered", "mustFind": ["b6"]},
+    {"q": "I want to test my wallet app without risking real money. Where can I get coins to play with?", "kind": "any", "notKind": "not_covered", "mustFind": ["b15"]},
+    {"q": "We are building a mobile wallet and need to sync without downloading the whole chain. What should our app talk to?", "kind": "any", "notKind": "not_covered", "mustFind": ["n1"]},
+    {"q": "Our exchange still signs withdrawals with an old consensus branch ID. What breaks after NU6.3?", "kind": "any", "notKind": "not_covered", "mustFind": ["c15"]},
+
+    {"q": "how do I stake zcash", "kind": "not_covered"},
+    {"q": "how do I bridge zec to ethereum", "kind": "not_covered"},
+    {"q": "what is the price of zec today", "kind": "not_covered"},
+    {"q": "where can I buy ZEC", "kind": "not_covered"},
+    {"q": "what is the weather in lagos", "kind": "not_covered"},
+    {"q": "I want to stake my ZEC on a validator to earn yield, how do I do it?", "kind": "not_covered"}
+  ]
+}

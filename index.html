@@ -1423,7 +1423,7 @@ const SYN={ua:["unified","address"],uas:["unified","address"],zats:["zatoshis"],
 const NORM={zksnark:["zk","snark"],zksnarks:["zk","snark"],zkp:["zero","knowledge","proof"],zkps:["zero","knowledge","proof"],halo2:["halo"],taddr:["transparent","address"],zaddr:["shielded","address"],zaddrs:["shielded","address"],taddrs:["transparent","address"],ivk:["incoming","viewing","key"],fvk:["viewing","key"],ufvk:["unified","viewing","key"],uivk:["unified","incoming","viewing","key"],zcashd:["zcashd"],nu5:["nu5"]};
 function stem(t){if(t.length<=4||/\d/.test(t))return t;if(t.endsWith("sses"))return t.slice(0,-2);if(t.endsWith("ies"))return t.slice(0,-3)+"y";if(/(xes|ches|shes|sses)$/.test(t))return t.slice(0,-2);if(t.endsWith("s")&&!/(ss|us|is)$/.test(t))return t.slice(0,-1);return t}
 function toks(s){return s.toLowerCase().replace(/[^a-z0-9_.]+/g," ").split(" ").map(t=>t.replace(/^\.+|\.+$/g,"")).flatMap(t=>NORM[t]||[t]).filter(t=>t&&!STOP.has(t)).map(stem)}
-Object.assign(SYN,{private:["shielded","privacy"],privacy:["shielded","private"],hidden:["shielded","encrypted"],hide:["shielded","encrypted"],anonymous:["shielded","privacy"],coin:["zec"],token:["zec"],money:["zec"],supply:["supply","million"],mining:["mining","equihash","block"],miner:["mining","equihash"],mine:["mining","equihash"],halving:["halving","reward","schedule"],reward:["reward","halving","subsidy"],issuance:["issued","subsidy","halving"],inflation:["issued","subsidy","halving"],asic:["asic","equihash","mining"],gpu:["gpu","mining"],pool:["pool","mining"],lightwalletd:["lightwalletd","light"],sync:["light","lightwalletd","zaino"],foundation:["foundation","nonprofit"],blossom:["blossom","spacing"],canopy:["canopy","founders"],key:["key","viewing"],audit:["viewing","key"],auditor:["viewing","key"],accountant:["viewing","key"],message:["memo"],note:["memo"],test:["testnet","taz"],faucet:["faucet","testnet","taz"],free:["faucet","testnet"],launch:["launched","sprout","2016"],history:["launched","sprout","2016"],started:["launched","sprout"],proof:["proof","zk","snark"],zero:["zero","knowledge"],trusted:["trusted","setup","halo"],wallet:["zallet","wallet","zodl"],node:["zebra","node","z3"],light:["zaino","light"],mobile:["zaino","light","zodl"],unit:["zatoshis"],smallest:["zatoshis"],zip:["zip","proposal"],proposal:["zip","proposal"],upgrade:["upgrade","activated","network"],zashi:["zodl","zashi"],shop:["merchant","payment","processor"],exist:["supply"],max:["supply"],maximum:["supply"],cap:["supply"],store:["merchant","payment","processor"],merchant:["merchant","processor","payment"],checkout:["payment","request","processor"],ecommerce:["merchant","payment","processor"],accept:["receive","payment","request"],receive:["receive","payment","request"],payment:["payment","request"],pay:["payment","request"],invoice:["payment","request","uri"],qr:["uri","payment","request"],order:["memo","payment"],business:["merchant","payment"],snark:["snark","zk","proof"]});
+Object.assign(SYN,{private:["shielded","privacy"],privacy:["shielded","private"],hidden:["shielded","encrypted"],hide:["shielded","encrypted"],anonymous:["shielded","privacy"],coin:["zec"],token:["zec"],money:["zec"],supply:["supply","million"],mining:["mining","equihash","block"],miner:["mining","equihash"],mine:["mining","equihash"],halving:["halving","reward","schedule"],reward:["reward","halving","subsidy"],issuance:["issued","subsidy","halving"],inflation:["issued","subsidy","halving"],asic:["asic","equihash","mining"],gpu:["gpu","mining"],pool:["pool","mining"],lightwalletd:["lightwalletd","light"],sync:["light","lightwalletd","zaino"],foundation:["foundation","nonprofit"],blossom:["blossom","spacing"],canopy:["canopy","founders"],key:["key","viewing"],audit:["viewing","key"],auditor:["viewing","key"],accountant:["viewing","key"],message:["memo"],note:["memo"],test:["testnet","taz"],faucet:["faucet","testnet","taz"],free:["faucet","testnet"],launch:["launched","sprout","2016"],history:["launched","sprout","2016"],started:["launched","sprout"],proof:["proof","zk","snark"],zero:["zero","knowledge"],trusted:["trusted","setup","halo"],wallet:["zallet","wallet","zodl"],node:["zebra","node","z3"],light:["zaino","light"],mobile:["zaino","light","zodl"],unit:["zatoshis"],smallest:["zatoshis"],zip:["zip","proposal"],proposal:["zip","proposal"],upgrade:["upgrade","activated","network"],zashi:["zodl","zashi"],shop:["merchant","payment","processor"],generate:["z_getnewaccount","z_getaddressforaccount","getnewaddress"],balance:["z_getbalanceforaccount","getbalance","balance"],backend:["zebra","zallet","rpc","methods"],replace:["replaced","replacement"],switch:["replaced","migrate","zebra","zallet"],migrate:["migrate","replaced","zallet"],t1:["transparent","address"],seed:["viewing","key","spending"],income:["viewing","incoming"],tax:["viewing","key"],taxe:["viewing","key"],accountant:["viewing","key"],private:["shielded","privacy"],privately:["shielded","privacy"],gpu:["gpu","mining","asic"],profitable:["unprofitable","mining","asic"],exist:["supply"],max:["supply"],maximum:["supply"],cap:["supply"],store:["merchant","payment","processor"],merchant:["merchant","processor","payment"],checkout:["payment","request","processor"],ecommerce:["merchant","payment","processor"],accept:["receive","payment","request"],receive:["receive","payment","request"],payment:["payment","request"],pay:["payment","request"],invoice:["payment","request","uri"],qr:["uri","payment","request"],order:["memo","payment"],business:["merchant","payment"],snark:["snark","zk","proof"]});
 for(const k of Object.keys(SYN)){SYN[k]=SYN[k].map(v=>stem(v))}
 const DOCS=C.map(c=>({id:c.id,t:toks(c.x+" "+S[c.s].t+" "+c.sec)}));
 const DF={};DOCS.forEach(d=>new Set(d.t).forEach(t=>DF[t]=(DF[t]||0)+1));
@@ -1437,14 +1437,24 @@ function topicScore(q,k){const G=typeof GENERIC!=="undefined"?GENERIC:new Set();
 function topicFor(q){const G=typeof GENERIC!=="undefined"?GENERIC:new Set();const qt=toks(q).filter(t=>!G.has(t));if(!qt.length)return "basics";let best=null,bs=0;for(const k of TOPIC_ORDER){const s=topicScore(q,k);if(s>bs){bs=s;best=k}}return bs>=1?best:null}
 
 const GENERIC=new Set(["zcash","zec","ever","exist","will","total","there","what","work","explain","tell","mean","way","best","thing","doe","happen","online","good","right","now","today","please","can","could","would","someone","people","anyone","much","many","really"].map(stem));
+/* Crypto words that matter even though the corpus never mentions them: if a question
+   hinges on one of these, Unravel must say "not covered" instead of answering around it. */
+const CRYPTO=new Set(["stake","staking","staked","validator","validators","bridge","bridging","bridged","ethereum","eth","solana","sol","bitcoin","btc","defi","nft","nfts","swap","swaps","dex","airdrop","airdrops","erc20","wrapped","layer2","rollup","rollups","price","prices","buy","buying","kyc","lending","loan","loans","yield","farm","farming","dao","vote","voting","governance","wallet-connect","metamask","ledger","trezor","hardware","coldcard","multisig","crosschain","cross-chain","near","intent","intents","usdc","usdt","stablecoin","stablecoins"].map(stem));
+/* Everyday scenario words: never treated as missing information. */
+const SCENE=new Set(["i","my","me","our","we","us","you","your","friend","friends","brother","sister","mom","dad","family","customer","customers","client","clients","boss","team","company","store","shop","clothing","business","small","big","old","new","bedroom","home","house","laptop","computer","phone","city","lagos","country","nigeria","want","wants","need","needs","trying","try","worth","run","running","set","setup","up","now","still","since","ago","last","next","year","years","month","week","day","stopped","working","everyone","anybody","somebody","really","actually","just","also","privately","safely","easily","quickly","help","sure","think","know","like","get","got","make","made","use","used","using","start","started","play","risk","risking","real","money","pay","paid","paying","sent","send","check","see","show","give","gave","keep","learn","understand","question","problem","issue","case","example","scenario"].map(stem));
 function coverage(q,ids){
-  const qt=[...new Set(toks(q))].filter(t=>!GENERIC.has(t)&&!/^\d+$/.test(t));
-  if(!qt.length||!ids.length) return {score:ids.length?1:0,missing:qt};
-  const flat=new Set(ids.slice(0,3).flatMap(id=>DOCS.find(d=>d.id===id).t));
+  const raw=[...new Set(toks(q))].filter(t=>!GENERIC.has(t)&&!/^\d+$/.test(t));
+  const mentionsZ=/\b(zcash|zec|zatoshi|zats?)\b/i.test(q);
+  const key=raw.filter(t=>!SCENE.has(t)&&(DF[t]>0||SYN[t]||CRYPTO.has(t)));
+  if(!ids.length) return {score:0,missing:key};
+  if(!key.length) return {score:mentionsZ?1:0,missing:mentionsZ?[]:raw.slice(0,3)};
+  const flat=new Set(ids.slice(0,4).flatMap(id=>DOCS.find(d=>d.id===id).t));
   const arr=[...flat];
   const has=t=>flat.has(t)||arr.some(x=>(t.length>4&&x.startsWith(t))||(x.length>4&&t.startsWith(x)))||(SYN[t]||[]).some(v=>flat.has(v));
-  const missing=qt.filter(t=>!has(t));
-  return {score:1-missing.length/qt.length,missing};
+  const missing=key.filter(t=>!has(t));
+  /* a crypto term the corpus never mentions is decisive on its own */
+  if(missing.some(t=>CRYPTO.has(t)&&!(DF[t]>0))) return {score:0,missing:missing.filter(t=>CRYPTO.has(t))};
+  return {score:1-missing.length/key.length,missing};
 }
 function renderLowConfidence(q,ids,missing){
   citeOrder=[];
@@ -1504,6 +1514,7 @@ function pipelineHTML(stage,ids){
 function richRules(deep){
   return `You are Unravel, a documentation assistant for Zcash developers and newcomers.
 Answer only from the numbered passages. Never use outside knowledge for facts. Write plainly, explain jargon in a few words, and never use em dashes.
+The question may describe the reader's own situation. If it does, speak to that situation directly in "short" and give practical next steps in "how", still citing a passage for every fact. Ignore personal details that do not change the answer.
 
 Return one JSON object with these fields:
 - "short": 1 or 2 sentences that answer the question directly.
@@ -1602,6 +1613,25 @@ function scrollToAnswer(){
   window.scrollTo({top:Math.max(0,window.scrollY+r.top-16),behavior:reduce?"auto":"smooth"});
 }
 
+/* One routing decision, shared by ask() and the evaluation runner. */
+function decide(q,ids,topic,opts,hasSample){
+  opts=opts||{};
+  if(!ids.length) return {kind:"not_covered",missing:[]};
+  const cv=coverage(q,ids);
+  if(cv.score<0.5) return {kind:"not_covered",missing:cv.missing,score:cv.score};
+  if(topic&&!opts.noCurated&&!opts.deep){
+    const T=TOPICS[topic]; const tc=new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[]),...(T.sources||[])]);
+    const strong=tc.has(ids[0])||(topicScore(q,topic)>=2&&ids.slice(0,3).some(i=>tc.has(i)))||toks(q).every(t=>GENERIC.has(t));
+    /* A long, situation-style question is better served by an answer written for it;
+       the curated answer stays as the fallback when no model is available. */
+    const scenario=q.trim().split(/\s+/).length>=14;
+    if(strong&&scenario) return {kind:"model",fallbackTopic:topic,score:cv.score};
+    if(strong&&(!hasSample||topicScore(q,topic)>=2)) return {kind:"curated",topic,score:cv.score};
+  }
+  return {kind:"model",score:cv.score};
+}
+window.unravelDebug=q=>{const ids=contextIds(q,false);const topic=topicFor(q);return {ids,topic,plan:decide(q,ids,topic,{},false)}};
+
 /* ---------- Ask ---------- */
 async function ask(q,opts){
   opts=opts||{};
@@ -1624,10 +1654,11 @@ async function ask(q,opts){
   scrollToAnswer();
   await new Promise(r=>setTimeout(r,motionOn?350:0));
   if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
-  { const cv=coverage(q,ids); if(cv.score<0.5){ renderLowConfidence(q,ids,cv.missing); return } }
+  const plan=decide(q,ids,topic,opts,!!sampleFn);
+  if(plan.kind==="not_covered"){ renderLowConfidence(q,ids,plan.missing); return }
   const useApi=!sampleFn && await backendReady();
-  if(topic&&!opts.noCurated&&!deep){ const T=TOPICS[topic]; const tc=new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[]),...(T.sources||[])]); const strong=tc.has(ids[0])||(topicScore(q,topic)>=2&&ids.slice(0,3).some(i=>tc.has(i)))||toks(q).every(t=>GENERIC.has(t)); if(strong&&(!sampleFn||topicScore(q,topic)>=2)){ renderTopic(topic,q); return } }
-  if(!sampleFn && !useApi){ renderPassagesOnly(q,ids,topic,"Unravel can't draft a new answer here yet. These are the passages that best match your question."); return }
+  if(plan.kind==="curated"){ renderTopic(topic,q); return }
+  if(!sampleFn && !useApi){ if(plan.fallbackTopic){ renderTopic(plan.fallbackTopic,q); return } renderPassagesOnly(q,ids,topic,"Unravel can't draft a new answer here yet. These are the passages that best match your question."); return }
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(2,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
   const ctl=new AbortController(); inflight=ctl;
   $("#stopBtn").addEventListener("click",()=>ctl.abort());
