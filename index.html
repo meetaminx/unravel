@@ -1410,6 +1410,7 @@ function renderTopic(key,asked){
   lists[lists.length-1].innerHTML=`<h3 style="color:var(--muted)">Sources in this answer</h3>${sourcesList()}`;
   drawPrep($("#main"));
   if(citeOrder[0]) openDrawerQuiet(citeOrder[0]);
+  if(window.unravelScrollNext){ window.unravelScrollNext=false; scrollToAnswer(); }
 }
 function openDrawerQuiet(id){ if(matchMedia("(min-width:1181px)").matches) openDrawer(id) }
 function sourcesList(){
@@ -1590,6 +1591,17 @@ function renderVisual(v){
   return `<section class="block visual"><h3>${esc(v.title)}</h3>${body}${cap}</section>`;
 }
 
+/* ---------- Bring the answer into view ---------- */
+window.unravelScrollNext=false;
+function scrollToAnswer(){
+  const el=document.getElementById("main"); if(!el) return;
+  const ae=document.activeElement; if(ae&&ae.id==="ask-box") ae.blur();   /* closes the phone keyboard */
+  const r=el.getBoundingClientRect(), vh=window.innerHeight||800;
+  if(r.top>=8&&r.top<=vh*0.35) return;                                    /* already in view: no jolt */
+  const reduce=!motionOn||matchMedia("(prefers-reduced-motion: reduce)").matches;
+  window.scrollTo({top:Math.max(0,window.scrollY+r.top-16),behavior:reduce?"auto":"smooth"});
+}
+
 /* ---------- Ask ---------- */
 async function ask(q,opts){
   opts=opts||{};
@@ -1605,9 +1617,11 @@ async function ask(q,opts){
     $("#main").innerHTML=shell(`<div class="meta"><span class="badge none">Not covered</span><span>Snapshot ${SNAP}</span></div>
      <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, issuance and mining, unified addresses, payments, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words, or start with one of these:</p></section>
      <div class="block"><div class="suggest">${TOPIC_ORDER.filter(k=>TOPICS[k].level==="Start here").map(k=>`<button type="button" data-topic="${k}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div></div>`);
+    scrollToAnswer();
     return;
   }
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(1,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
+  scrollToAnswer();
   await new Promise(r=>setTimeout(r,motionOn?350:0));
   if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
   { const cv=coverage(q,ids); if(cv.score<0.5){ renderLowConfidence(q,ids,cv.missing); return } }
@@ -1687,9 +1701,9 @@ function finishSources(){
 /* ---------- Events ---------- */
 document.addEventListener("click",e=>{
   const c=e.target.closest("[data-cite]"); if(c){e.preventDefault();openDrawer(c.dataset.cite);return}
-  const a=e.target.closest("[data-ask]"); if(a){ const q=a.dataset.ask; $("#ask-box").value=q; ask(q,{noCurated:true}); document.getElementById("ask").scrollIntoView({behavior:motionOn?"smooth":"auto"}); return }
-  const d=e.target.closest("[data-deeper]"); if(d){ ask(d.dataset.deeper,{deep:true,noCurated:true}); document.getElementById("main").scrollIntoView({behavior:motionOn?"smooth":"auto",block:"start"}); return }
-  const t=e.target.closest("[data-topic]"); if(t){const h=HASH[t.dataset.topic]; if(location.hash==="#"+h) renderTopic(t.dataset.topic); else location.hash=h; return}
+  const a=e.target.closest("[data-ask]"); if(a){ const q=a.dataset.ask; $("#ask-box").value=q; ask(q,{noCurated:true}); return }
+  const d=e.target.closest("[data-deeper]"); if(d){ ask(d.dataset.deeper,{deep:true,noCurated:true}); return }
+  const t=e.target.closest("[data-topic]"); if(t){window.unravelScrollNext=true; const h=HASH[t.dataset.topic]; if(location.hash==="#"+h) renderTopic(t.dataset.topic); else location.hash=h; return}
 });
 $("#askForm").addEventListener("submit",e=>{e.preventDefault();ask($("#ask-box").value)});
 function route(){const k=UNHASH[(location.hash||"").slice(1)]; if(k) renderTopic(k); else if(!$("#main").innerHTML) renderTopic("fees")}
@@ -1897,8 +1911,8 @@ function setPlaying(p){
   const b=$("#stagePlay"); b.textContent=p?"Pause":"Play"; b.setAttribute("aria-label",p?"Pause the slideshow":"Play the slideshow");
 }
 sceneEl.addEventListener("click",e=>{const a=e.target.closest("[data-open]"); if(!a) return; const k=a.dataset.open; if(k==="how") return; e.preventDefault();
-  if(location.hash==="#"+k) window.dispatchEvent(new HashChangeEvent("hashchange")); else location.hash=k;
-  document.getElementById("ask").scrollIntoView({behavior:motionOn()?"smooth":"auto"});});
+  window.unravelScrollNext=true;
+  if(location.hash==="#"+k) window.dispatchEvent(new HashChangeEvent("hashchange")); else location.hash=k;});
 $("#stagePlay").addEventListener("click",()=>{ if(!motionOn()){go(idx+1);return} userPaused=playing; setPlaying(!playing)});
 document.addEventListener("unravel:motion",()=>{
   const b=$("#stagePlay");
