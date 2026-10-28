@@ -321,11 +321,23 @@ async function groqCall(body, key, ms) {
 }
 
 async function research(question, key, model) {
-  const { res, data } = await groqCall({
-    model, temperature: 0.2, max_completion_tokens: 3000, reasoning_effort: "low",
-    tool_choice: "required", tools: [{ type: "browser_search" }],
-    messages: [{ role: "system", content: RESEARCH }, { role: "user", content: question }]
-  }, key, 30000);
+  const messages = [{ role: "system", content: RESEARCH }, { role: "user", content: question }];
+  const tools = [{ type: "browser_search" }];
+  // Groq's samples use tool_choice "required"; fall back to simpler shapes if a field is rejected.
+  const attempts = [
+    { model, messages, tools, tool_choice: "required", reasoning_effort: "low", max_completion_tokens: 3000 },
+    { model, messages, tools, tool_choice: "auto", reasoning_effort: "low", max_completion_tokens: 3000 },
+    { model, messages, tools }
+  ];
+  let res, data;
+  const started = Date.now();
+  for (const body of attempts) {
+    ({ res, data } = await groqCall(body, key, Math.max(8000, 30000 - (Date.now() - started))));
+    if (res.ok || res.status !== 400) break;
+    // Groq's own error text (no user data) tells us which field it disliked.
+    console.error("search_400", Object.keys(body).filter(k => k !== "messages").join(","), String(data?.error?.message || "").slice(0, 300));
+    if (Date.now() - started > 20000) break;
+  }
   if (!res.ok) return { error: res.status, type: data?.error?.type || data?.error?.code || "", message: data?.error?.message };
   const msg = data?.choices?.[0]?.message || {};
   const sources = webSources(parseJSON(msg.content || ""), harvest(msg));
@@ -375,7 +387,7 @@ export async function askOpen(question, key, model, deep) {
   try {
     const r = await research(question, key, model);
     if (r.error === 429) return { error: 429 };
-    if (r.error) why = `search_error_${r.error}`;
+    if (r.error) { why = `search_error_${r.error}`; console.error("search_error", r.error, String(r.message || "").slice(0, 300)); }
     else if (r.sources.length < 1) why = "no_sources";
     else {
       const a = await answerFromWeb(question, r.sources, key, model, deep);
