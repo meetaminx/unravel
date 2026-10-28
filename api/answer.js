@@ -226,6 +226,7 @@ export async function POST(request) {
   try { body = await request.json(); } catch { return json({ code: "bad_request", message: "Send JSON." }, 400); }
   const question = typeof body?.question === "string" ? body.question.trim().slice(0, MAX_Q) : "";
   const deep = body?.depth === "deep";
+  const original = typeof body?.original === "string" ? body.original.trim().slice(0, MAX_Q) : "";
   const ids = Array.isArray(body?.ids) ? [...new Set(body.ids.map(String))].filter(id => BY_ID.has(id)).slice(0, MAX_IDS) : [];
   if (question.length < 3) return json({ code: "bad_request", message: "Ask a question of at least 3 characters." }, 400);
   if (!ids.length) return json({ code: "no_passages", message: "No passages were selected for this question." }, 400);
@@ -239,7 +240,7 @@ export async function POST(request) {
 
   if (provider === "groq") {
     let r;
-    try { r = await askGroq(question, ids, key, MODEL, deep); }
+    try { r = await askGroq(question + (original && original !== question ? `\n(The reader typed: ${original})` : ""), ids, key, MODEL, deep); }
     catch { return json({ code: "upstream_error", message: "The answer service did not respond. Try again." }, 502); }
     if (r.error) {
       console.error("groq_error", r.error, r.type, r.message);

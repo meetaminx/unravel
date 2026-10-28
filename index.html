@@ -649,6 +649,11 @@ tr.unv{outline:1.5px dashed var(--gen);outline-offset:-3px}
 .companion .compbody{display:grid;gap:12px;padding:0 16px 16px}
 .companion .compbody>.visual{border:0;padding:0;background:none}
 @media (max-width:640px){.ask .askfield{width:100%}.ask .askfield input{height:56px}}
+
+.didmean{margin:-10px 0 0;font-size:.9rem;color:var(--muted)}
+.didmean .dmq{color:var(--ink)}
+.didmean b{color:var(--blue);font-weight:600}
+.linkbtn{background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;cursor:pointer;font:inherit}
 </style>
 
 <div class="wrap">
@@ -1478,11 +1483,96 @@ function renderLowConfidence(q,ids,missing){
   const loose=ids.slice(0,3).map(id=>`<li>${esc(CI[id].x)}${citeBtns([id])}</li>`).join("");
   $("#main").innerHTML=`<article class="answer"><h2 class="q">${esc(q)}</h2>
    <div class="meta"><span class="badge none">Not covered yet</span><span>Snapshot ${SNAP}</span></div>
-   <section class="block explain"><h3>Explanation · written by Unravel</h3><p>The corpus doesn't cover ${words||"this topic"} yet, so Unravel won't guess an answer. Try rephrasing, or start with one of these:</p></section>
-   <div class="block"><div class="suggest">${TOPIC_ORDER.filter(k=>TOPICS[k].level==="Start here").map(k=>`<button type="button" data-topic="${k}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div></div>
+   <section class="block explain"><h3>Explanation · written by Unravel</h3><p>The corpus doesn't cover ${words||"this topic"} yet, so Unravel won't guess an answer. Try rephrasing in plain words.</p></section>
+   ${suggestHTML(q)}
    ${loose?`<section class="block loose"><h3>Loosely related, may not answer your question</h3><ol class="claims">${loose}</ol></section>`:""}
    <section class="block" id="srcBlock"></section></article>`;
   const b=$("#srcBlock"); if(b) b.innerHTML=`<h3 style="color:var(--muted)">Sources shown</h3>${sourcesList()}`;
+}
+
+/* ---------- Spelling correction against the corpus vocabulary ---------- */
+const EXTRA_TERMS="zcash zec zebra zebrad zallet zaino zodl zashi ironwood orchard sapling sprout lightwalletd lightwallet zatoshi zatoshis halving halvings shielded shielding deshielding transparent unified viewing memo memos f4jumble bech32m equihash pczt blossom canopy heartwood overwinter testnet mainnet faucet merchant payment payments receive receiving wallet wallets address addresses transaction transactions fee fees confirmation confirmations mining miner miners block blocks reward rewards supply private privacy proof proofs zero knowledge snark snarks trusted setup node nodes upgrade upgrades migration migrate".split(" ");
+const RAW=s=>String(s).toLowerCase().match(/[a-z][a-z0-9_]*/g)||[];
+const VOCAB=new Map();
+(function(){
+  const add=(w,n)=>{ if(w.length>=3) VOCAB.set(w,(VOCAB.get(w)||0)+n) };
+  for(const c of C){ RAW(c.x+" "+c.sec+" "+S[c.s].t).forEach(w=>add(w,1)) }
+  for(const k of Object.keys(TOPICS)){ RAW(TOPICS[k].q).forEach(w=>add(w,2)); TOPICS[k].kw.forEach(w=>RAW(w).forEach(x=>add(x,2))) }
+  Object.keys(SYN).forEach(w=>add(w,1));
+  EXTRA_TERMS.forEach(w=>add(w,5));
+})();
+function editDist(a,b,max){
+  if(Math.abs(a.length-b.length)>max) return max+1;
+  let prev2=null, prev=Array.from({length:b.length+1},(_,i)=>i);
+  for(let i=1;i<=a.length;i++){
+    const cur=[i]; let best=i;
+    for(let j=1;j<=b.length;j++){
+      let v=Math.min(prev[j]+1,cur[j-1]+1,prev[j-1]+(a[i-1]===b[j-1]?0:1));
+      if(prev2&&i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]) v=Math.min(v,prev2[j-2]+1);
+      cur.push(v); if(v<best) best=v;
+    }
+    if(best>max) return max+1;
+    prev2=prev; prev=cur;
+  }
+  return prev[b.length];
+}
+const COMMON=new Set("some same weather whether there their they then than them these those this that what when where which while who whom whose why how many much more most less least very really just only also even still ever never always often again about above after before below between into onto over under through during without within across along around because since until unless though although maybe please thanks thank good great best better bad worse worst new old big small long short high low right left first last next other another each every both either neither such own same able want need know think make made take took give gave tell told show find found keep kept help start stop work works worked use used using call called come came look looked feel felt seem seems leave left put mean means meant try tried ask asked turn turned move moved live lived believe hold held bring brought happen happened write wrote sit stand lose lost pay paid meet run play read learn change changed lead understand watch follow create speak spend grow open walk win offer remember love consider appear buy wait serve die send sent expect build stay fall cut reach kill remain suggest raise pass sell require report decide pull city town country world money time year years month week today tomorrow yesterday home house room friend friends family people person thing things place way day days life work school phone computer laptop game food water weather news music movie".split(" "));
+function known(w){ return COMMON.has(w)||VOCAB.has(w)||VOCAB.has(stem(w))||STOP.has(w)||GENERIC.has(stem(w))||SCENE.has(stem(w)) }
+function bestFix(w){
+  if(w.length<4||/\d/.test(w)||known(w)||CRYPTO.has(stem(w))) return null;
+  const max=w.length<=5?1:2;
+  let best=null;
+  for(const [v,f] of VOCAB){
+    if(v[0]!==w[0]&&!(w.length>=7&&v[1]===w[1])) continue;
+    const d=editDist(w,v,max);
+    if(d>max) continue;
+    const score=d*10-Math.min(f,9)*0.5-(v.length===w.length?0.3:0);
+    if(!best||score<best.score) best={v,d,score};
+  }
+  return best&&best.v;
+}
+/* Returns the corrected question and the words that changed, keeping everything else as typed. */
+function correctQuery(q){
+  const parts=String(q).split(/(\s+)/);
+  const changed=[];
+  for(let i=0;i<parts.length;i++){
+    const tok=parts[i]; if(!tok.trim()) continue;
+    const m=tok.match(/^([^A-Za-z0-9_]*)([A-Za-z][A-Za-z0-9_]*)([^A-Za-z0-9_]*)$/); if(!m) continue;
+    const w=m[2].toLowerCase();
+    /* a word split by a stray space: "lightwalet d" */
+    const nxt=parts[i+2]&&parts[i+2].match(/^([A-Za-z]{1,3})([^A-Za-z0-9_]*)$/);
+    if(nxt&&!known(w)){
+      const joined=bestFix(w+nxt[1].toLowerCase())||(VOCAB.has(w+nxt[1].toLowerCase())?w+nxt[1].toLowerCase():null);
+      if(joined){ changed.push([m[2]+" "+nxt[1],joined]); parts[i]=m[1]+joined+nxt[2]; parts[i+1]=""; parts[i+2]=""; continue }
+    }
+    const fix=bestFix(w);
+    if(fix&&fix!==w){ changed.push([m[2],fix]); parts[i]=m[1]+fix+m[3] }
+  }
+  return {text:parts.join("").replace(/\s{2,}/g," ").trim(),changed};
+}
+/* Closest prepared topics, for "Did you mean" when nothing is covered. */
+function tri(s){ const t=" "+String(s).toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ")+" "; const out=new Set(); for(let i=0;i<t.length-2;i++) out.add(t.slice(i,i+3)); return out }
+function suggestFor(q){
+  const a=tri(q);
+  return TOPIC_ORDER.map(k=>{ const b=tri(TOPICS[k].q+" "+TOPICS[k].kw.join(" ")); let n=0; for(const g of a) if(b.has(g)) n++; return {k,s:n/(a.size||1)} })
+    .filter(x=>x.s>0.18).sort((x,y)=>y.s-x.s).slice(0,3);
+}
+function suggestHTML(q){
+  const hits=suggestFor(q), ks=hits.map(x=>x.k);
+  const list=(ks.length?ks:TOPIC_ORDER.filter(k=>TOPICS[k].level==="Start here"));
+  const odd=RAW(q).some(w=>w.length>=4&&!/\d/.test(w)&&!known(w)&&!CRYPTO.has(stem(w)));
+  const label=!ks.length?"Start with one of these":(odd||lastCorrection.changed.length)?"Did you mean":"Closest prepared answers";
+  return `<div class="block"><h3 style="color:var(--muted)">${label}</h3><div class="suggest">${list.map(k=>`<button type="button" data-topic="${k}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div></div>`;
+}
+let lastCorrection={original:"",text:"",changed:[]};
+function injectCorrection(){
+  const c=lastCorrection; const h=document.querySelector("#main h2.q");
+  if(!h||!c.changed.length) return;
+  if(h.textContent.trim()===c.text) h.textContent=c.original;
+  if(document.querySelector("#main .didmean")) return;
+  let shown=esc(c.text);
+  for(const [,to] of c.changed) shown=shown.replace(new RegExp("\\b("+to.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")\\b","i"),"<b>$1</b>");
+  h.insertAdjacentHTML("afterend",`<p class="didmean">Showing results for <span class="dmq">${shown}</span> · <button type="button" class="linkbtn" data-ask-raw="${esc(c.original)}">Search for "${esc(c.original)}" instead</button></p>`);
 }
 
 /* ---------- Claim check ---------- */
@@ -1509,7 +1599,7 @@ function backendReady(){
 }
 async function callBackend(q,ids,signal,deep){
   let r;
-  try{ r=await fetch("/api/answer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q,ids,depth:deep?"deep":"normal"}),signal}) }
+  try{ r=await fetch("/api/answer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q,original:lastCorrection.changed.length?lastCorrection.original:"",ids,depth:deep?"deep":"normal"}),signal}) }
   catch(e){ if(signal&&signal.aborted) throw {code:"cancelled"}; throw {code:"upstream_error"} }
   let j=null; try{ j=await r.json() }catch(e){}
   if(!r.ok) throw {code:(j&&j.code)||"upstream_error",message:j&&j.message};
@@ -1645,10 +1735,20 @@ function decide(q,ids,topic,opts,hasSample){
   return {kind:"model",companionTopic:companion,score:cv.score};
 }
 function topicPassages(k){ const T=TOPICS[k]; return [...new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[])])] }
-window.unravelDebug=q=>{let ids=contextIds(q,false);const topic=topicFor(q);const plan=decide(q,ids,topic,{},false);if(plan.companionTopic) ids=[...new Set([...ids,...topicPassages(plan.companionTopic)])].slice(0,10);return {ids,topic,plan}};
+window.unravelDebug=q0=>{const fx=correctQuery(q0);const q=fx.text;let ids=contextIds(q,false);const topic=topicFor(q);const plan=decide(q,ids,topic,{},false);if(plan.companionTopic) ids=[...new Set([...ids,...topicPassages(plan.companionTopic)])].slice(0,10);return {ids,topic,plan,corrected:q,changed:fx.changed}};
 
 /* ---------- Ask ---------- */
+let askTok=0;
 async function ask(q,opts){
+  opts=opts||{};
+  const original=String(q||"").trim(); if(!original) return;
+  const fix=opts.noCorrect?{text:original,changed:[]}:correctQuery(original);
+  lastCorrection={original,text:fix.text,changed:fix.changed};
+  const my=++askTok;
+  await askInner(fix.text,opts);
+  if(my===askTok) injectCorrection();
+}
+async function askInner(q,opts){
   opts=opts||{};
   q=String(q||"").trim(); if(!q) return;
   if(inflight) inflight.abort();
@@ -1660,8 +1760,8 @@ async function ask(q,opts){
   const shell=(inner)=>`<article class="answer"><h2 class="q">${esc(q)}</h2>${inner}</article>`;
   if(!ids.length){
     $("#main").innerHTML=shell(`<div class="meta"><span class="badge none">Not covered</span><span>Snapshot ${SNAP}</span></div>
-     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, issuance and mining, unified addresses, payments, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words, or start with one of these:</p></section>
-     <div class="block"><div class="suggest">${TOPIC_ORDER.filter(k=>TOPICS[k].level==="Start here").map(k=>`<button type="button" data-topic="${k}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div></div>`);
+     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, issuance and mining, unified addresses, payments, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words.</p></section>
+     ${suggestHTML(q)}`);
     scrollToAnswer();
     return;
   }
@@ -1684,7 +1784,7 @@ async function ask(q,opts){
     if(useApi) data=await callBackend(q,ids,ctl.signal,deep);
     else {
       const passages=ids.map(id=>{const c=CI[id],s=S[c.s];return `[${id}] (${s.tier.toUpperCase()}) ${s.t} / ${c.sec}: ${c.x}`}).join("\n\n");
-      data=await sampleFn.json(richRules(deep)+`\n\nReply with only the JSON object.\n\nQuestion: ${q}\n\nPassages:\n${passages}`,{signal:ctl.signal});
+      data=await sampleFn.json(richRules(deep)+`\n\nReply with only the JSON object.\n\nQuestion: ${q}${lastCorrection.changed.length?`\n(The reader typed: ${lastCorrection.original})`:""}\n\nPassages:\n${passages}`,{signal:ctl.signal});
     }
   }catch(e){
     inflight=null;
@@ -1753,6 +1853,7 @@ function finishSources(){
 document.addEventListener("click",e=>{
   const c=e.target.closest("[data-cite]"); if(c){e.preventDefault();openDrawer(c.dataset.cite);return}
   const a=e.target.closest("[data-ask]"); if(a){ const q=a.dataset.ask; $("#ask-box").value=q; ask(q,{noCurated:true}); return }
+  const raw=e.target.closest("[data-ask-raw]"); if(raw){ const q=raw.dataset.askRaw; $("#ask-box").value=q; ask(q,{noCorrect:true}); return }
   const d=e.target.closest("[data-deeper]"); if(d){ ask(d.dataset.deeper,{deep:true,noCurated:true}); return }
   const t=e.target.closest("[data-topic]"); if(t){window.unravelScrollNext=true; const h=HASH[t.dataset.topic]; if(location.hash==="#"+h) renderTopic(t.dataset.topic); else location.hash=h; return}
 });

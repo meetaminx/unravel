@@ -1,5 +1,5 @@
 {
- "about": "Routing checks for typed questions on the hosted site. kind: model = answered by the AI with these passages, not_covered = honest refusal. topic: the prepared answer that must appear as the companion (and fallback). mustFind: passage ids that must be among the passages sent.",
+ "about": "Routing checks for typed questions on the hosted site. kind: model = answered by the AI with these passages, not_covered = honest refusal. topic: the prepared answer that must appear as the companion (and fallback). mustFind: passage ids that must be among the passages sent. Misspelled questions are corrected first; must_not_change lists questions whose words must stay as typed.",
  "questions": [
   {
    "q": "What is Zcash?",
@@ -244,6 +244,76 @@
   {
    "q": "I want to stake my ZEC on a validator to earn yield, how do I do it?",
    "kind": "not_covered"
+  },
+  {
+   "q": "what is the halvng",
+   "kind": "model",
+   "mustFind": [
+    "i1"
+   ]
+  },
+  {
+   "q": "how do i acept zec paymnts in my shop",
+   "kind": "model",
+   "mustFind": [
+    "p4"
+   ]
+  },
+  {
+   "q": "what are zk snarcks",
+   "kind": "model",
+   "mustFind": [
+    "b3"
+   ]
+  },
+  {
+   "q": "whch rpc replace z_getnewadress",
+   "kind": "model",
+   "mustFind": [
+    "c9"
+   ]
+  },
+  {
+   "q": "what is a vewing key",
+   "kind": "model",
+   "mustFind": [
+    "b6"
+   ]
+  },
+  {
+   "q": "ironwod upgrade what changed",
+   "kind": "model",
+   "mustFind": [
+    "c12"
+   ]
+  },
+  {
+   "q": "lightwalet d what does it do",
+   "kind": "model",
+   "mustFind": [
+    "n2"
+   ]
+  },
+  {
+   "q": "zcash shieded vs transparant",
+   "kind": "model",
+   "mustFind": [
+    "b5"
+   ]
+  },
+  {
+   "q": "unifed adress prefix zu tu",
+   "kind": "model",
+   "mustFind": [
+    "c17"
+   ]
   }
+ ],
+ "must_not_change": [
+  "what is the weather in lagos",
+  "I have an old GPU in my bedroom. Is it worth trying to mine some ZEC with it?",
+  "how do I stake zcash",
+  "where can I buy ZEC",
+  "what is pczt_extract"
  ]
 }

@@ -8,7 +8,9 @@ import json, pathlib, sys
 from playwright.sync_api import sync_playwright
 
 root = pathlib.Path(__file__).resolve().parent.parent
-cases = json.loads((root / "tests" / "questions.json").read_text())["questions"]
+data = json.loads((root / "tests" / "questions.json").read_text())
+cases = data["questions"]
+keep = data.get("must_not_change", [])
 fails = 0
 with sync_playwright() as p:
     page = p.chromium.launch().new_page()
@@ -28,5 +30,11 @@ with sync_playwright() as p:
         mark = "PASS" if not problems else "FAIL"
         fails += bool(problems)
         print(f"{mark}  {kind:11} {c['q'][:70]}" + ("" if not problems else "\n      " + "; ".join(problems)))
-print(f"\n{len(cases) - fails}/{len(cases)} passed")
+    for q in keep:
+        r = page.evaluate("q => window.unravelDebug(q)", q)
+        bad = bool(r.get("changed"))
+        fails += bad
+        print(f"{'FAIL' if bad else 'PASS'}  unchanged   {q[:70]}" + (f"\n      changed {r['changed']}" if bad else ""))
+total = len(cases) + len(keep)
+print(f"\n{total - fails}/{total} passed")
 sys.exit(1 if fails else 0)
