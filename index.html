@@ -581,7 +581,7 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
 .asked{margin:-8px 0 0;font-size:.9rem;color:var(--muted)}
 .tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .tile{display:grid;gap:2px;padding:12px;border:1px solid var(--line);border-radius:6px;background:var(--surface);animation:rise var(--t-slow) var(--ease-in) both}
-.tile b{font-family:var(--f-display);font-size:1.5rem;letter-spacing:-.02em;line-height:1.1}
+.tile b{font-family:var(--f-display);font-size:clamp(1.05rem,2.2vw,1.5rem);letter-spacing:-.02em;line-height:1.1;overflow-wrap:anywhere}
 .tile span{font-size:.8rem;color:var(--muted)}
 .tile .cite{justify-self:start;margin:4px 0 0}
 .ledger{display:grid;border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--surface)}
@@ -607,6 +607,32 @@ footer{position:relative;z-index:1;margin-top:72px;padding-block:24px 40px;borde
 .loose h3{color:var(--muted)}
 .loose .claims li{border-left-color:var(--line);color:var(--ink-2)}
 .uri{padding:10px 12px;border:1px dashed var(--line);border-radius:6px;background:var(--surface);overflow-x:auto;white-space:nowrap;font-size:.8rem}
+
+/* ===== v6: rich answers + generated visuals ===== */
+.claims.lead li{font-size:1.08rem;font-weight:500}
+.vtl{list-style:none;margin:0;padding:0 0 0 6px;display:grid;gap:0;position:relative}
+.vtl li{position:relative;display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;padding:0 0 18px 22px;animation:rise var(--t-slow) var(--ease-in) both}
+.vtl li::before{content:"";position:absolute;left:5px;top:12px;bottom:-2px;width:2px;background:var(--amber);opacity:.45}
+.vtl li:last-child::before{display:none}
+.vtl .vdot{position:absolute;left:0;top:4px;width:12px;height:12px;border-radius:50%;background:var(--surface);border:2px solid var(--amber)}
+.vtl .vwhen{font-size:.8rem;color:var(--ink-2);padding-top:1px}
+.vtl .vlabel{font-size:.94rem}
+.vtl li.unv .vdot{border-style:dashed;border-color:var(--gen)}
+.vsteps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;counter-reset:s}
+.vsteps li{position:relative;display:grid;gap:6px;align-content:start;padding:14px;border:1.5px solid var(--verified);border-radius:8px;background:var(--surface);font-size:.88rem;animation:rise var(--t-slow) var(--ease-in) both}
+.vsteps li b{font-size:.95rem}
+.vsteps li span{color:var(--ink-2)}
+.vsteps .vnum{width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--amber-soft);border:1.5px solid var(--amber);color:var(--ink);font-size:.78rem}
+.vsteps li.unv{border-style:dashed;border-color:var(--gen)}
+.tile.unv{border-style:dashed;border-color:var(--gen)}
+tr.unv th,tr.unv td{color:var(--gen)}
+tr.unv{outline:1.5px dashed var(--gen);outline-offset:-3px}
+.unvtag{display:inline-block;margin-left:6px;font-family:var(--f-mono);font-size:.66rem;color:var(--gen);border:1px dashed var(--gen);border-radius:3px;padding:0 4px;vertical-align:1px}
+.vbar{transform-box:fill-box;transform-origin:left center;animation:barIn 600ms var(--ease-std) both}
+@keyframes barIn{from{transform:scaleX(0)}to{transform:none}}
+.knum th{font-weight:500;width:45%}
+.knum td.mono{font-size:.9rem}
+@media (max-width:640px){.vtl li{grid-template-columns:1fr;gap:2px}}
 </style>
 
 <div class="wrap">
@@ -845,6 +871,28 @@ C.push(
  {id:"p3",s:"zodlSpend",sec:"Confirmations",x:"In the Zodl wallet, received funds become spendable after 10 confirmations, about 12.5 minutes at 75 seconds per block. Change from your own spends needs 3 confirmations. Only shielded ZEC counts as spendable; transparent ZEC must be shielded first."},
  {id:"p4",s:"zechubPay",sec:"Processor list",x:"Payment processors for Zcash include CipherPay, a non-custodial gateway that uses unified addresses; BTCPay Server, self-hosted and shielded only; and ZGo, which sends funds directly from customer to merchant. NOWPayments and Binance Pay support transparent ZEC only, and Binance Pay rejects shielded deposits. Flexa lets shoppers spend shielded ZEC at retail locations."},
  {id:"p5",s:"zechubBtcpay",sec:"Summary",x:"BTCPay Server lets online businesses accept crypto payments directly, without intermediaries or custodians, and a Zcash plugin adds ZEC support."}
+);
+/* ---------- Issuance, mining, light clients (captured 28 Oct 2026) ---------- */
+Object.assign(S,{
+  coincodex:{t:"CoinCodex: Zcash halving dates",u:"https://coincodex.com/article/9909/zcash-halving-date",tier:"Secondary"},
+  decryptHalv:{t:"Decrypt: Zcash goes through first halving",u:"https://decrypt.co/48695/privacy-coin-zcash-goes-through-first-halving",tier:"Secondary"},
+  zip208:{t:"ZIP 208: Shorter Block Target Spacing",u:"https://zips.z.cash/zip-0208",tier:"Spec"},
+  kucoinMine:{t:"KuCoin: Mining Zcash with Equihash ASICs in 2026",u:"https://www.kucoin.com/blog/ae-How-to-Mine-Zcash-in-2026-Using-Equihash-ASICs",tier:"Secondary"},
+  lwd:{t:"lightwalletd README",u:"https://github.com/zcash/lightwalletd",tier:"Implementation"},
+  rtdLight:{t:"Zcash Documentation: Light Client Development",u:"https://zcash.readthedocs.io/en/latest/rtd_pages/lightclient_support.html",tier:"Official"},
+  zechubZaino:{t:"ZecHub: Zaino",u:"https://zechub.wiki/zcash-tech/zaino",tier:"Secondary"},
+  coindeskZF:{t:"CoinDesk: What is the Zcash Foundation?",u:"https://www.coindesk.com/learn/zcash-foundation",tier:"Secondary"}
+});
+C.push(
+ {id:"i1",s:"coincodex",sec:"Halving schedule",x:"The first Zcash halving was on November 18, 2020 at block height 1,046,400, cutting the block reward from 6.25 ZEC to 3.125 ZEC. The second was on November 23, 2024 at block height 2,726,400, cutting it from 3.125 ZEC to 1.5625 ZEC. The third is expected in late 2028 at block height 4,406,400, cutting it to 0.78125 ZEC. Halvings happen every 1,680,000 blocks, about every 4 years."},
+ {id:"i2",s:"coincodex",sec:"Before Blossom",x:"Before the Blossom upgrade in December 2019, halvings were scheduled every 840,000 blocks at a 150-second block time. No Zcash halving happens in 2025."},
+ {id:"i3",s:"zip208",sec:"Specification",x:"ZIP 208 cuts the block target spacing from 150 seconds to 75 seconds, starting with the Blossom network upgrade. The block subsidy per block is halved to match, so ZEC is issued over time at roughly the same rate as before."},
+ {id:"i4",s:"decryptHalv",sec:"First halving",x:"Zcash's first halving on November 18, 2020 coincided with the Canopy upgrade, which activated at block 1,046,400 and cut miner rewards from 6.25 ZEC to 3.125 ZEC. Canopy ended the Founders' Reward, which had sent 20% of mining rewards to the Electric Coin Company, the Zcash Foundation and early founders and investors. After Canopy, miners received 80% of block rewards, a Major Grants Fund 8%, the Electric Coin Company 7% and the Zcash Foundation 5%, under a development fund the community voted to extend for four years."},
+ {id:"i5",s:"kucoinMine",sec:"Mining in 2026",x:"Zcash uses Equihash (200,9). Bitmain's AntMiner Z9 Mini, released in 2018, was the first Equihash ASIC, and ASIC mining is now essentially the only way to earn consistent rewards; GPU mining is technically possible but unprofitable. Solo mining is impractical at current difficulty, so miners join pools, which typically charge 0.5% to 2%. The block reward is 1.5625 ZEC until the next halving, expected in 2028, which reduces it to 0.78125 ZEC."},
+ {id:"n1",s:"rtdLight",sec:"Light clients",x:"A light client lets apps transact on Zcash without downloading the full blockchain, relying on a trusted full node's copy of the chain, while a full node enforces all the rules itself. lightwalletd is a stateless server that fetches blockchain data from a node, shrinks it, stores it in a database and serves it to light clients."},
+ {id:"n2",s:"lwd",sec:"README",x:"lightwalletd is a backend service that gives mobile shielded light wallets a bandwidth-efficient interface to the Zcash blockchain through a gRPC service called CompactTxStreamer. It queries a local zebrad node over JSON-RPC. Its code has not had a thorough external audit."},
+ {id:"n3",s:"zechubZaino",sec:"Zaino",x:"Zaino is a Rust indexer for the Zcash blockchain. It reads chain data from a Zebra full node and serves it to wallets, explorers, faucets and other services."},
+ {id:"n4",s:"coindeskZF",sec:"Overview",x:"The Zcash Foundation is a nonprofit launched in 2017 by the Electric Coin Company to support financial privacy and the infrastructure of the Zcash protocol. It is funded by the Zcash blockchain and was endowed with 273,000 ZEC at its start."}
 );
 const CI = Object.fromEntries(C.map(c=>[c.id,c]));
 window.UNRAVEL_CORPUS={S:S,C:C,TIER_LABEL:{Spec:"Spec",Implementation:"Implementation",Official:"Official docs",Proposal:"Proposal",Secondary:"Secondary"}};
@@ -1352,6 +1400,7 @@ function renderTopic(key,asked){
     ${callout}
     ${vis}
     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>${T.explain}</p></section>
+    <div class="block"><button type="button" class="btn outline" data-deeper="${esc(T.q)}">Ask for a more detailed answer</button></div>
     <section class="block"><h3 style="color:var(--muted)">Sources in this answer</h3>${sourcesList()}</section>
   </article>`;
   renderSuggest(key);
@@ -1373,7 +1422,7 @@ const SYN={ua:["unified","address"],uas:["unified","address"],zats:["zatoshis"],
 const NORM={zksnark:["zk","snark"],zksnarks:["zk","snark"],zkp:["zero","knowledge","proof"],zkps:["zero","knowledge","proof"],halo2:["halo"],taddr:["transparent","address"],zaddr:["shielded","address"],zaddrs:["shielded","address"],taddrs:["transparent","address"],ivk:["incoming","viewing","key"],fvk:["viewing","key"],ufvk:["unified","viewing","key"],uivk:["unified","incoming","viewing","key"],zcashd:["zcashd"],nu5:["nu5"]};
 function stem(t){if(t.length<=4||/\d/.test(t))return t;if(t.endsWith("sses"))return t.slice(0,-2);if(t.endsWith("ies"))return t.slice(0,-3)+"y";if(/(xes|ches|shes|sses)$/.test(t))return t.slice(0,-2);if(t.endsWith("s")&&!/(ss|us|is)$/.test(t))return t.slice(0,-1);return t}
 function toks(s){return s.toLowerCase().replace(/[^a-z0-9_.]+/g," ").split(" ").map(t=>t.replace(/^\.+|\.+$/g,"")).flatMap(t=>NORM[t]||[t]).filter(t=>t&&!STOP.has(t)).map(stem)}
-Object.assign(SYN,{private:["shielded","privacy"],privacy:["shielded","private"],hidden:["shielded","encrypted"],hide:["shielded","encrypted"],anonymous:["shielded","privacy"],coin:["zec"],token:["zec"],money:["zec"],supply:["supply","million"],mining:["mining","equihash","block"],miner:["mining","equihash"],mine:["mining","equihash"],halving:["halving","reward"],reward:["reward","halving"],key:["key","viewing"],audit:["viewing","key"],auditor:["viewing","key"],accountant:["viewing","key"],message:["memo"],note:["memo"],test:["testnet","taz"],faucet:["faucet","testnet","taz"],free:["faucet","testnet"],launch:["launched","sprout","2016"],history:["launched","sprout","2016"],started:["launched","sprout"],proof:["proof","zk","snark"],zero:["zero","knowledge"],trusted:["trusted","setup","halo"],wallet:["zallet","wallet","zodl"],node:["zebra","node","z3"],light:["zaino","light"],mobile:["zaino","light","zodl"],unit:["zatoshis"],smallest:["zatoshis"],zip:["zip","proposal"],proposal:["zip","proposal"],upgrade:["upgrade","activated","network"],zashi:["zodl","zashi"],shop:["merchant","payment","processor"],exist:["supply"],max:["supply"],maximum:["supply"],cap:["supply"],store:["merchant","payment","processor"],merchant:["merchant","processor","payment"],checkout:["payment","request","processor"],ecommerce:["merchant","payment","processor"],accept:["receive","payment","request"],receive:["receive","payment","request"],payment:["payment","request"],pay:["payment","request"],invoice:["payment","request","uri"],qr:["uri","payment","request"],order:["memo","payment"],business:["merchant","payment"],snark:["snark","zk","proof"]});
+Object.assign(SYN,{private:["shielded","privacy"],privacy:["shielded","private"],hidden:["shielded","encrypted"],hide:["shielded","encrypted"],anonymous:["shielded","privacy"],coin:["zec"],token:["zec"],money:["zec"],supply:["supply","million"],mining:["mining","equihash","block"],miner:["mining","equihash"],mine:["mining","equihash"],halving:["halving","reward","schedule"],reward:["reward","halving","subsidy"],issuance:["issued","subsidy","halving"],inflation:["issued","subsidy","halving"],asic:["asic","equihash","mining"],gpu:["gpu","mining"],pool:["pool","mining"],lightwalletd:["lightwalletd","light"],sync:["light","lightwalletd","zaino"],foundation:["foundation","nonprofit"],blossom:["blossom","spacing"],canopy:["canopy","founders"],key:["key","viewing"],audit:["viewing","key"],auditor:["viewing","key"],accountant:["viewing","key"],message:["memo"],note:["memo"],test:["testnet","taz"],faucet:["faucet","testnet","taz"],free:["faucet","testnet"],launch:["launched","sprout","2016"],history:["launched","sprout","2016"],started:["launched","sprout"],proof:["proof","zk","snark"],zero:["zero","knowledge"],trusted:["trusted","setup","halo"],wallet:["zallet","wallet","zodl"],node:["zebra","node","z3"],light:["zaino","light"],mobile:["zaino","light","zodl"],unit:["zatoshis"],smallest:["zatoshis"],zip:["zip","proposal"],proposal:["zip","proposal"],upgrade:["upgrade","activated","network"],zashi:["zodl","zashi"],shop:["merchant","payment","processor"],exist:["supply"],max:["supply"],maximum:["supply"],cap:["supply"],store:["merchant","payment","processor"],merchant:["merchant","processor","payment"],checkout:["payment","request","processor"],ecommerce:["merchant","payment","processor"],accept:["receive","payment","request"],receive:["receive","payment","request"],payment:["payment","request"],pay:["payment","request"],invoice:["payment","request","uri"],qr:["uri","payment","request"],order:["memo","payment"],business:["merchant","payment"],snark:["snark","zk","proof"]});
 for(const k of Object.keys(SYN)){SYN[k]=SYN[k].map(v=>stem(v))}
 const DOCS=C.map(c=>({id:c.id,t:toks(c.x+" "+S[c.s].t+" "+c.sec)}));
 const DF={};DOCS.forEach(d=>new Set(d.t).forEach(t=>DF[t]=(DF[t]||0)+1));
@@ -1431,13 +1480,14 @@ function backendReady(){
     try{ const r=await fetch("/api/answer",{method:"GET",headers:{accept:"application/json"}}); if(!r.ok) return false; const j=await r.json(); return !!(j&&j.configured) }catch(e){ return false } })();
   return backendP;
 }
-async function callBackend(q,ids,signal){
+async function callBackend(q,ids,signal,deep){
   let r;
-  try{ r=await fetch("/api/answer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q,ids}),signal}) }
+  try{ r=await fetch("/api/answer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({question:q,ids,depth:deep?"deep":"normal"}),signal}) }
   catch(e){ if(signal&&signal.aborted) throw {code:"cancelled"}; throw {code:"upstream_error"} }
   let j=null; try{ j=await r.json() }catch(e){}
   if(!r.ok) throw {code:(j&&j.code)||"upstream_error",message:j&&j.message};
-  return {verified:(j.verified||[]).map(v=>({...v,api:j.checked==="citations"})),unmatched:j.unmatched||[],explanation:j.explanation||"",gaps:j.gaps||"",notCovered:j.notCovered||"",diagram:null,engine:"api",provider:j.provider||""};
+  const api=j.checked==="citations", mark=a=>(Array.isArray(a)?a:[]).map(v=>({...v,api}));
+  return {...j,short:mark(j.short),how:mark(j.how),verified:mark(j.verified),engine:"api",provider:j.provider||""};
 }
 let sampleFn=null, inflight=null, sampleChecked=false;
 const samplePromise=(async()=>{try{return window.claude?await window.claude.use("sample"):null}catch(e){return null}})();
@@ -1449,17 +1499,111 @@ function pipelineHTML(stage,ids){
   return `<div class="pipe">${st.map((s,i)=>`<div class="pstep ${i<stage?"done":i===stage?"on":""}"><b>${s}</b><span class="mono" style="font-size:.75rem">${esc(sub[i])}</span></div>`).join("")}</div>`;
 }
 
-async function ask(q){
-  q=q.trim(); if(!q) return;
+/* ---------- Rich answers: prompt shared with the server (api/answer.js) ---------- */
+function richRules(deep){
+  return `You are Unravel, a documentation assistant for Zcash developers and newcomers.
+Answer only from the numbered passages. Never use outside knowledge for facts. Write plainly, explain jargon in a few words, and never use em dashes.
+
+Return one JSON object with these fields:
+- "short": 1 or 2 sentences that answer the question directly.
+- "how": ${deep?"6 to 10":"3 to 6"} sentences that explain how it works, in a logical order, connecting what the passages say.
+- "numbers": up to ${deep?8:4} key figures from the passages: {"label": short name, "value": copied exactly as written, "cites": [...]}. Empty list if none.
+- "visual": the one visual that best explains the answer, or null. Choose:
+  "timeline" for events over time or block height: "items":[{"when":"...","label":"...","cites":[...]}], 2 to 7 items in order;
+  "steps" for a process: "items":[{"label":"at most 6 words","detail":"one short sentence","cites":[...]}], 3 to 6 items;
+  "compare" for differences between two things: "columns":["A","B"], "items":[{"label":"...","values":["a","b"],"cites":[...]}], 2 to 6 rows;
+  "tiles" for 2 to 4 headline figures: "items":[{"value":"...","label":"...","cites":[...]}];
+  "bars" for 2 to 6 numeric values in one unit: "unit":"...", "items":[{"label":"...","value":0,"cites":[...]}].
+  Always include "type" and a "title" of at most 8 words. Every item must cite the passage its facts come from.
+- "impact": at most 60 words on what this means in practice for the reader.
+- "explanation": at most 60 words of background or an analogy the passages do not state. "" if nothing useful.
+- "related": 3 short follow-up questions a reader might ask next.
+- "gaps": one or two sentences if passages conflict or only a SECONDARY or PROPOSAL passage supports a key point, otherwise "".
+- "not_covered": if the passages do not answer the question, one sentence naming what is missing, with "short", "how", "numbers" empty and "visual" null. Otherwise "".
+
+Each sentence in "short" and "how" is {"text":"...","cites":["b11"]} listing the passage ids it relies on. Copy numbers, heights, dates and method names exactly as the passages write them. Do not merge facts into a claim no single passage supports.`;
+}
+
+/* ---------- Retrieval with related context ---------- */
+function contextIds(q,deep){
+  const all=search(q); if(!all.length) return [];
+  const top=all[0].sc;
+  const base=all.filter(h=>h.sc>=top*0.2).slice(0,deep?10:7).map(h=>h.id);
+  const cap=deep?12:8, out=[...base];
+  const set=id=>new Set(DOCS.find(d=>d.id===id).t.filter(t=>t.length>3));
+  for(const id of base.slice(0,3)){
+    const a=set(id);
+    const near=DOCS.filter(d=>!out.includes(d.id)).map(d=>{const b=new Set(d.t.filter(t=>t.length>3));let n=0;for(const t of a)if(b.has(t))n++;return {id:d.id,j:n/(a.size+b.size-n||1)}}).filter(x=>x.j>=0.1).sort((x,y)=>y.j-x.j).slice(0,2);
+    for(const n of near){ if(out.length<cap) out.push(n.id) }
+  }
+  return out.slice(0,cap);
+}
+
+/* ---------- Normalise an answer from any engine ---------- */
+function normAnswer(d,ids){
+  d=d||{};
+  const sent=a=>(Array.isArray(a)?a:[]).filter(v=>v&&typeof v.text==="string"&&v.text.trim()).map(v=>({text:String(v.text).trim(),cites:(Array.isArray(v.cites)?v.cites:[]).map(String).filter(id=>ids.includes(id)),api:!!v.api}));
+  let short=sent(d.short), how=sent(d.how);
+  if(!short.length&&!how.length&&Array.isArray(d.verified)) how=sent(d.verified);
+  const numbers=(Array.isArray(d.numbers)?d.numbers:[]).filter(n=>n&&n.label&&n.value!=null).slice(0,8).map(n=>({label:String(n.label).slice(0,60),value:String(n.value).slice(0,60),cites:(Array.isArray(n.cites)?n.cites:[]).map(String).filter(id=>ids.includes(id))}));
+  const related=(Array.isArray(d.related)?d.related:[]).map(r=>String(r).trim()).filter(r=>r.length>5&&r.length<120).slice(0,3);
+  return {short,how,numbers,visual:normVisual(d.visual,ids),related,impact:String(d.impact||"").trim(),explanation:String(d.explanation||"").trim(),gaps:String(d.gaps||"").trim(),notCovered:String(d.notCovered||d.not_covered||"").trim(),unmatched:sent(d.unmatched),engine:d.engine||"",provider:d.provider||""};
+}
+const VTYPES=["timeline","steps","compare","tiles","bars"];
+function normVisual(v,ids){
+  if(!v||typeof v!=="object"||!VTYPES.includes(v.type)) return null;
+  const str=(x,n)=>String(x==null?"":x).trim().slice(0,n);
+  const items=(Array.isArray(v.items)?v.items:[]).slice(0,8).map(it=>({when:str(it&&it.when,40),label:str(it&&it.label,90),detail:str(it&&it.detail,160),value:v.type==="bars"?Number(it&&it.value):str(it&&it.value,40),values:Array.isArray(it&&it.values)?it.values.slice(0,2).map(x=>str(x,60)):[],cites:(Array.isArray(it&&it.cites)?it.cites:[]).map(String).filter(id=>ids.includes(id))})).filter(it=>it.label||it.value);
+  if(v.type==="bars"&&items.some(it=>!isFinite(it.value))) return null;
+  if(items.length<2) return null;
+  return {type:v.type,title:str(v.title,80)||"How it fits together",unit:str(v.unit,20),columns:Array.isArray(v.columns)?v.columns.slice(0,2).map(c=>str(c,30)):["",""],items};
+}
+/* An item is verified when it cites a passage and every number in it appears there. */
+function itemOK(text,cites,strict){
+  if(!cites.length) return false;
+  if(!checkClaim(text,cites,true).ok) return false;
+  if(!strict) return true;
+  /* strict: every number, even single digits, must appear as a whole number in the cited passages */
+  const src=" "+norm(cites.map(i=>CI[i].x).join(" "))+" ";
+  const nums=norm(String(text)).match(/\d+(\.\d+)?/g)||[];
+  return nums.every(n=>new RegExp("(^|[^\\d.])"+n.replace(".","\\.")+"(?![\\d]|\\.\\d)").test(src));
+}
+
+/* ---------- Visual renderers (data in, cited SVG/HTML out) ---------- */
+function vBadge(ok){ return ok?"":`<span class="unvtag">unverified</span>` }
+function renderVisual(v){
+  if(!v) return "";
+  const it=v.items, cap=`<p class="cap">Drawn from the answer's cited passages. Dashed items could not be matched to a passage.</p>`;
+  let body="";
+  if(v.type==="timeline"){
+    body=`<ol class="vtl">${it.map((x,i)=>{const ok=itemOK(x.when+" "+x.label,x.cites);return `<li class="${ok?"":"unv"}" style="animation-delay:${i*90}ms"><span class="vdot"></span><span class="vwhen mono">${esc(x.when)}</span><span class="vlabel">${fmtInline(x.label)} ${x.cites.length?citeBtns(x.cites):""}${vBadge(ok)}</span></li>`}).join("")}</ol>`;
+  } else if(v.type==="steps"){
+    body=`<ol class="vsteps">${it.map((x,i)=>{const ok=itemOK(x.label+" "+x.detail,x.cites);return `<li class="${ok?"":"unv"}" style="animation-delay:${i*90}ms"><span class="vnum mono">${i+1}</span><b>${esc(x.label)}</b>${x.detail?`<span>${fmtInline(x.detail)}</span>`:""}<span class="vc">${x.cites.length?citeBtns(x.cites):""}${vBadge(ok)}</span></li>`}).join("")}</ol>`;
+  } else if(v.type==="tiles"){
+    body=`<div class="tiles">${it.map((x,i)=>{const ok=itemOK(x.value+" "+x.label,x.cites,true);return `<div class="tile${ok?"":" unv"}" style="animation-delay:${i*80}ms"><b>${esc(x.value)}</b><span>${esc(x.label)}</span><span>${x.cites.length?citeBtns(x.cites):""}${vBadge(ok)}</span></div>`}).join("")}</div>`;
+  } else if(v.type==="compare"){
+    body=`<div class="tablebox" style="max-height:none"><table class="vtable"><thead><tr><th></th><th>${esc(v.columns[0]||"")}</th><th>${esc(v.columns[1]||"")}</th><th></th></tr></thead><tbody>${it.map(x=>{const ok=itemOK(x.label+" "+x.values.join(" "),x.cites);return `<tr class="${ok?"":"unv"}"><th>${esc(x.label)}</th><td>${esc(x.values[0]||"")}</td><td>${esc(x.values[1]||"")}</td><td>${x.cites.length?citeBtns(x.cites):""}${vBadge(ok)}</td></tr>`}).join("")}</tbody></table></div>`;
+  } else if(v.type==="bars"){
+    const max=Math.max(...it.map(x=>Math.abs(x.value)))||1, W=420, row=34, H=it.length*row+8;
+    body=`<div class="svgbox"><svg viewBox="0 0 640 ${H}" role="img" aria-label="${esc(v.title)}">${it.map((x,i)=>{const ok=itemOK(String(x.value),x.cites,true);const w=Math.max(2,Math.abs(x.value)/max*W);const y=i*row+6;return `<g><text class="lbl" x="0" y="${y+17}" style="font-size:12px">${esc(x.label.slice(0,22))}</text><rect x="170" y="${y}" width="${w.toFixed(1)}" height="22" rx="3" fill="${ok?"var(--amber)":"none"}" stroke="${ok?"none":"var(--gen)"}" stroke-dasharray="${ok?"":"4 3"}" class="vbar" style="animation-delay:${i*90}ms"/><text class="sub" x="${(176+w).toFixed(1)}" y="${y+15}">${esc(String(x.value))} ${esc(v.unit)}${ok?"":" (unverified)"}</text></g>`}).join("")}</svg></div><p class="cap">${it.map(x=>x.cites.length?citeBtns(x.cites):"").join(" ")}</p>`;
+  }
+  return `<section class="block visual"><h3>${esc(v.title)}</h3>${body}${cap}</section>`;
+}
+
+/* ---------- Ask ---------- */
+async function ask(q,opts){
+  opts=opts||{};
+  q=String(q||"").trim(); if(!q) return;
   if(inflight) inflight.abort();
   citeOrder=[]; lastTerms=toks(q); resetDrawer();
-  const all=search(q); const hits=all.filter(h=>h.sc>=all[0]?.sc*0.35).slice(0,6); const ids=hits.map(h=>h.id);
+  const deep=!!opts.deep;
+  const ids=contextIds(q,deep);
   const topic=topicFor(q);
   renderSuggest(null);
   const shell=(inner)=>`<article class="answer"><h2 class="q">${esc(q)}</h2>${inner}</article>`;
-  if(!hits.length){
+  if(!ids.length){
     $("#main").innerHTML=shell(`<div class="meta"><span class="badge none">Not covered</span><span>Snapshot ${SNAP}</span></div>
-     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, unified addresses, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words, or start with one of these:</p></section>
+     <section class="block explain"><h3>Explanation · written by Unravel</h3><p>No passage in the corpus matches this question yet. The corpus covers Zcash basics, fees, issuance and mining, unified addresses, payments, the Ironwood upgrade and the move from zcashd to Zebra and Zallet. Try rephrasing in plain words, or start with one of these:</p></section>
      <div class="block"><div class="suggest">${TOPIC_ORDER.filter(k=>TOPICS[k].level==="Start here").map(k=>`<button type="button" data-topic="${k}"><span class="tag">Instant</span>${esc(TOPICS[k].q)}</button>`).join("")}</div></div>`);
     return;
   }
@@ -1467,71 +1611,57 @@ async function ask(q){
   await new Promise(r=>setTimeout(r,motionOn?350:0));
   if(!sampleChecked){ sampleFn=await samplePromise; sampleChecked=true; }
   { const cv=coverage(q,ids); if(cv.score<0.5){ renderLowConfidence(q,ids,cv.missing); return } }
-  if(topic&&!sampleFn){ const T=TOPICS[topic]; const tc=new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[]),...(T.sources||[])]); const strong=tc.has(ids[0])||(topicScore(q,topic)>=2&&ids.slice(0,3).some(i=>tc.has(i)))||toks(q).every(t=>GENERIC.has(t)); if(strong){ renderTopic(topic,q); return } }
   const useApi=!sampleFn && await backendReady();
+  if(topic&&!opts.noCurated&&!deep){ const T=TOPICS[topic]; const tc=new Set([...T.claims.flatMap(c=>c[1]),...((T.callout&&T.callout.cites)||[]),...(T.sources||[])]); const strong=tc.has(ids[0])||(topicScore(q,topic)>=2&&ids.slice(0,3).some(i=>tc.has(i)))||toks(q).every(t=>GENERIC.has(t)); if(strong&&(!sampleFn||topicScore(q,topic)>=2)){ renderTopic(topic,q); return } }
   if(!sampleFn && !useApi){ renderPassagesOnly(q,ids,topic,"Unravel can't draft a new answer here yet. These are the passages that best match your question."); return }
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(2,ids)}</div><button class="stop" id="stopBtn" type="button">Stop</button>`);
   const ctl=new AbortController(); inflight=ctl;
   $("#stopBtn").addEventListener("click",()=>ctl.abort());
-  const passages=ids.map(id=>{const c=CI[id],s=S[c.s];return `[${id}] (${s.tier.toUpperCase()}) ${s.t} / ${c.sec}: ${c.x}`}).join("\n\n");
-  const prompt=`You are Unravel, a documentation assistant for Zcash developers and newcomers. Answer the question using ONLY the passages below. Write plainly and explain any jargon in a few words.
-
-Rules:
-- Put a sentence in "verified" only if a cited passage directly supports it. Cite passage ids such as "c4".
-- One sentence per item, in your own words. Copy numbers, heights and method names exactly as the passages write them.
-- Interpretation, advice, or background that the passages do not state goes in "explanation", in plain words, at most 90 words. No em dashes.
-- If the passages do not answer the question, leave "verified" empty and say what is missing in "gaps".
-- Passages tagged SECONDARY or PROPOSAL are weaker; when they disagree with SPEC, IMPLEMENTATION or OFFICIAL, say so in "gaps".
-- "diagram" is optional: use it only when the answer is a process or path, with 3 to 6 ordered steps, each {"label": at most 6 words, "cite": passage id or null}. Otherwise null.
-
-Reply with only JSON in this shape:
-{"verified":[{"text":"...","cites":["c1"]}],"explanation":"...","gaps":"...","diagram":{"title":"...","steps":[{"label":"...","cite":"c1"}]}}
-
-Question: ${q}
-
-Passages:
-${passages}`;
   let data;
-  try{ data = useApi ? await callBackend(q,ids,ctl.signal) : await sampleFn.json(prompt,{signal:ctl.signal}) }
-  catch(e){
+  try{
+    if(useApi) data=await callBackend(q,ids,ctl.signal,deep);
+    else {
+      const passages=ids.map(id=>{const c=CI[id],s=S[c.s];return `[${id}] (${s.tier.toUpperCase()}) ${s.t} / ${c.sec}: ${c.x}`}).join("\n\n");
+      data=await sampleFn.json(richRules(deep)+`\n\nReply with only the JSON object.\n\nQuestion: ${q}\n\nPassages:\n${passages}`,{signal:ctl.signal});
+    }
+  }catch(e){
     inflight=null;
     if(e&&e.code==="cancelled"){ renderPassagesOnly(q,ids,topic,"Stopped. Here are the matching passages instead."); return }
     if(e&&(e.code==="not_granted"||e.code==="sampling_disabled"||e.code==="capability_disabled")){ sampleFn=null; sampleChecked=true; renderPassagesOnly(q,ids,topic,"Claude isn't allowed in this view, so Unravel can't draft an answer. These are the passages that best match your question."); return }
     if(e&&e.code==="invalid_json"){ renderPassagesOnly(q,ids,topic,"The answer came back in a format Unravel couldn't check, so it isn't shown. Ask again, or read the matching passages."); return }
     if(e&&e.code==="not_configured"){ backendP=Promise.resolve(false); renderPassagesOnly(q,ids,topic,"The answer service isn't set up yet. These are the passages that best match your question."); return }
-    const msg=e&&e.code==="rate_limited"?"Too many questions in a short time. Wait a moment and ask again. Meanwhile, here are the matching passages.":e&&e.code==="invalid_json"?"The draft came back in a format Unravel couldn't check, so it isn't shown. Ask again, or read the matching passages.":"The draft didn't finish. Ask again, or read the matching passages below.";
+    const msg=e&&e.code==="rate_limited"?(e.message||"Too many questions in a short time. Wait a moment and ask again.")+" Meanwhile, here are the matching passages.":"The answer didn't finish. Ask again, or read the matching passages below.";
     renderPassagesOnly(q,ids,topic,msg); return;
   }
   inflight=null;
   $("#main").innerHTML=shell(`<div class="block">${pipelineHTML(3,ids)}</div>`);
   await new Promise(r=>setTimeout(r,motionOn?300:0));
-  if(data&&data.notCovered&&!(data.verified||[]).length){ renderLowConfidence(q,ids,[]); const ex=document.querySelector("#main .explain p"); if(ex) ex.textContent="Unravel checked the closest passages and they don't answer this. "+data.notCovered; return }
-  const ver=[],dem=[];
-  for(const u of (data&&data.unmatched)||[]) if(u&&u.text) dem.push([u.text,"no citation"]);
-  for(const v of (Array.isArray(data&&data.verified)?data.verified:[])){
-    if(!v||typeof v.text!=="string")continue;
-    const cs=(Array.isArray(v.cites)?v.cites:[]).map(String).filter(id=>ids.includes(id));
-    if(!cs.length){dem.push([v.text,"no valid citation"]);continue}
-    const r=checkClaim(v.text,cs,!!v.api); r.ok?ver.push([v.text,cs]):dem.push([v.text,r.why]);
-  }
-  const cov=ver.length?(dem.length||data.gaps?"partial":"full"):"none";
-  const claimsHTML=ver.length?`<section class="block verified"><h3>From the docs</h3><ol class="claims">${ver.map(([t,cs])=>`<li>${fmtInline(t)}${citeBtns(cs)}</li>`).join("")}</ol></section>`:"";
-  let diag="";
-  const dg=data&&data.diagram;
-  if(dg&&Array.isArray(dg.steps)&&dg.steps.length>=2){
-    const steps=dg.steps.slice(0,6).map(s=>{const c=s&&s.cite&&ids.includes(String(s.cite))?String(s.cite):null;return {l:String(s&&s.label||"").slice(0,60),c}}).filter(s=>s.l);
-    diag=`<section class="block visual"><h3>${esc(String(dg.title||"How it fits together").slice(0,80))}</h3><div class="gflow">${steps.map((s,i)=>`${i?'<span class="garrow" aria-hidden="true">→</span>':""}<span class="gnode${s.c?"":" gen"}" style="animation-delay:${i*60}ms">${esc(s.l)}${s.c?citeBtns([s.c]):""}</span>`).join("")}</div><p class="cap">Solid steps cite a passage. Dashed steps are Unravel's own framing.</p></section>`;
-  }
-  let demo="";
-  if(topic){const T=TOPICS[topic];demo=VIS[T.visual]()}
-  const expl=[data&&data.explanation?`<p>${fmtInline(String(data.explanation))}</p>`:"",
+  const A=normAnswer(data,ids);
+  if(A.notCovered&&!A.short.length&&!A.how.length){ renderLowConfidence(q,ids,[]); const ex=document.querySelector("#main .explain p"); if(ex) ex.textContent="Unravel checked the closest passages and they don't answer this. "+A.notCovered; return }
+  const dem=A.unmatched.map(u=>[u.text,"no citation"]);
+  const pass=list=>{const ok=[];for(const v of list){ if(!v.cites.length){dem.push([v.text,"no valid citation"]);continue} const r=checkClaim(v.text,v.cites,v.api); r.ok?ok.push(v):dem.push([v.text,r.why]) } return ok};
+  const short=pass(A.short), how=pass(A.how);
+  const nums=A.numbers.map(n=>({...n,ok:itemOK(n.value,n.cites,true)}));
+  const nVer=short.length+how.length, nAll=nVer+dem.length;
+  const cov=nVer?(dem.length||A.gaps?"partial":"full"):"none";
+  const li=v=>`<li>${fmtInline(v.text)}${citeBtns(v.cites)}</li>`;
+  const engine=A.engine==="api"?(A.provider==="claude"?"Answered by the Claude API with citations":"Answered by an open model on Groq, then checked by Unravel"):"Drafted by Claude";
+  const shortHTML=short.length?`<section class="block verified"><h3>Short answer</h3><ol class="claims lead">${short.map(li).join("")}</ol></section>`:"";
+  const howHTML=how.length?`<section class="block verified"><h3>${short.length?"How it works":"From the docs"}</h3><ol class="claims">${how.map(li).join("")}</ol></section>`:"";
+  const numHTML=nums.length?`<section class="block"><h3 style="color:var(--verified)">Key numbers</h3><div class="tablebox" style="max-height:none"><table class="vtable knum"><tbody>${nums.map(n=>`<tr class="${n.ok?"":"unv"}"><th>${esc(n.label)}</th><td class="mono">${esc(n.value)}</td><td>${n.cites.length?citeBtns(n.cites):""}${vBadge(n.ok)}</td></tr>`).join("")}</tbody></table></div></section>`:"";
+  const visHTML=renderVisual(A.visual);
+  let demo=""; if(topic&&!A.visual){const T=TOPICS[topic];demo=VIS[T.visual]()}
+  const gaps=A.gaps?`<section class="block callout"><h3>Gaps and conflicts</h3><p>${fmtInline(A.gaps)}</p></section>`:"";
+  const expl=[A.impact?`<p><b>What it means for you.</b> ${fmtInline(A.impact)}</p>`:"",A.explanation?`<p${A.impact?' style="margin-top:8px"':""}>${fmtInline(A.explanation)}</p>`:"",
     dem.length?`<p style="margin-top:10px;font-weight:600;font-size:.875rem">Could not be matched to a passage, treat as unverified:</p><ul class="demoted">${dem.map(([t,w])=>`<li>${fmtInline(t)} <span class="mono" style="font-size:.75rem">(${esc(w)})</span></li>`).join("")}</ul>`:""].join("");
-  const gaps=data&&data.gaps&&String(data.gaps).trim()?`<section class="block callout"><h3>Gaps and conflicts</h3><p>${fmtInline(String(data.gaps))}</p></section>`:"";
-  $("#main").innerHTML=shell(`<div class="meta"><span class="badge ${cov}">${cov==="full"?"Covered by corpus":cov==="partial"?"Partly covered":"Not covered"}</span><span>Snapshot ${SNAP}</span><span>${data&&data.engine==="api"?(data.provider==="claude"?"Answered by the Claude API with citations":"Answered by an open model on Groq, then checked by Unravel"):"Drafted by Claude"} from ${ids.length} passage${ids.length===1?"":"s"}, ${ver.length} of ${ver.length+dem.length} sentences passed the check</span></div>
-    ${claimsHTML}${gaps}${diag}${demo}
+  const rel=A.related.length?`<section class="block"><h3 style="color:var(--muted)">Ask next</h3><div class="suggest">${A.related.map(r=>`<button type="button" data-ask="${esc(r)}"><span class="tag">Ask</span>${esc(r)}</button>`).join("")}</div></section>`:"";
+  const deeper=!deep?`<div class="block"><button type="button" class="btn outline" data-deeper="${esc(q)}">Go deeper on this question</button></div>`:"";
+  $("#main").innerHTML=shell(`<div class="meta"><span class="badge ${cov}">${cov==="full"?"Covered by corpus":cov==="partial"?"Partly covered":"Not covered"}</span><span>Snapshot ${SNAP}</span>${deep?'<span class="badge">Detailed</span>':""}<span>${engine} from ${ids.length} passage${ids.length===1?"":"s"}, ${nVer} of ${nAll} sentences passed the check</span></div>
+    ${shortHTML}${howHTML}${gaps}${visHTML}${numHTML}${demo}
     ${expl?`<section class="block explain"><h3>Explanation · written by Unravel</h3>${expl}</section>`:""}
+    ${rel}${deeper}
     <section class="block" id="srcBlock"></section>`);
-  if(topic) bindVis(TOPICS[topic].visual);
+  if(topic&&!A.visual) bindVis(TOPICS[topic].visual);
   finishSources(ids);
 }
 function renderPassagesOnly(q,ids,topic,msg){
@@ -1557,6 +1687,8 @@ function finishSources(){
 /* ---------- Events ---------- */
 document.addEventListener("click",e=>{
   const c=e.target.closest("[data-cite]"); if(c){e.preventDefault();openDrawer(c.dataset.cite);return}
+  const a=e.target.closest("[data-ask]"); if(a){ const q=a.dataset.ask; $("#ask-box").value=q; ask(q,{noCurated:true}); document.getElementById("ask").scrollIntoView({behavior:motionOn?"smooth":"auto"}); return }
+  const d=e.target.closest("[data-deeper]"); if(d){ ask(d.dataset.deeper,{deep:true,noCurated:true}); document.getElementById("main").scrollIntoView({behavior:motionOn?"smooth":"auto",block:"start"}); return }
   const t=e.target.closest("[data-topic]"); if(t){const h=HASH[t.dataset.topic]; if(location.hash==="#"+h) renderTopic(t.dataset.topic); else location.hash=h; return}
 });
 $("#askForm").addEventListener("submit",e=>{e.preventDefault();ask($("#ask-box").value)});

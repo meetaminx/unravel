@@ -19,7 +19,7 @@ const API_URL = (process.env.ANTHROPIC_BASE_URL || "https://api.anthropic.com") 
 const GROQ_URL = (process.env.GROQ_BASE_URL || "https://api.groq.com/openai") + "/v1/chat/completions";
 const PROVIDER = () => process.env.ANTHROPIC_API_KEY ? "claude" : process.env.GROQ_API_KEY ? "groq" : null;
 const MODEL_FOR = p => process.env.UNRAVEL_MODEL || (p === "claude" ? "claude-sonnet-5-5" : "openai/gpt-oss-120b");
-const MAX_IDS = 8;
+const MAX_IDS = 12;
 const MAX_Q = 300;
 const BY_ID = new Map(PASSAGES.map(p => [p.id, p]));
 const TIER = { Spec: "Spec", Official: "Official docs", Implementation: "Implementation", Proposal: "Proposal", Secondary: "Secondary" };
@@ -60,41 +60,90 @@ Reply in this exact structure:
 
 If the search results do not answer the question, reply with only one line: "NOT_COVERED:" followed by one sentence naming what is missing. Do not guess.`;
 
-const GROQ_SYSTEM = `You are Unravel, a documentation assistant for Zcash developers and newcomers.
-Answer only from the numbered passages the user gives you. Do not use outside knowledge for facts.
-Write plainly and explain jargon in a few words. Never use em dashes.
+// Shared with richRules() in index.html. Keep the two in sync.
+function richRules(deep) {
+  return `You are Unravel, a documentation assistant for Zcash developers and newcomers.
+Answer only from the numbered passages. Never use outside knowledge for facts. Write plainly, explain jargon in a few words, and never use em dashes.
 
-Rules:
-- "verified": 2 to 6 short sentences. Each must be directly supported by the passages and list the ids it relies on, such as ["b3"]. Copy numbers, block heights and method names exactly as the passages write them. Stay close to the passage wording.
-- "explanation": at most 80 words of plain background, an analogy or practical advice the passages do not state directly. Empty string if nothing useful.
-- "gaps": one or two sentences if passages conflict, or if a passage marked SECONDARY or PROPOSAL is the only support for a key point. Otherwise empty string.
-- If the passages do not answer the question, return an empty "verified" list and put one sentence naming what is missing in "not_covered". Do not guess.
+Return one JSON object with these fields:
+- "short": 1 or 2 sentences that answer the question directly.
+- "how": ${deep ? "6 to 10" : "3 to 6"} sentences that explain how it works, in a logical order, connecting what the passages say.
+- "numbers": up to ${deep ? 8 : 4} key figures from the passages: {"label": short name, "value": copied exactly as written, "cites": [...]}. Empty list if none.
+- "visual": the one visual that best explains the answer, or null. Choose:
+  "timeline" for events over time or block height: "items":[{"when":"...","label":"...","cites":[...]}], 2 to 7 items in order;
+  "steps" for a process: "items":[{"label":"at most 6 words","detail":"one short sentence","cites":[...]}], 3 to 6 items;
+  "compare" for differences between two things: "columns":["A","B"], "items":[{"label":"...","values":["a","b"],"cites":[...]}], 2 to 6 rows;
+  "tiles" for 2 to 4 headline figures: "items":[{"value":"...","label":"...","cites":[...]}];
+  "bars" for 2 to 6 numeric values in one unit: "unit":"...", "items":[{"label":"...","value":0,"cites":[...]}].
+  Always include "type" and a "title" of at most 8 words. Every item must cite the passage its facts come from.
+- "impact": at most 60 words on what this means in practice for the reader.
+- "explanation": at most 60 words of background or an analogy the passages do not state. "" if nothing useful.
+- "related": 3 short follow-up questions a reader might ask next.
+- "gaps": one or two sentences if passages conflict or only a SECONDARY or PROPOSAL passage supports a key point, otherwise "".
+- "not_covered": if the passages do not answer the question, one sentence naming what is missing, with "short", "how", "numbers" empty and "visual" null. Otherwise "".
 
-Reply with only a JSON object: {"verified":[{"text":"...","cites":["b3"]}],"explanation":"","gaps":"","not_covered":""}`;
+Each sentence in "short" and "how" is {"text":"...","cites":["b11"]} listing the passage ids it relies on. Copy numbers, heights, dates and method names exactly as the passages write them. Do not merge facts into a claim no single passage supports.`;
+}
 
-async function askGroq(question, ids, key, model) {
+const VTYPES = ["timeline", "steps", "compare", "tiles", "bars"];
+const str = (x, n) => clean(String(x == null ? "" : x)).trim().slice(0, n);
+const citesOf = (x, ids) => [...new Set((Array.isArray(x?.cites) ? x.cites : []).map(String))].filter(id => ids.includes(id));
+
+export function sanitize(parsed, ids) {
+  const sents = a => (Array.isArray(a) ? a : []).filter(v => v && typeof v.text === "string" && v.text.trim()).slice(0, 12).map(v => ({ text: str(v.text, 400), cites: citesOf(v, ids) }));
+  let short = sents(parsed.short), how = sents(parsed.how);
+  if (!short.length && !how.length) how = sents(parsed.verified);
+  const unmatched = [...short, ...how].filter(v => !v.cites.length);
+  short = short.filter(v => v.cites.length); how = how.filter(v => v.cites.length);
+  const numbers = (Array.isArray(parsed.numbers) ? parsed.numbers : []).filter(n => n && n.label && n.value != null).slice(0, 8)
+    .map(n => ({ label: str(n.label, 60), value: str(n.value, 60), cites: citesOf(n, ids) }));
+  let visual = null;
+  const v = parsed.visual;
+  if (v && typeof v === "object" && VTYPES.includes(v.type)) {
+    const items = (Array.isArray(v.items) ? v.items : []).slice(0, 8).map(it => ({
+      when: str(it?.when, 40), label: str(it?.label, 90), detail: str(it?.detail, 160),
+      value: v.type === "bars" ? Number(it?.value) : str(it?.value, 40),
+      values: Array.isArray(it?.values) ? it.values.slice(0, 2).map(x => str(x, 60)) : [],
+      cites: citesOf(it, ids)
+    })).filter(it => it.label || it.value);
+    const okBars = v.type !== "bars" || items.every(it => Number.isFinite(it.value));
+    if (items.length >= 2 && okBars) visual = { type: v.type, title: str(v.title, 80), unit: str(v.unit, 20), columns: Array.isArray(v.columns) ? v.columns.slice(0, 2).map(c => str(c, 30)) : [], items };
+  }
+  const related = (Array.isArray(parsed.related) ? parsed.related : []).map(r => str(r, 120)).filter(r => r.length > 5).slice(0, 3);
+  return {
+    short, how, numbers, visual, related, unmatched,
+    impact: str(parsed.impact, 600), explanation: str(parsed.explanation, 600),
+    gaps: str(parsed.gaps, 400), notCovered: str(parsed.not_covered, 300)
+  };
+}
+
+async function askGroq(question, ids, key, model, deep) {
   const passages = ids.map(id => {
     const p = BY_ID.get(id), s = SOURCES[p.s] || { t: p.s, tier: "Secondary" };
     return `[${id}] (${String(s.tier).toUpperCase()}) ${s.t} / ${p.sec}: ${p.x}`;
   }).join("\n\n");
   const base = {
     model,
-    temperature: 0.1,
-    max_completion_tokens: 1500,
+    temperature: 0.2,
+    max_completion_tokens: deep ? 4000 : 2800,
     messages: [
-      { role: "system", content: GROQ_SYSTEM },
+      { role: "system", content: richRules(deep) + "\n\nReply with only the JSON object." },
       { role: "user", content: `Question: ${question}\n\nPassages:\n${passages}` }
     ]
   };
-  // Prefer JSON mode; if this model rejects an option, retry once with a plain request.
-  const attempts = [{ ...base, response_format: { type: "json_object" } }, base];
+  // Prefer JSON mode with light reasoning; drop options one at a time if the model rejects them.
+  const attempts = [
+    { ...base, response_format: { type: "json_object" }, reasoning_effort: "low" },
+    { ...base, response_format: { type: "json_object" } },
+    base
+  ];
   let res, data;
   for (const body of attempts) {
     res = await fetch(GROQ_URL, {
       method: "POST",
       headers: { "content-type": "application/json", authorization: "Bearer " + key },
       body: JSON.stringify(body),
-      signal: AbortSignal.timeout(45000)
+      signal: AbortSignal.timeout(50000)
     });
     data = await res.json().catch(() => null);
     if (res.ok || res.status !== 400) break;
@@ -106,20 +155,7 @@ async function askGroq(question, ids, key, model) {
     const m = raw.match(/\{[\s\S]*\}/); if (m) { try { parsed = JSON.parse(m[0]); } catch {} }
   }
   if (!parsed || typeof parsed !== "object") return { error: 502, type: "invalid_json" };
-  const verified = (Array.isArray(parsed.verified) ? parsed.verified : [])
-    .filter(v => v && typeof v.text === "string")
-    .map(v => ({ text: clean(v.text).trim(), cites: [...new Set((Array.isArray(v.cites) ? v.cites : []).map(String))].filter(id => ids.includes(id)) }));
-  return {
-    out: {
-      verified: verified.filter(v => v.cites.length),
-      unmatched: verified.filter(v => !v.cites.length),
-      explanation: clean(String(parsed.explanation || "")).trim(),
-      gaps: clean(String(parsed.gaps || "")).trim(),
-      notCovered: clean(String(parsed.not_covered || "")).trim(),
-      checked: "browser",
-      model: data.model || model
-    }
-  };
+  return { out: { ...sanitize(parsed, ids), checked: "browser", model: data.model || model } };
 }
 
 function splitSentences(text) {
@@ -188,11 +224,12 @@ export async function POST(request) {
   let body;
   try { body = await request.json(); } catch { return json({ code: "bad_request", message: "Send JSON." }, 400); }
   const question = typeof body?.question === "string" ? body.question.trim().slice(0, MAX_Q) : "";
+  const deep = body?.depth === "deep";
   const ids = Array.isArray(body?.ids) ? [...new Set(body.ids.map(String))].filter(id => BY_ID.has(id)).slice(0, MAX_IDS) : [];
   if (question.length < 3) return json({ code: "bad_request", message: "Ask a question of at least 3 characters." }, 400);
   if (!ids.length) return json({ code: "no_passages", message: "No passages were selected for this question." }, 400);
 
-  const ckey = question.toLowerCase() + "|" + ids.join(",");
+  const ckey = question.toLowerCase() + "|" + (deep ? "deep|" : "") + ids.join(",");
   const hit = cache.get(ckey);
   if (hit && Date.now() - hit.at < CACHE_MS) return json({ ...hit.body, cached: true });
 
@@ -201,7 +238,7 @@ export async function POST(request) {
 
   if (provider === "groq") {
     let r;
-    try { r = await askGroq(question, ids, key, MODEL); }
+    try { r = await askGroq(question, ids, key, MODEL, deep); }
     catch { return json({ code: "upstream_error", message: "The answer service did not respond. Try again." }, 502); }
     if (r.error) {
       console.error("groq_error", r.error, r.type, r.message);

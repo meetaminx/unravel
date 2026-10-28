@@ -19,6 +19,20 @@ A Zcash docs copilot. Every fact links to the passage it came from, and anything
 3. Anything without a valid citation is shown as unverified explanation.
 4. If the passages don't answer the question, the model says so and the page shows "Not covered".
 
+## Answer format
+
+Typed answers come back as structured JSON (see `richRules()` in both `index.html` and `api/answer.js`, which must stay in sync):
+
+| Field | Shown as | Checked |
+|---|---|---|
+| `short`, `how` | Short answer, How it works | Each sentence must cite a passage; numbers must appear in it; wording must match |
+| `numbers` | Key numbers table | Every number must appear in the cited passage |
+| `visual` | One of timeline, steps, compare, tiles, bars | Each item must cite a passage; uncited or mismatched items are drawn dashed |
+| `impact`, `explanation` | Explanation box | Labeled as written by Unravel |
+| `related` | Ask next buttons | |
+
+"Go deeper" sends up to 12 passages and asks for a longer answer.
+
 ## Environment variables (Vercel → Project → Settings → Environment Variables)
 
 | Name | Required | Default | Purpose |
