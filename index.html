@@ -2097,6 +2097,27 @@ $("#askForm").addEventListener("submit",e=>{e.preventDefault();ask($("#ask-box")
 })();
 function route(){const k=UNHASH[(location.hash||"").slice(1)]; if(k) renderTopic(k); else if(!$("#main").innerHTML) renderTopic("fees")}
 window.addEventListener("hashchange",route);
+/* Always open at the top. Section links (#ask, #watch, #how...) scroll smoothly without writing the
+   hash into the address, so a refresh or a reopened tab starts at the first section, not mid-page. */
+(function(){
+  try{ if("scrollRestoration" in history) history.scrollRestoration="manual" }catch(e){}
+  const h=(location.hash||"").slice(1);
+  if(h && !UNHASH[h]){ try{ history.replaceState(null,"",location.pathname+location.search) }catch(e){} }
+  const top=()=>window.scrollTo(0,0);
+  let userMoved=false; ["wheel","touchstart","keydown","mousedown"].forEach(ev=>addEventListener(ev,()=>{userMoved=true},{passive:true,once:true}));
+  const hold=()=>{ if(!userMoved) top() };
+  top(); addEventListener("load",()=>{ hold(); requestAnimationFrame(hold); setTimeout(hold,120); setTimeout(hold,400) }); addEventListener("pageshow",hold);
+  document.addEventListener("click",e=>{
+    const a=e.target.closest('a[href^="#"]'); if(!a) return;
+    const id=a.getAttribute("href").slice(1); if(!id||UNHASH[id]) return;
+    const el=document.getElementById(id); if(!el) return;
+    e.preventDefault();
+    const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const off=(document.getElementById("siteTop")||{}).offsetHeight||0;
+    window.scrollTo({top:Math.max(0,el.getBoundingClientRect().top+scrollY-(id==="top"?9999:off+12)),behavior:reduce?"auto":"smooth"});
+    if(id==="ask-box") setTimeout(()=>{ try{ el.focus({preventScroll:true}) }catch(_){} },400);
+  });
+})();
 
 function applyMotion(){
   document.documentElement.classList.toggle("no-motion",!motionOn);
